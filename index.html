@@ -76,6 +76,7 @@
                 top: 68px;
                 z-index: 100;
                 transition: transform 0.3s ease;
+                width: 260px;
             }
 
             .articles-column.active {
@@ -84,6 +85,18 @@
 
             .mobile-menu-toggle {
                 display: block !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .articles-column {
+                width: 100%;
+                left: -100%;
+                top: 60px;
+            }
+
+            .articles-column.active {
+                transform: translateX(100%);
             }
         }
 
@@ -130,6 +143,11 @@
             font-size: 1.1rem;
             width: 20px;
             text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item:hover i {
+            transform: scale(1.2);
         }
 
         .menu-highlight {
@@ -177,6 +195,11 @@
 
         .category h3 i.ri-folder-line {
             margin-right: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .category h3:hover i.ri-folder-line {
+            transform: scale(1.2);
         }
 
         .category-items {
@@ -241,6 +264,11 @@
             margin-right: 0.75rem;
             font-size: 0.9rem;
             min-width: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .article-item:hover i {
+            transform: scale(1.2);
         }
 
         .article-header {
@@ -250,11 +278,19 @@
             animation: fadeIn 0.5s ease-in-out;
         }
 
+        .article-header i.ri-calendar-line {
+            transition: transform 0.3s ease;
+        }
+
+        .article-header i.ri-calendar-line:hover {
+            transform: scale(1.2);
+        }
+
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 2rem;
+            padding: 1rem 1.5rem;
             background: rgba(13, 17, 23, 0.95);
             border-bottom: 1px solid var(--border-color);
             position: sticky;
@@ -262,6 +298,14 @@
             z-index: 50;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(5px);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 0.75rem 1rem;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
         }
 
         .blog-title {
@@ -296,6 +340,13 @@
             gap: 1rem;
         }
 
+        @media (max-width: 768px) {
+            .search-container {
+                width: 100%;
+                gap: 0.5rem;
+            }
+        }
+
         .search-input,
         .search-panel-input {
             padding: 0.6rem 2.5rem 0.6rem 1rem;
@@ -304,9 +355,18 @@
             border-radius: 8px;
             color: var(--text-primary);
             transition: all 0.3s ease;
-            min-width: 200px;
+            width: 200px;
             font-size: 0.9rem;
             position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .search-input,
+            .search-panel-input {
+                width: 100%;
+                font-size: 0.85rem;
+                padding: 0.5rem 2rem 0.5rem 0.75rem;
+            }
         }
 
         .search-input::after,
@@ -364,6 +424,13 @@
             transform: translate(-50%, -50%) scale(1);
         }
 
+        @media (max-width: 768px) {
+            .search-panel {
+                width: 95%;
+                padding: 1rem;
+            }
+        }
+
         .search-overlay {
             position: fixed;
             top: 0;
@@ -388,6 +455,12 @@
             overflow-y: auto;
             padding-right: 0.5rem;
             margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .search-results {
+                max-height: 50vh;
+            }
         }
 
         .search-result-item {
@@ -455,6 +528,36 @@
             color: var(--accent-color);
         }
 
+        .autocomplete-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            margin-top: 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .autocomplete-suggestion {
+            padding: 0.5rem 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.5;
+        }
+
+        .autocomplete-suggestion:hover {
+            background: var(--bg-quaternary);
+            color: var(--accent-color);
+            opacity: 1;
+        }
+
         .action-button {
             display: flex;
             align-items: center;
@@ -464,6 +567,13 @@
             text-decoration: none;
             font-weight: 500;
             font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .action-button {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.85rem;
+            }
         }
 
         .telegram-button {
@@ -498,7 +608,7 @@
             min-width: 200px;
             opacity: 0;
             transform: scale(0.95) translateY(-10px);
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
         .telegram-menu.active {
@@ -506,6 +616,10 @@
             opacity: 1;
             transform: scale(1) translateY(0);
             animation: slideInMenu 0.3s ease-out;
+        }
+
+        .telegram-menu:not(.active) {
+            animation: slideOutMenu 0.3s ease-in forwards;
         }
 
         .telegram-menu a {
@@ -562,6 +676,14 @@
             margin-right: 0.5rem;
         }
 
+        @media (max-width: 768px) {
+            .md-pdf-button {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.85rem;
+                margin-left: 0.5rem;
+            }
+        }
+
         .mobile-menu-toggle {
             display: none;
             background: none;
@@ -571,7 +693,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             padding: 0.5rem;
-            border-radius: 6px;
+            border-radius:	control;
         }
 
         .mobile-menu-toggle:hover {
@@ -585,6 +707,13 @@
             max-width: 1200px;
             margin: 0 auto;
             animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @media (max-width: 768px) {
+            .article-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
         }
 
         .article-text {
@@ -601,6 +730,13 @@
             color: var(--text-primary);
             position: relative;
             line-height: 1.3;
+        }
+
+        @media (max-width: 768px) {
+            .article-text h1 {
+                font-size: 1.6rem;
+                margin: 1.5rem 0 1rem;
+            }
         }
 
         .article-text h1::after {
@@ -626,6 +762,13 @@
             position: relative;
         }
 
+        @media (max-width: 768px) {
+            .article-text h2 {
+                font-size: 1.4rem;
+                margin: 1.5rem 0 0.75rem;
+            }
+        }
+
         .article-text h2::after {
             content: '';
             position: absolute;
@@ -648,6 +791,12 @@
             color: var(--text-primary);
         }
 
+        @media (max-width: 768px) {
+            .article-text h3 {
+                font-size: 1.2rem;
+            }
+        }
+
         .article-text h4 {
             font-size: 1.1rem;
             font-weight: 600;
@@ -660,6 +809,13 @@
             line-height: 1.8;
             margin-bottom: 1.25rem;
             color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .article-text p {
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
         }
 
         .article-text ul,
@@ -943,22 +1099,7 @@
 
         @media (max-width: 768px) {
             main {
-                padding: 1.5rem;
-            }
-
-            .article-content {
-                flex-direction: column;
-                gap: 1.5rem;
-            }
-
-            .article-text h1 {
-                font-size: 1.8rem;
-                margin: 1.5rem 0 1rem;
-            }
-
-            .article-text h2 {
-                font-size: 1.4rem;
-                margin: 1.5rem 0 0.75rem;
+                padding: 1rem;
             }
         }
 
@@ -986,16 +1127,14 @@
             margin: 0.25rem 0;
         }
 
-        .sidebar-header i,
-        .article-header i {
+        .sidebar-header i {
             font-size: 14px;
             margin-right: 0.5rem;
             color: var(--accent-color);
             transition: transform 0.3s ease;
         }
 
-        .sidebar-header i:hover,
-        .article-header i:hover {
+        .sidebar-header i:hover {
             transform: scale(1.2);
         }
 
@@ -1023,6 +1162,15 @@
             transform: scale(1.1);
         }
 
+        @media (max-width: 768px) {
+            .support-button {
+                width: 40px;
+                height: 40px;
+                bottom: 1rem;
+                right: 1rem;
+            }
+        }
+
         .support-modal {
             position: fixed;
             top: 50%;
@@ -1044,6 +1192,13 @@
             opacity: 1;
             visibility: visible;
             transform: translate(-50%, -50%) scale(1);
+        }
+
+        @media (max-width: 768px) {
+            .support-modal {
+                width: 95%;
+                padding: 1rem;
+            }
         }
 
         .support-modal-overlay {
@@ -1074,6 +1229,12 @@
             align-items: center;
         }
 
+        @media (max-width: 768px) {
+            .support-modal h3 {
+                font-size: 1.3rem;
+            }
+        }
+
         .support-modal h3 i {
             margin-right: 0.5rem;
             color: #ff5555;
@@ -1084,6 +1245,12 @@
             color: var(--text-secondary);
             margin-bottom: 1rem;
             line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .support-modal p {
+                font-size: 0.9rem;
+            }
         }
 
         .support-modal .namemc-button {
@@ -1195,9 +1362,14 @@
             }
         }
 
-        @keyframes blink {
-            50% {
+        @keyframes slideOutMenu {
+            from {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+            to {
                 opacity: 0;
+                transform: scale(0.95) translateY(-10px);
             }
         }
     </style>
@@ -1237,7 +1409,10 @@
             <button class="close-search" id="closeSearch">
                 <i class="ri-close-line"></i>
             </button>
-            <input type="text" class="search-panel-input" id="searchPanelInput" placeholder="Введите запрос..." autocomplete="off">
+            <div class="relative">
+                <input type="text" class="search-panel-input" id="searchPanelInput" placeholder="Введите запрос..." autocomplete="off">
+                <div class="autocomplete-suggestions" id="autocompleteSuggestions"></div>
+            </div>
             <div class="search-results" id="searchResults"></div>
         </div>
 
@@ -1392,7 +1567,8 @@
                 pagesData = pagesData.filter(page =>
                     !page.path?.includes('Excalidraw') &&
                     page.category?.toUpperCase() !== 'EXCALIDRAW' &&
-                    page.category?.toUpperCase() !== 'БЕЗ КАТЕГОРИИ'
+                    page.category?.toUpperCase() !== 'БЕЗ КАТЕГОРИИ' &&
+                    page.category
                 );
 
                 // Сортировка по дате (новые сначала)
@@ -1451,8 +1627,8 @@
             // Группировка страниц по категориям
             const categories = {};
             pagesData.forEach(page => {
-                if (!page.category || page.path === 'README.md') return;
-                if (page.category.toUpperCase() === 'EXCALIDRAW' || page.category.toUpperCase() === 'БЕЗ КАТЕГОРИИ') return;
+                if (!page.category || page.path === 'README.md' || page.category.toUpperCase() === 'БЕЗ КАТЕГОРИИ') return;
+                if (page.category.toUpperCase() === 'EXCALIDRAW') return;
                 if (!categories[page.category]) {
                     categories[page.category] = [];
                 }
@@ -1748,6 +1924,7 @@
         const searchPanelInput = document.getElementById('searchPanelInput');
         const searchResults = document.getElementById('searchResults');
         const closeSearch = document.getElementById('closeSearch');
+        const autocompleteSuggestions = document.getElementById('autocompleteSuggestions');
 
         searchInput.addEventListener('input', () => {
             if (searchInput.value.trim()) {
@@ -1765,6 +1942,7 @@
             searchOverlay.classList.remove('active');
             searchPanelInput.value = '';
             searchResults.innerHTML = '';
+            autocompleteSuggestions.innerHTML = '';
         }
 
         closeSearch.addEventListener('click', closeSearchPanel);
@@ -1784,6 +1962,7 @@
         function performSearch(query) {
             query = query.trim().toLowerCase();
             searchResults.innerHTML = '';
+            autocompleteSuggestions.innerHTML = '';
 
             if (query.length < 1) {
                 searchResults.innerHTML = `
@@ -1816,6 +1995,19 @@
 
             // Сортировка по релевантности
             results.sort((a, b) => b.score - a.score);
+
+            // Подсказки автозаполнения
+            const suggestions = results.slice(0, 5).map(({ page }) => page.title || 'Без названия');
+            suggestions.forEach(suggestion => {
+                const suggestionDiv = document.createElement('div');
+                suggestionDiv.className = 'autocomplete-suggestion';
+                suggestionDiv.textContent = suggestion;
+                suggestionDiv.addEventListener('click', () => {
+                    searchPanelInput.value = suggestion;
+                    performSearch(suggestion);
+                });
+                autocompleteSuggestions.appendChild(suggestionDiv);
+            });
 
             if (results.length === 0) {
                 searchResults.innerHTML = `
@@ -1866,10 +2058,6 @@
 
                 searchResults.appendChild(resultItem);
             });
-
-            // Автозаполнение
-            const suggestions = results.slice(0, 5).map(({ page }) => page.title || 'Без названия');
-            updateAutocomplete(suggestions);
         }
 
         function highlightMatches(text, query) {
@@ -1880,24 +2068,6 @@
 
         function escapeRegExp(string) {
             return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        }
-
-        function updateAutocomplete(suggestions) {
-            const datalist = document.getElementById('searchSuggestions');
-            if (datalist) {
-                datalist.remove();
-            }
-            if (suggestions.length === 0) return;
-
-            const newDatalist = document.createElement('datalist');
-            newDatalist.id = 'searchSuggestions';
-            suggestions.forEach(suggestion => {
-                const option = document.createElement('option');
-                option.value = suggestion;
-                newDatalist.appendChild(option);
-            });
-            searchPanelInput.parentNode.appendChild(newDatalist);
-            searchPanelInput.setAttribute('list', 'searchSuggestions');
         }
 
         function loadPageFromSearch(event, slug) {
@@ -2033,34 +2203,4 @@
         // Пасхалка на иконке книги
         const easterEggIcon = document.getElementById('easterEggIcon');
         easterEggIcon.addEventListener('click', () => {
-            window.open('https://www.google.com/maps/@52.5952022,39.5248965,3a,75y,359.07h,82.97t/data=!3m7!1e1!3m5!1sCIHM0ogKEICAgICa5tjvxwE!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgpms-cs-s%2FAIMqDu21lgzR3PQCz7Fcnvug4Wap9dJI4tKQ-gAbaQ8ergN6Xr9J2o8lgXuYKxw7xxq5Pw0QjHqdS4EdMQ3-pUqdblICnUDSthThx2beg0YHHfXLWmSf4jzc8ezfLdbgjGk5iR1QQQrI%3Dw900-h600-k-no-pi7.034647060289103-ya184.0695531759182-ro0-fo100!7i7216!8i3608?entry=ttu&g_ep=EgoyMDI1MDQxMy4wIKXMDSoASAFQAw%3D%3D', '_blank');
-        });
-
-        // Обработка навигации по истории
-        window.addEventListener('popstate', () => {
-            const hash = window.location.hash.substring(1);
-            if (hash) {
-                const page = pagesData.find(p => p.slug === hash);
-                if (page) {
-                    loadPage(page);
-                    localStorage.setItem('lastPageSlug', page.slug);
-                    updateActiveStates(page.slug);
-                }
-            }
-        });
-
-        // Загрузка данных
-        document.addEventListener('DOMContentLoaded', () => {
-            const hash = window.location.hash.substring(1);
-            if (hash) {
-                lastPageSlug = hash;
-                localStorage.setItem('lastPageSlug', hash);
-            }
-
-            loadPagesData();
-        });
-
-        window.loadPageFromSearch = loadPageFromSearch;
-    </script>
-</body>
-</html>
+            window.open('https://www.google.com/maps/@52.5952022,39.5248965,3a,75y,359.07h,82.97t/data=!3m7!1e1!3m5!1sCIHM0ogKEICAgICa5tjvxwE!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgpms-cs-s%2FAIMqDu21lgzR3PQCz7Fcnvug4Wap9dJI4tKQ-gAbaQ8ergN6Xr9J2o8lgXuYKxw7xxq5Pw0QjHqdS4EdMQ3-pUqdblICnUDSthThx2beg0YHHfXLWmSf4jzc8ezfLdbgjGk5iR1
