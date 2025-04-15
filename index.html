@@ -27,6 +27,7 @@
             --accent-hover: #60a5fa;
             --accent-active: #2563eb;
             --border-color: rgba(255, 255, 255, 0.1);
+            --search-highlight: #4b6b9f;
         }
 
         body {
@@ -297,7 +298,7 @@
 
         .search-input,
         .search-panel-input {
-            padding: 0.6rem 1rem;
+            padding: 0.6rem 2.5rem 0.6rem 1rem;
             background-color: var(--bg-tertiary);
             border: 1px solid var(--border-color);
             border-radius: 8px;
@@ -310,18 +311,20 @@
 
         .search-input::after,
         .search-panel-input::after {
-            content: '|';
+            content: '\e6b2';
+            font-family: 'remixicon';
             position: absolute;
             right: 10px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-tertiary);
-            animation: blink 0.8s step-end infinite;
+            opacity: 0.5;
+            font-size: 1rem;
         }
 
         .search-input:focus::after,
         .search-panel-input:focus::after {
-            display: none;
+            opacity: 0.7;
         }
 
         .search-input::placeholder,
@@ -384,6 +387,7 @@
             max-height: 60vh;
             overflow-y: auto;
             padding-right: 0.5rem;
+            margin-top: 1rem;
         }
 
         .search-result-item {
@@ -501,6 +505,7 @@
             display: flex;
             opacity: 1;
             transform: scale(1) translateY(0);
+            animation: slideInMenu 0.3s ease-out;
         }
 
         .telegram-menu a {
@@ -511,6 +516,22 @@
             transition: all 0.3s ease;
             background: linear-gradient(135deg, #2A4365, #2C5282);
             margin: 0.25rem 0;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .telegram-menu.active a {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .telegram-menu.active a:nth-child(1) {
+            transition-delay: 0.1s;
+        }
+
+        .telegram-menu.active a:nth-child(2) {
+            transition-delay: 0.2s;
         }
 
         .telegram-menu a:hover {
@@ -802,9 +823,9 @@
             border-radius: 12px;
             padding: 1rem;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            position: sticky;
-            top: 0;
+            position: relative;
             border: 1px solid var(--border-color);
+            overflow: hidden;
         }
 
         .headings-header {
@@ -834,8 +855,22 @@
         }
 
         .headings-container:not(.collapsed) {
+            max-height: 300px;
             overflow-y: auto;
             animation: slideIn 0.3s ease forwards;
+        }
+
+        .headings-container::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .headings-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+        }
+
+        .headings-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
         @media (max-width: 1024px) {
@@ -860,6 +895,7 @@
         .headings-container {
             position: relative;
             padding-left: 0.5rem;
+            overflow-x: hidden;
         }
 
         .heading-item {
@@ -867,10 +903,10 @@
             z-index: 1;
             display: flex;
             align-items: center;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
-            margin: 0.5rem 0;
-            padding: 0.5rem 1rem;
+            margin: 0.3rem 0;
+            padding: 0.4rem 1rem;
             border-radius: 6px;
             transition: all 0.5s ease;
             text-decoration: none;
@@ -1133,18 +1169,29 @@
             }
             to {
                 opacity: 1;
-                max-height: 1000px;
+                max-height: 300px;
             }
         }
 
         @keyframes slideOut {
             from {
                 opacity: 1;
-                max-height: 1000px;
+                max-height: 300px;
             }
             to {
                 opacity: 0;
                 max-height: 0;
+            }
+        }
+
+        @keyframes slideInMenu {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
             }
         }
 
@@ -1190,7 +1237,7 @@
             <button class="close-search" id="closeSearch">
                 <i class="ri-close-line"></i>
             </button>
-            <input type="text" class="search-panel-input" id="searchPanelInput" placeholder="Введите запрос...">
+            <input type="text" class="search-panel-input" id="searchPanelInput" placeholder="Введите запрос..." autocomplete="off">
             <div class="search-results" id="searchResults"></div>
         </div>
 
@@ -1738,10 +1785,10 @@
             query = query.trim().toLowerCase();
             searchResults.innerHTML = '';
 
-            if (query.length < 2) {
+            if (query.length < 1) {
                 searchResults.innerHTML = `
                     <div class="text-center py-4 text-gray-400">
-                        Введите минимум 2 символа для поиска
+                        Введите запрос для поиска
                     </div>
                 `;
                 return;
@@ -1819,16 +1866,38 @@
 
                 searchResults.appendChild(resultItem);
             });
+
+            // Автозаполнение
+            const suggestions = results.slice(0, 5).map(({ page }) => page.title || 'Без названия');
+            updateAutocomplete(suggestions);
         }
 
         function highlightMatches(text, query) {
             if (!text || !query) return text;
             const regex = new RegExp(`(${escapeRegExp(query)})`, 'gi');
-            return text.replace(regex, '<span class="bg-yellow-500/20 text-yellow-400">$1</span>');
+            return text.replace(regex, '<span style="background-color: var(--search-highlight); color: #e6edf3; border-radius: 4px; padding: 0 4px;">$1</span>');
         }
 
         function escapeRegExp(string) {
             return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function updateAutocomplete(suggestions) {
+            const datalist = document.getElementById('searchSuggestions');
+            if (datalist) {
+                datalist.remove();
+            }
+            if (suggestions.length === 0) return;
+
+            const newDatalist = document.createElement('datalist');
+            newDatalist.id = 'searchSuggestions';
+            suggestions.forEach(suggestion => {
+                const option = document.createElement('option');
+                option.value = suggestion;
+                newDatalist.appendChild(option);
+            });
+            searchPanelInput.parentNode.appendChild(newDatalist);
+            searchPanelInput.setAttribute('list', 'searchSuggestions');
         }
 
         function loadPageFromSearch(event, slug) {
