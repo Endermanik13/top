@@ -67,36 +67,28 @@
             flex-shrink: 0;
             display: flex;
             flex-direction: column;
+            position: fixed;
+            height: calc(100vh - 68px);
+            top: 68px;
         }
 
         @media (max-width: 1024px) {
             .articles-column {
                 position: fixed;
-                left: -320px;
+                left: -100%;
                 top: 68px;
+                width: 80%;
+                max-width: 320px;
                 z-index: 100;
                 transition: transform 0.3s ease;
-                width: 260px;
-            }
-
-            .articles-column.active {
-                transform: translateX(320px);
-            }
-
-            .mobile-menu-toggle {
-                display: block !important;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .articles-column {
-                width: 100%;
-                left: -100%;
-                top: 60px;
             }
 
             .articles-column.active {
                 transform: translateX(100%);
+            }
+
+            .mobile-menu-toggle {
+                display: block !important;
             }
         }
 
@@ -278,11 +270,11 @@
             animation: fadeIn 0.5s ease-in-out;
         }
 
-        .article-header i.ri-calendar-line {
+        .article-header i {
             transition: transform 0.3s ease;
         }
 
-        .article-header i.ri-calendar-line:hover {
+        .article-header i:hover {
             transform: scale(1.2);
         }
 
@@ -290,7 +282,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 1.5rem;
+            padding: 1rem;
             background: rgba(13, 17, 23, 0.95);
             border-bottom: 1px solid var(--border-color);
             position: sticky;
@@ -298,14 +290,6 @@
             z-index: 50;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(5px);
-        }
-
-        @media (max-width: 768px) {
-            .header {
-                padding: 0.75rem 1rem;
-                flex-wrap: wrap;
-                gap: 0.5rem;
-            }
         }
 
         .blog-title {
@@ -337,14 +321,7 @@
             position: relative;
             display: flex;
             align-items: center;
-            gap: 1rem;
-        }
-
-        @media (max-width: 768px) {
-            .search-container {
-                width: 100%;
-                gap: 0.5rem;
-            }
+            gap: 0.5rem;
         }
 
         .search-input,
@@ -355,7 +332,8 @@
             border-radius: 8px;
             color: var(--text-primary);
             transition: all 0.3s ease;
-            width: 200px;
+            width: 100%;
+            max-width: 200px;
             font-size: 0.9rem;
             position: relative;
         }
@@ -363,9 +341,7 @@
         @media (max-width: 768px) {
             .search-input,
             .search-panel-input {
-                width: 100%;
-                font-size: 0.85rem;
-                padding: 0.5rem 2rem 0.5rem 0.75rem;
+                max-width: 150px;
             }
         }
 
@@ -424,13 +400,6 @@
             transform: translate(-50%, -50%) scale(1);
         }
 
-        @media (max-width: 768px) {
-            .search-panel {
-                width: 95%;
-                padding: 1rem;
-            }
-        }
-
         .search-overlay {
             position: fixed;
             top: 0;
@@ -455,12 +424,6 @@
             overflow-y: auto;
             padding-right: 0.5rem;
             margin-top: 1rem;
-        }
-
-        @media (max-width: 768px) {
-            .search-results {
-                max-height: 50vh;
-            }
         }
 
         .search-result-item {
@@ -528,7 +491,7 @@
             color: var(--accent-color);
         }
 
-        .autocomplete-suggestions {
+        .search-suggestions {
             position: absolute;
             top: 100%;
             left: 0;
@@ -536,23 +499,27 @@
             background: var(--bg-tertiary);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            z-index: 10;
             margin-top: 0.5rem;
+            z-index: 10;
             max-height: 200px;
             overflow-y: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
-        .autocomplete-suggestion {
+        .search-suggestion {
             padding: 0.5rem 1rem;
             color: var(--text-secondary);
-            font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.3s ease;
             opacity: 0.5;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .autocomplete-suggestion:hover {
+        .search-suggestion:last-child {
+            border-bottom: none;
+        }
+
+        .search-suggestion:hover {
             background: var(--bg-quaternary);
             color: var(--accent-color);
             opacity: 1;
@@ -561,19 +528,12 @@
         .action-button {
             display: flex;
             align-items: center;
-            padding: 0.6rem 1.25rem;
+            padding: 0.6rem 1rem;
             border-radius: 8px;
             transition: all 0.3s ease;
             text-decoration: none;
             font-weight: 500;
             font-size: 0.9rem;
-        }
-
-        @media (max-width: 768px) {
-            .action-button {
-                padding: 0.5rem 0.75rem;
-                font-size: 0.85rem;
-            }
         }
 
         .telegram-button {
@@ -608,18 +568,13 @@
             min-width: 200px;
             opacity: 0;
             transform: scale(0.95) translateY(-10px);
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
         .telegram-menu.active {
             display: flex;
             opacity: 1;
             transform: scale(1) translateY(0);
-            animation: slideInMenu 0.3s ease-out;
-        }
-
-        .telegram-menu:not(.active) {
-            animation: slideOutMenu 0.3s ease-in forwards;
         }
 
         .telegram-menu a {
@@ -637,7 +592,7 @@
         .telegram-menu.active a {
             opacity: 1;
             transform: translateY(0);
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
         .telegram-menu.active a:nth-child(1) {
@@ -646,6 +601,12 @@
 
         .telegram-menu.active a:nth-child(2) {
             transition-delay: 0.2s;
+        }
+
+        .telegram-menu:not(.active) a {
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
         }
 
         .telegram-menu a:hover {
@@ -658,13 +619,19 @@
             display: flex;
             align-items: center;
             padding: 0.6rem 1rem;
-            margin-left: 1rem;
             background: var(--bg-tertiary);
             color: var(--text-primary);
             border-radius: 8px;
             transition: all 0.3s ease;
             text-decoration: none;
             font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .md-pdf-button {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.85rem;
+            }
         }
 
         .md-pdf-button:hover {
@@ -676,14 +643,6 @@
             margin-right: 0.5rem;
         }
 
-        @media (max-width: 768px) {
-            .md-pdf-button {
-                padding: 0.5rem 0.75rem;
-                font-size: 0.85rem;
-                margin-left: 0.5rem;
-            }
-        }
-
         .mobile-menu-toggle {
             display: none;
             background: none;
@@ -693,7 +652,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             padding: 0.5rem;
-            border-radius:	control;
+            border-radius: 6px;
         }
 
         .mobile-menu-toggle:hover {
@@ -707,13 +666,6 @@
             max-width: 1200px;
             margin: 0 auto;
             animation: fadeIn 0.5s ease-in-out;
-        }
-
-        @media (max-width: 768px) {
-            .article-content {
-                flex-direction: column;
-                gap: 1rem;
-            }
         }
 
         .article-text {
@@ -789,12 +741,6 @@
             font-weight: 600;
             margin: 1.5rem 0 0.75rem;
             color: var(--text-primary);
-        }
-
-        @media (max-width: 768px) {
-            .article-text h3 {
-                font-size: 1.2rem;
-            }
         }
 
         .article-text h4 {
@@ -1095,11 +1041,24 @@
             background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuMjHxIGmVAAAAL0lEQVQYV2P4//8/AwYQhxitgA8Y0cTwZ2A4DMMiYBhOwwKCAX4GBoa4oXgAHy0HLLM8a5kAAAAASUVORK5CYII=') repeat;
             background-size: 10px 10px;
             background-opacity: 0.05;
+            margin-left: 320px;
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                margin-left: 0;
+                padding: 1rem;
+            }
         }
 
         @media (max-width: 768px) {
             main {
                 padding: 1rem;
+            }
+
+            .article-content {
+                flex-direction: column;
+                gap: 1rem;
             }
         }
 
@@ -1125,17 +1084,6 @@
 
         .sidebar-header p {
             margin: 0.25rem 0;
-        }
-
-        .sidebar-header i {
-            font-size: 14px;
-            margin-right: 0.5rem;
-            color: var(--accent-color);
-            transition: transform 0.3s ease;
-        }
-
-        .sidebar-header i:hover {
-            transform: scale(1.2);
         }
 
         .support-button {
@@ -1192,13 +1140,6 @@
             opacity: 1;
             visibility: visible;
             transform: translate(-50%, -50%) scale(1);
-        }
-
-        @media (max-width: 768px) {
-            .support-modal {
-                width: 95%;
-                padding: 1rem;
-            }
         }
 
         .support-modal-overlay {
@@ -1351,25 +1292,9 @@
             }
         }
 
-        @keyframes slideInMenu {
-            from {
+        @keyframes blink {
+            50% {
                 opacity: 0;
-                transform: scale(0.95) translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        @keyframes slideOutMenu {
-            from {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-            to {
-                opacity: 0;
-                transform: scale(0.95) translateY(-10px);
             }
         }
     </style>
@@ -1411,7 +1336,7 @@
             </button>
             <div class="relative">
                 <input type="text" class="search-panel-input" id="searchPanelInput" placeholder="Введите запрос..." autocomplete="off">
-                <div class="autocomplete-suggestions" id="autocompleteSuggestions"></div>
+                <div class="search-suggestions" id="searchSuggestions"></div>
             </div>
             <div class="search-results" id="searchResults"></div>
         </div>
@@ -1568,7 +1493,7 @@
                     !page.path?.includes('Excalidraw') &&
                     page.category?.toUpperCase() !== 'EXCALIDRAW' &&
                     page.category?.toUpperCase() !== 'БЕЗ КАТЕГОРИИ' &&
-                    page.category
+                    page.category?.trim()
                 );
 
                 // Сортировка по дате (новые сначала)
@@ -1602,7 +1527,7 @@
             const articleCount = pagesData.length;
             const categoryCount = new Set(
                 pagesData.map(page => page.category)
-                    .filter(cat => cat && cat.toUpperCase() !== 'EXCALIDRAW' && cat.toUpperCase() !== 'БЕЗ КАТЕГОРИИ')
+                    .filter(cat => cat && cat.toUpperCase() !== 'EXCALIDRAW' && cat.toUpperCase() !== 'БЕЗ КАТЕГОРИИ' && cat.trim())
             ).size;
             document.getElementById('articleCount').textContent = articleCount;
             document.getElementById('categoryCount').textContent = categoryCount;
@@ -1627,8 +1552,8 @@
             // Группировка страниц по категориям
             const categories = {};
             pagesData.forEach(page => {
-                if (!page.category || page.path === 'README.md' || page.category.toUpperCase() === 'БЕЗ КАТЕГОРИИ') return;
-                if (page.category.toUpperCase() === 'EXCALIDRAW') return;
+                if (!page.category || page.path === 'README.md') return;
+                if (page.category.toUpperCase() === 'EXCALIDRAW' || page.category.toUpperCase() === 'БЕЗ КАТЕГОРИИ' || !page.category.trim()) return;
                 if (!categories[page.category]) {
                     categories[page.category] = [];
                 }
@@ -1689,6 +1614,9 @@
                         loadPage(page);
                         localStorage.setItem('lastPageSlug', page.slug);
                         updateActiveStates(page.slug);
+                        if (window.innerWidth < 1024) {
+                            toggleMobileMenu(false);
+                        }
                     });
 
                     categoryItems.appendChild(articleItem);
@@ -1923,8 +1851,8 @@
         const searchOverlay = document.getElementById('searchOverlay');
         const searchPanelInput = document.getElementById('searchPanelInput');
         const searchResults = document.getElementById('searchResults');
+        const searchSuggestions = document.getElementById('searchSuggestions');
         const closeSearch = document.getElementById('closeSearch');
-        const autocompleteSuggestions = document.getElementById('autocompleteSuggestions');
 
         searchInput.addEventListener('input', () => {
             if (searchInput.value.trim()) {
@@ -1942,7 +1870,7 @@
             searchOverlay.classList.remove('active');
             searchPanelInput.value = '';
             searchResults.innerHTML = '';
-            autocompleteSuggestions.innerHTML = '';
+            searchSuggestions.innerHTML = '';
         }
 
         closeSearch.addEventListener('click', closeSearchPanel);
@@ -1962,7 +1890,7 @@
         function performSearch(query) {
             query = query.trim().toLowerCase();
             searchResults.innerHTML = '';
-            autocompleteSuggestions.innerHTML = '';
+            searchSuggestions.innerHTML = '';
 
             if (query.length < 1) {
                 searchResults.innerHTML = `
@@ -1996,19 +1924,6 @@
             // Сортировка по релевантности
             results.sort((a, b) => b.score - a.score);
 
-            // Подсказки автозаполнения
-            const suggestions = results.slice(0, 5).map(({ page }) => page.title || 'Без названия');
-            suggestions.forEach(suggestion => {
-                const suggestionDiv = document.createElement('div');
-                suggestionDiv.className = 'autocomplete-suggestion';
-                suggestionDiv.textContent = suggestion;
-                suggestionDiv.addEventListener('click', () => {
-                    searchPanelInput.value = suggestion;
-                    performSearch(suggestion);
-                });
-                autocompleteSuggestions.appendChild(suggestionDiv);
-            });
-
             if (results.length === 0) {
                 searchResults.innerHTML = `
                     <div class="text-center py-4 text-gray-400">
@@ -2017,6 +1932,19 @@
                 `;
                 return;
             }
+
+            // Подсказки
+            const suggestions = results.slice(0, 5).map(({ page }) => page.title || 'Без названия');
+            suggestions.forEach(suggestion => {
+                const suggestionItem = document.createElement('div');
+                suggestionItem.className = 'search-suggestion';
+                suggestionItem.textContent = suggestion;
+                suggestionItem.onclick = () => {
+                    searchPanelInput.value = suggestion;
+                    performSearch(suggestion);
+                };
+                searchSuggestions.appendChild(suggestionItem);
+            });
 
             results.forEach(({ page }) => {
                 const resultItem = document.createElement('div');
@@ -2203,4 +2131,34 @@
         // Пасхалка на иконке книги
         const easterEggIcon = document.getElementById('easterEggIcon');
         easterEggIcon.addEventListener('click', () => {
-            window.open('https://www.google.com/maps/@52.5952022,39.5248965,3a,75y,359.07h,82.97t/data=!3m7!1e1!3m5!1sCIHM0ogKEICAgICa5tjvxwE!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgpms-cs-s%2FAIMqDu21lgzR3PQCz7Fcnvug4Wap9dJI4tKQ-gAbaQ8ergN6Xr9J2o8lgXuYKxw7xxq5Pw0QjHqdS4EdMQ3-pUqdblICnUDSthThx2beg0YHHfXLWmSf4jzc8ezfLdbgjGk5iR1
+            window.open('https://www.google.com/maps/@52.5952022,39.5248965,3a,75y,359.07h,82.97t/data=!3m7!1e1!3m5!1sCIHM0ogKEICAgICa5tjvxwE!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgpms-cs-s%2FAIMqDu21lgzR3PQCz7Fcnvug4Wap9dJI4tKQ-gAbaQ8ergN6Xr9J2o8lgXuYKxw7xxq5Pw0QjHqdS4EdMQ3-pUqdblICnUDSthThx2beg0YHHfXLWmSf4jzc8ezfLdbgjGk5iR1QQQrI%3Dw900-h600-k-no-pi7.034647060289103-ya184.0695531759182-ro0-fo100!7i7216!8i3608?entry=ttu&g_ep=EgoyMDI1MDQxMy4wIKXMDSoASAFQAw%3D%3D', '_blank');
+        });
+
+        // Обработка навигации по истории
+        window.addEventListener('popstate', () => {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                const page = pagesData.find(p => p.slug === hash);
+                if (page) {
+                    loadPage(page);
+                    localStorage.setItem('lastPageSlug', page.slug);
+                    updateActiveStates(page.slug);
+                }
+            }
+        });
+
+        // Загрузка данных
+        document.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                lastPageSlug = hash;
+                localStorage.setItem('lastPageSlug', hash);
+            }
+
+            loadPagesData();
+        });
+
+        window.loadPageFromSearch = loadPageFromSearch;
+    </script>
+</body>
+</html>
