@@ -67,19 +67,24 @@
             flex-shrink: 0;
             display: flex;
             flex-direction: column;
+            position: fixed;
+            height: calc(100vh - 68px);
+            top: 68px;
         }
 
         @media (max-width: 1024px) {
             .articles-column {
                 position: fixed;
-                left: -320px;
+                left: -100%;
                 top: 68px;
+                width: 80%;
+                max-width: 320px;
                 z-index: 100;
                 transition: transform 0.3s ease;
             }
 
             .articles-column.active {
-                transform: translateX(320px);
+                transform: translateX(100%);
             }
 
             .mobile-menu-toggle {
@@ -121,11 +126,6 @@
         }
 
         .menu-item:hover {
-            color: var(--accent-color);
-            background-color: var(--bg-tertiary);
-        }
-
-        .menu-item.active {
             color: var(--accent-color);
             background-color: var(--bg-tertiary);
         }
@@ -182,12 +182,11 @@
 
         .category h3 i.ri-folder-line {
             margin-right: 0.5rem;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease;
         }
 
-        .category h3:hover .ri-folder-line {
+        .category h3:hover i.ri-folder-line {
             transform: scale(1.2);
-            color: var(--accent-color);
         }
 
         .category-items {
@@ -265,7 +264,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 2rem;
+            padding: 1rem;
             background: rgba(13, 17, 23, 0.95);
             border-bottom: 1px solid var(--border-color);
             position: sticky;
@@ -273,32 +272,6 @@
             z-index: 50;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(5px);
-        }
-
-        @media (max-width: 640px) {
-            .header {
-                padding: 0.75rem 1rem;
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .blog-title {
-                margin-bottom: 0.5rem;
-            }
-            
-            .search-container {
-                width: 100%;
-                margin-top: 0.5rem;
-            }
-            
-            .search-input {
-                width: 100%;
-                min-width: auto;
-            }
-            
-            .telegram-button {
-                display: none;
-            }
         }
 
         .blog-title {
@@ -318,19 +291,14 @@
         .blog-title i {
             margin-right: 0.75rem;
             color: var(--accent-color);
-            transition: transform 0.3s ease;
             cursor: default;
-        }
-
-        .blog-title:hover i {
-            transform: scale(1.1);
         }
 
         .search-container {
             position: relative;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.5rem;
         }
 
         .search-input,
@@ -341,32 +309,17 @@
             border-radius: 8px;
             color: var(--text-primary);
             transition: all 0.3s ease;
-            min-width: 200px;
+            width: 100%;
+            max-width: 200px;
             font-size: 0.9rem;
             position: relative;
         }
 
-        .search-input::after,
-        .search-panel-input::after {
-            content: '\e6b2';
-            font-family: 'remixicon';
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-tertiary);
-            opacity: 0.5;
-            font-size: 1rem;
-        }
-
-        .search-input:focus::after,
-        .search-panel-input:focus::after {
-            opacity: 0.7;
-        }
-
-        .search-input::placeholder,
-        .search-panel-input::placeholder {
-            color: var(--text-tertiary);
+        @media (max-width: 768px) {
+            .search-input,
+            .search-panel-input {
+                max-width: 150px;
+            }
         }
 
         .search-input:focus,
@@ -495,7 +448,7 @@
         .action-button {
             display: flex;
             align-items: center;
-            padding: 0.6rem 1.25rem;
+            padding: 0.6rem 1rem;
             border-radius: 8px;
             transition: all 0.3s ease;
             text-decoration: none;
@@ -524,7 +477,7 @@
             position: absolute;
             top: 100%;
             right: 0;
-            background: var(--bg-tertiary);
+            background: var(--bg-quaternary);
             border: 1px solid var(--border-color);
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -534,48 +487,23 @@
             padding: 0.5rem;
             min-width: 200px;
             opacity: 0;
-            transform: scale(0.95) translateY(-10px);
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            transform-origin: top right;
-        }
-
-        .telegram-menu:not(.active) {
-            opacity: 0;
-            transform: scale(0.95) translateY(-10px);
-            pointer-events: none;
+            transform: translateY(-10px);
+            transition: opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .telegram-menu.active {
             display: flex;
             opacity: 1;
-            transform: scale(1) translateY(0);
-            animation: slideInMenu 0.3s ease-out;
+            transform: translateY(0);
         }
 
         .telegram-menu a {
             padding: 0.5rem 1rem;
-            color: var(--text-secondary);
+            color: var(--text-primary);
             text-decoration: none;
             border-radius: 6px;
             transition: all 0.3s ease;
-            background: linear-gradient(135deg, #2A4365, #2C5282);
             margin: 0.25rem 0;
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        .telegram-menu.active a {
-            opacity: 1;
-            transform: translateY(0);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-
-        .telegram-menu.active a:nth-child(1) {
-            transition-delay: 0.1s;
-        }
-
-        .telegram-menu.active a:nth-child(2) {
-            transition-delay: 0.2s;
         }
 
         .telegram-menu a:hover {
@@ -588,13 +516,19 @@
             display: flex;
             align-items: center;
             padding: 0.6rem 1rem;
-            margin-left: 1rem;
             background: var(--bg-tertiary);
             color: var(--text-primary);
             border-radius: 8px;
             transition: all 0.3s ease;
             text-decoration: none;
             font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .md-pdf-button {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.85rem;
+            }
         }
 
         .md-pdf-button:hover {
@@ -638,25 +572,6 @@
             overflow-wrap: break-word;
         }
 
-        @media (max-width: 768px) {
-            .article-text {
-                padding: 0 0.5rem;
-            }
-            
-            .article-text h1 {
-                font-size: 1.5rem;
-            }
-            
-            .article-text h2 {
-                font-size: 1.3rem;
-            }
-            
-            .article-text pre {
-                padding: 1rem 0.5rem;
-                font-size: 0.8rem;
-            }
-        }
-
         .article-text h1 {
             font-size: 2rem;
             font-weight: 700;
@@ -664,6 +579,13 @@
             color: var(--text-primary);
             position: relative;
             line-height: 1.3;
+        }
+
+        @media (max-width: 768px) {
+            .article-text h1 {
+                font-size: 1.6rem;
+                margin: 1.5rem 0 1rem;
+            }
         }
 
         .article-text h1::after {
@@ -687,6 +609,13 @@
             margin: 2rem 0 1rem;
             color: var(--text-primary);
             position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .article-text h2 {
+                font-size: 1.4rem;
+                margin: 1.5rem 0 0.75rem;
+            }
         }
 
         .article-text h2::after {
@@ -723,6 +652,13 @@
             line-height: 1.8;
             margin-bottom: 1.25rem;
             color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .article-text p {
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
         }
 
         .article-text ul,
@@ -882,6 +818,7 @@
 
         .headings-block {
             flex: 0 0 320px;
+            max-width: 320px;
             background-color: var(--bg-tertiary);
             border-radius: 12px;
             padding: 1rem;
@@ -1002,26 +939,24 @@
             background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuMjHxIGmVAAAAL0lEQVQYV2P4//8/AwYQhxitgA8Y0cTwZ2A4DMMiYBhOwwKCAX4GBoa4oXgAHy0HLLM8a5kAAAAASUVORK5CYII=') repeat;
             background-size: 10px 10px;
             background-opacity: 0.05;
+            margin-left: 320px;
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                margin-left: 0;
+                padding: 1rem;
+            }
         }
 
         @media (max-width: 768px) {
             main {
-                padding: 1.5rem;
+                padding: 1rem;
             }
 
             .article-content {
                 flex-direction: column;
-                gap: 1.5rem;
-            }
-
-            .article-text h1 {
-                font-size: 1.8rem;
-                margin: 1.5rem 0 1rem;
-            }
-
-            .article-text h2 {
-                font-size: 1.4rem;
-                margin: 1.5rem 0 0.75rem;
+                gap: 1rem;
             }
         }
 
@@ -1049,19 +984,6 @@
             margin: 0.25rem 0;
         }
 
-        .sidebar-header i,
-        .article-header i {
-            font-size: 14px;
-            margin-right: 0.5rem;
-            color: var(--accent-color);
-            transition: transform 0.3s ease;
-        }
-
-        .sidebar-header i:hover,
-        .article-header i:hover {
-            transform: scale(1.2);
-        }
-
         .support-button {
             position: fixed;
             bottom: 1.5rem;
@@ -1081,18 +1003,18 @@
             z-index: 50;
         }
 
-        @media (max-width: 640px) {
-            .support-button {
-                bottom: 1rem;
-                right: 1rem;
-                width: 40px;
-                height: 40px;
-            }
-        }
-
         .support-button:hover {
             background: var(--bg-quaternary);
             transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .support-button {
+                width: 40px;
+                height: 40px;
+                bottom: 1rem;
+                right: 1rem;
+            }
         }
 
         .support-modal {
@@ -1146,6 +1068,12 @@
             align-items: center;
         }
 
+        @media (max-width: 768px) {
+            .support-modal h3 {
+                font-size: 1.3rem;
+            }
+        }
+
         .support-modal h3 i {
             margin-right: 0.5rem;
             color: #ff5555;
@@ -1158,6 +1086,12 @@
             line-height: 1.6;
         }
 
+        @media (max-width: 768px) {
+            .support-modal p {
+                font-size: 0.9rem;
+            }
+        }
+
         .support-modal .namemc-button {
             display: inline-flex;
             align-items: center;
@@ -1168,12 +1102,11 @@
             text-decoration: none;
             font-size: 0.9rem;
             margin: 0.5rem 0;
-            transition: all 0.4s ease;
+            transition: all 0.3s ease;
         }
 
         .support-modal .namemc-button:hover {
             background: linear-gradient(90deg, #333, #555);
-            color: var(--text-primary);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
@@ -1192,7 +1125,7 @@
             text-decoration: none;
             font-size: 0.9rem;
             margin-top: 0.5rem;
-            transition: all 0.4s ease;
+            transition: all 0.3s ease;
         }
 
         .support-modal .telegram-support:hover {
@@ -1256,17 +1189,6 @@
             }
         }
 
-        @keyframes slideInMenu {
-            from {
-                opacity: 0;
-                transform: scale(0.95) translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
         @keyframes blink {
             50% {
                 opacity: 0;
@@ -1278,7 +1200,7 @@
     <div id="particles-js"></div>
     <div class="content-wrapper">
         <header class="header">
-            <div class="flex items-center">
+            <div class="flex items-center gap-4">
                 <button class="mobile-menu-toggle mr-4" id="mobileMenuToggle">
                     <i class="ri-menu-line"></i>
                 </button>
@@ -1292,7 +1214,7 @@
                 </a>
             </div>
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="Поиск..." id="searchInput">
+                <input type="text" class="search-input" placeholder="Поиск..." id="searchInput" autocomplete="off">
                 <button class="action-button telegram-button" id="telegramButton">
                     <i class="ri-telegram-fill mr-2"></i>
                     Telegram
@@ -1309,7 +1231,9 @@
             <button class="close-search" id="closeSearch">
                 <i class="ri-close-line"></i>
             </button>
-            <input type="text" class="search-panel-input" id="searchPanelInput" placeholder="Введите запрос..." autocomplete="off">
+            <div class="relative">
+                <input type="text" class="search-panel-input" id="searchPanelInput" placeholder="Введите запрос..." autocomplete="off">
+            </div>
             <div class="search-results" id="searchResults"></div>
         </div>
 
@@ -1461,11 +1385,11 @@
                 }
 
                 pagesData = await response.json();
-                pagesData = pagesData.filter(page => 
-                    page.category && 
-                    page.category.trim() !== '' && 
+                pagesData = pagesData.filter(page =>
                     !page.path?.includes('Excalidraw') &&
-                    page.category?.toUpperCase() !== 'EXCALIDRAW'
+                    page.category?.toUpperCase() !== 'EXCALIDRAW' &&
+                    page.category?.toUpperCase() !== 'БЕЗ КАТЕГОРИИ' &&
+                    page.category?.trim()
                 );
 
                 // Сортировка по дате (новые сначала)
@@ -1499,7 +1423,7 @@
             const articleCount = pagesData.length;
             const categoryCount = new Set(
                 pagesData.map(page => page.category)
-                    .filter(cat => cat && cat.toUpperCase() !== 'EXCALIDRAW')
+                    .filter(cat => cat && cat.toUpperCase() !== 'EXCALIDRAW' && cat.toUpperCase() !== 'БЕЗ КАТЕГОРИИ' && cat.trim())
             ).size;
             document.getElementById('articleCount').textContent = articleCount;
             document.getElementById('categoryCount').textContent = categoryCount;
@@ -1525,6 +1449,7 @@
             const categories = {};
             pagesData.forEach(page => {
                 if (!page.category || page.path === 'README.md') return;
+                if (page.category.toUpperCase() === 'EXCALIDRAW' || page.category.toUpperCase() === 'БЕЗ КАТЕГОРИИ' || !page.category.trim()) return;
                 if (!categories[page.category]) {
                     categories[page.category] = [];
                 }
@@ -1585,6 +1510,9 @@
                         loadPage(page);
                         localStorage.setItem('lastPageSlug', page.slug);
                         updateActiveStates(page.slug);
+                        if (window.innerWidth < 1024) {
+                            toggleMobileMenu(false);
+                        }
                     });
 
                     categoryItems.appendChild(articleItem);
@@ -1837,8 +1765,6 @@
             searchOverlay.classList.remove('active');
             searchPanelInput.value = '';
             searchResults.innerHTML = '';
-            const suggestions = document.getElementById('searchSuggestions');
-            if (suggestions) suggestions.remove();
         }
 
         closeSearch.addEventListener('click', closeSearchPanel);
@@ -1940,10 +1866,6 @@
 
                 searchResults.appendChild(resultItem);
             });
-
-            // Автозаполнение
-            const suggestions = results.slice(0, 5).map(({ page }) => page.title || 'Без названия');
-            updateAutocomplete(suggestions);
         }
 
         function highlightMatches(text, query) {
@@ -1954,55 +1876,6 @@
 
         function escapeRegExp(string) {
             return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        }
-
-        function updateAutocomplete(suggestions) {
-            const suggestionsContainer = document.getElementById('searchSuggestions');
-            if (suggestionsContainer) {
-                suggestionsContainer.remove();
-            }
-            if (suggestions.length === 0) return;
-
-            const container = document.createElement('div');
-            container.id = 'searchSuggestions';
-            container.style.position = 'absolute';
-            container.style.top = '100%';
-            container.style.left = '0';
-            container.style.right = '0';
-            container.style.backgroundColor = 'var(--bg-quaternary)';
-            container.style.borderRadius = '8px';
-            container.style.marginTop = '4px';
-            container.style.overflow = 'hidden';
-            container.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
-            container.style.zIndex = '100';
-
-            suggestions.forEach(suggestion => {
-                const suggestionItem = document.createElement('div');
-                suggestionItem.style.padding = '0.75rem 1rem';
-                suggestionItem.style.cursor = 'pointer';
-                suggestionItem.style.transition = 'all 0.2s ease';
-                suggestionItem.style.opacity = '0.7';
-                suggestionItem.textContent = suggestion;
-                
-                suggestionItem.addEventListener('mouseenter', () => {
-                    suggestionItem.style.opacity = '1';
-                    suggestionItem.style.backgroundColor = 'var(--bg-tertiary)';
-                });
-                
-                suggestionItem.addEventListener('mouseleave', () => {
-                    suggestionItem.style.opacity = '0.7';
-                    suggestionItem.style.backgroundColor = 'transparent';
-                });
-                
-                suggestionItem.addEventListener('click', () => {
-                    searchPanelInput.value = suggestion;
-                    performSearch(suggestion);
-                });
-                
-                container.appendChild(suggestionItem);
-            });
-
-            searchPanelInput.parentNode.appendChild(container);
         }
 
         function loadPageFromSearch(event, slug) {
@@ -2083,39 +1956,29 @@
         const telegramButton = document.getElementById('telegramButton');
         const telegramMenu = document.getElementById('telegramMenu');
 
-        function closeTelegramMenu() {
-            telegramMenu.classList.remove('active');
-            setTimeout(() => {
-                telegramMenu.style.display = 'none';
-            }, 400);
-        }
-
         telegramButton.addEventListener('click', (e) => {
             e.preventDefault();
-            telegramMenu.style.display = 'flex';
-            setTimeout(() => {
-                telegramMenu.classList.toggle('active');
-            }, 10);
+            telegramMenu.classList.toggle('active');
         });
 
         document.addEventListener('click', (e) => {
             if (!telegramButton.contains(e.target) && !telegramMenu.contains(e.target)) {
-                closeTelegramMenu();
+                telegramMenu.classList.remove('active');
             }
         });
 
         document.addEventListener('contextmenu', (e) => {
             if (!telegramMenu.contains(e.target)) {
-                closeTelegramMenu();
+                telegramMenu.classList.remove('active');
             }
         });
 
         document.addEventListener('wheel', () => {
-            closeTelegramMenu();
+            telegramMenu.classList.remove('active');
         });
 
         document.addEventListener('keydown', () => {
-            closeTelegramMenu();
+            telegramMenu.classList.remove('active');
         });
 
         // Support модалка
