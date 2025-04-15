@@ -1,0 +1,2036 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Энциклопедия Эндера</title>
+    <!-- Иконка сайта -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMzYjgyZjYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMTEuNSAyMS41djhoMXYtOGEyIDIgMCAwIDAgMi0yaC03YTIgMiAwIDAgMCAyIDJabTAtM3Y4aC03YTIgMiAwIDAgMS0yLTJoN3ptMCAwdi04YTIgMiAwIDAgMCAyLTJoN2EyIDIgMCAwIDEgMiAydjhaTTE3IDN2OGEyIDIgMCAwIDAgMiAyaDd2LTdoLTdhMiAyIDAgMCAwLTIgMnptMCAwdjhoN2EyIDIgMCAwIDEgMi0yaC03em0wIDB2OGEyIDIgMCAwIDAtMi0yaC03YTIgMiAwIDAgMC0yIDJ2OGgxdi04YTIgMiAwIDAgMCAyLTJabTAtMTFINHYzSDN2Mmg5di0zem0wIDB2LTNoLTd2M2g3em0wIDB2M2g3di0zaC03eiIvPjwvc3ZnPg==">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+    <!-- Prism.js для подсветки кода -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-one-dark.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --bg-quaternary: #30363d;
+            --text-primary: #e6edf3;
+            --text-secondary: #c9d1d9;
+            --text-tertiary: #8b949e;
+            --accent-color: #3b82f6;
+            --accent-hover: #60a5fa;
+            --accent-active: #2563eb;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            margin: 0;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .articles-column {
+            min-height: calc(100vh - 68px);
+            overflow-y: auto;
+            border-right: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            transition: all 0.3s ease;
+            width: 320px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (max-width: 1024px) {
+            .articles-column {
+                position: fixed;
+                left: -320px;
+                top: 68px;
+                z-index: 100;
+                transition: transform 0.3s ease;
+            }
+
+            .articles-column.active {
+                transform: translateX(320px);
+            }
+
+            .mobile-menu-toggle {
+                display: block !important;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .menu-container {
+            position: relative;
+            padding: 1rem;
+        }
+
+        .menu-item {
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+            color: var(--text-tertiary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.25rem;
+            text-decoration: none;
+        }
+
+        .menu-item:hover {
+            color: var(--accent-color);
+            background-color: var(--bg-tertiary);
+        }
+
+        .menu-item i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-highlight {
+            position: absolute;
+            background-color: var(--bg-quaternary);
+            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 0;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .category {
+            margin-bottom: 1.25rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .category:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .category h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
+            padding: 0.75rem 1.25rem;
+            margin: 0;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .category h3:hover {
+            background: var(--bg-quaternary);
+        }
+
+        .category h3 i.ri-folder-line,
+        .category h3 i.ri-folder-unknow {
+            margin-right: 0.5rem;
+        }
+
+        .category.no-category h3 {
+            background: var(--bg-tertiary);
+        }
+
+        .category.no-category h3:hover {
+            background: var(--bg-quaternary);
+        }
+
+        .category-items {
+            display: none;
+            padding: 0.5rem 0;
+            background: var(--bg-tertiary);
+            transition: all 0.3s ease;
+        }
+
+        .category-items.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .article-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            margin: 0 0.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .article-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: var(--accent-color);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .article-item:hover {
+            background-color: var(--bg-quaternary);
+            color: var(--accent-color);
+            padding-left: 1.75rem;
+        }
+
+        .article-item:hover::before {
+            transform: translateX(0);
+        }
+
+        .article-item.active {
+            background-color: rgba(59, 130, 246, 0.2);
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        .article-item.active::before {
+            transform: translateX(0);
+        }
+
+        .article-item i {
+            margin-right: 0.75rem;
+            font-size: 0.9rem;
+            min-width: 18px;
+        }
+
+        .article-header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(13, 17, 23, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        .blog-title {
+            display: flex;
+            align-items: center;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .blog-title:hover {
+            color: var(--accent-color);
+        }
+
+        .blog-title i {
+            margin-right: 0.75rem;
+            color: var(--accent-color);
+            transition: transform 0.3s ease;
+        }
+
+        .blog-title:hover i {
+            transform: scale(1.1);
+        }
+
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-input,
+        .search-panel-input {
+            padding: 0.6rem 1rem;
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            min-width: 200px;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .search-input::after,
+        .search-panel-input::after {
+            content: '|';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+            animation: blink 0.8s step-end infinite;
+        }
+
+        .search-input:focus::after,
+        .search-panel-input:focus::after {
+            display: none;
+        }
+
+        .search-input::placeholder,
+        .search-panel-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .search-input:focus,
+        .search-panel-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background-color: var(--bg-quaternary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .search-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            width: min(90%, 700px);
+            max-height: 80vh;
+            background-color: var(--bg-tertiary);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+
+        .search-panel.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .search-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 90;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .search-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .search-results {
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .search-result-item {
+            margin-bottom: 1.25rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            animation: fadeIn 0.3s ease-out;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-result-item:hover {
+            background-color: var(--bg-quaternary);
+        }
+
+        .search-result-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .search-result-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .search-result-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            margin-bottom: 0.5rem;
+        }
+
+        .search-result-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            max-height: 100px;
+            overflow: hidden;
+            position: relative;
+            -webkit-mask-image: linear-gradient(180deg, #fff 60%, transparent 100%);
+        }
+
+        .search-result-description p {
+            margin: 0;
+        }
+
+        .close-search {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-tertiary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-search:hover {
+            color: var(--accent-color);
+        }
+
+        .action-button {
+            display: flex;
+            align-items: center;
+            padding: 0.6rem 1.25rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .telegram-button {
+            background: var(--accent-color);
+            color: white;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .telegram-button:hover {
+            background: var(--accent-hover);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .telegram-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            display: none;
+            flex-direction: column;
+            padding: 0.5rem;
+            min-width: 200px;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: all 0.3s ease;
+        }
+
+        .telegram-menu.active {
+            display: flex;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .telegram-menu a {
+            padding: 0.5rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .telegram-menu a:hover {
+            background: var(--bg-quaternary);
+            color: var(--accent-color);
+        }
+
+        .md-pdf-button {
+            display: flex;
+            align-items: center;
+            padding: 0.6rem 1rem;
+            margin-left: 1rem;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .md-pdf-button:hover {
+            background: var(--bg-quaternary);
+            color: var(--accent-color);
+        }
+
+        .md-pdf-button i {
+            margin-right: 0.5rem;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 6px;
+        }
+
+        .mobile-menu-toggle:hover {
+            background: var(--bg-tertiary);
+            color: var(--accent-color);
+        }
+
+        .article-content {
+            display: flex;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .article-text {
+            flex: 1;
+            min-width: 0;
+            max-width: 100%;
+            overflow-wrap: break-word;
+        }
+
+        .article-text h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 2rem 0 1.5rem;
+            color: var(--text-primary);
+            position: relative;
+            line-height: 1.3;
+        }
+
+        .article-text h1::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-color);
+            transition: width 0.5s ease-in-out;
+        }
+
+        .article-text h1:hover::after {
+            width: 100%;
+        }
+
+        .article-text h2 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+            color: var(--text-primary);
+            position: relative;
+        }
+
+        .article-text h2::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--accent-hover);
+            transition: width 0.5s ease-in-out;
+        }
+
+        .article-text h2:hover::after {
+            width: 100%;
+        }
+
+        .article-text h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .article-text h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 1.25rem 0 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .article-text p {
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            color: var(--text-secondary);
+        }
+
+        .article-text ul,
+        .article-text ol {
+            margin: 1.25rem 0;
+            padding-left: 1.75rem;
+            color: var(--text-secondary);
+        }
+
+        .article-text ul {
+            list-style-type: disc;
+        }
+
+        .article-text ol {
+            list-style-type: decimal;
+        }
+
+        .article-text li {
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+
+        .article-text a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border-bottom: 1px dotted rgba(59, 130, 246, 0.3);
+        }
+
+        .article-text a:hover {
+            color: var(--accent-hover);
+            border-bottom-color: var(--accent-color);
+        }
+
+        .article-text code {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--bg-quaternary);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-size: 0.9em;
+            border: 1px solid var(--border-color);
+        }
+
+        .article-text pre {
+            position: relative;
+            background-color: var(--bg-quaternary);
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        .article-text pre code {
+            background: none;
+            padding: 0;
+            border: none;
+            color: inherit;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            white-space: pre;
+            display: block;
+        }
+
+        .copy-code-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.35rem 0.75rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .copy-code-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--accent-color);
+        }
+
+        .copy-code-btn:active {
+            transform: scale(0.95);
+        }
+
+        .copy-code-btn i {
+            font-size: 0.9rem;
+        }
+
+        .article-text table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background-color: var(--bg-tertiary);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .article-text th,
+        .article-text td {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            text-align: left;
+            color: var(--text-secondary);
+        }
+
+        .article-text th {
+            background-color: var(--bg-quaternary);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .article-text tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .article-text img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            display: block;
+        }
+
+        .article-text blockquote {
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            background-color: var(--bg-tertiary);
+            border-radius: 0 8px 8px 0;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .article-text blockquote p {
+            margin-bottom: 0;
+        }
+
+        .article-text hr {
+            border: none;
+            height: 3px;
+            background: var(--border-color);
+            opacity: 0.3;
+            border-radius: 4px;
+            margin: 1.5rem 0;
+        }
+
+        .headings-block {
+            flex: 0 0 280px;
+            background-color: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            max-height: fit-content;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        .headings-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .toggle-headings {
+            background: none;
+            border: none;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-headings:hover {
+            color: var(--accent-color);
+        }
+
+        .headings-container.collapsed {
+            animation: slideOut 0.3s ease forwards;
+        }
+
+        .headings-container:not(.collapsed) {
+            animation: slideIn 0.3s ease forwards;
+        }
+
+        @media (max-width: 1024px) {
+            .headings-block {
+                display: none;
+            }
+        }
+
+        .headings-block h4 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .headings-block h4 i {
+            margin-right: 0.75rem;
+        }
+
+        .headings-container {
+            position: relative;
+            padding-left: 0.5rem;
+        }
+
+        .heading-item {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin: 0.5rem 0;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .heading-item:hover {
+            color: var(--accent-color);
+        }
+
+        .heading-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 1rem;
+            width: 0;
+            height: 2px;
+            background: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        .heading-item:hover::after {
+            width: calc(100% - 2rem);
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem;
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuMjHxIGmVAAAAL0lEQVQYV2P4//8/AwYQhxitgA8Y0cTwZ2A4DMMiYBhOwwKCAX4GBoa4oXgAHy0HLLM8a5kAAAAASUVORK5CYII=') repeat;
+            background-size: 10px 10px;
+            background-opacity: 0.05;
+        }
+
+        @media (max-width: 768px) {
+            main {
+                padding: 1.5rem;
+            }
+
+            .article-content {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .article-text h1 {
+                font-size: 1.8rem;
+                margin: 1.5rem 0 1rem;
+            }
+
+            .article-text h2 {
+                font-size: 1.4rem;
+                margin: 1.5rem 0 0.75rem;
+            }
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-color);
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 0.75rem;
+        }
+
+        .sidebar-header {
+            padding: 0.5rem;
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 0.8rem;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-header p {
+            margin: 0.25rem 0;
+        }
+
+        .sidebar-header i,
+        .article-header i {
+            font-size: 14px;
+            margin-right: 0.5rem;
+            color: var(--accent-color);
+            transition: transform 0.3s ease;
+            display: inline-block;
+        }
+
+        .sidebar-header i:hover,
+        .article-header i:hover {
+            transform: scale(1.2);
+        }
+
+        .support-button {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            width: 50px;
+            height: 50px;
+            background: var(--bg-tertiary);
+            color: var(--accent-color);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 50;
+        }
+
+        .support-button:hover {
+            background: var(--bg-quaternary);
+            transform: scale(1.1);
+        }
+
+        .support-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            width: min(90%, 500px);
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .support-modal.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .support-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 90;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .support-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .support-modal h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .support-modal h3 i {
+            margin-right: 0.5rem;
+            color: #ff5555;
+        }
+
+        .support-modal p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .support-modal .namemc-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(90deg, #000, #444);
+            color: var(--text-primary);
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .support-modal .namemc-button:hover {
+            background: linear-gradient(90deg, #333, #555);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .support-modal .namemc-button i {
+            margin-right: 0.5rem;
+        }
+
+        .support-modal .telegram-support {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .support-modal .telegram-support:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+        }
+
+        .support-modal .close-support {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-tertiary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .support-modal .close-support:hover {
+            color: var(--accent-color);
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                max-height: 500px;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                opacity: 1;
+                max-height: 500px;
+            }
+            to {
+                opacity: 0;
+                max-height: 0;
+            }
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="content-wrapper">
+        <header class="header">
+            <div class="flex items-center">
+                <button class="mobile-menu-toggle mr-4" id="mobileMenuToggle">
+                    <i class="ri-menu-line"></i>
+                </button>
+                <span class="blog-title">
+                    <i class="ri-book-open-line"></i>
+                    Энциклопедия Эндера
+                </span>
+                <a href="https://endermanik13.github.io/importer/" class="md-pdf-button">
+                    <i class="ri-file-pdf-line"></i>
+                    MD -> PDF
+                </a>
+            </div>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Поиск..." id="searchInput">
+                <button class="action-button telegram-button" id="telegramButton">
+                    <i class="ri-telegram-fill mr-2"></i>
+                    Telegram
+                </button>
+                <div class="telegram-menu" id="telegramMenu">
+                    <a href="https://t.me/endermanik13" target="_blank">Автор сайта: @endermanik13</a>
+                    <a href="https://t.me/endermanik12" target="_blank">Тгк автора</a>
+                </div>
+            </div>
+        </header>
+
+        <div class="search-overlay" id="searchOverlay"></div>
+        <div class="search-panel" id="searchPanel">
+            <button class="close-search" id="closeSearch">
+                <i class="ri-close-line"></i>
+            </button>
+            <input type="text" class="search-panel-input" id="searchPanelInput" placeholder="Введите запрос...">
+            <div class="search-results" id="searchResults"></div>
+        </div>
+
+        <div class="flex flex-1">
+            <div class="articles-column" id="articlesColumn">
+                <div class="sidebar-header">
+                    <p><i class="ri-file-text-line"></i> Статьи: <span id="articleCount">0</span></p>
+                    <p><i class="ri-folder-line"></i> Категории: <span id="categoryCount">0</span></p>
+                </div>
+                <div class="p-4 flex-1">
+                    <div class="menu-container">
+                        <div class="menu-highlight" id="menuHighlight"></div>
+                        <ul class="mb-8">
+                            <li><a href="#" class="menu-item" id="homeLink"><i class="ri-home-line"></i> Главная</a></li>
+                            <li><a href="#" class="menu-item"><i class="ri-article-line"></i> Статьи</a></li>
+                            <li><a href="https://endermanik13.gitbook.io/info" target="_blank" class="menu-item"><i class="ri-book-line"></i> GitBook</a></li>
+                            <li><a href="#" class="menu-item"><i class="ri-user-line"></i> Обо мне</a></li>
+                        </ul>
+                    </div>
+                    <div id="categoryList" class="space-y-4"></div>
+                </div>
+            </div>
+
+            <main id="mainContent">
+                <div class="text-center py-12">
+                    <div class="inline-flex items-center text-lg">
+                        <div class="loading-spinner"></div>
+                        Загрузка контента...
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <button class="support-button" id="supportButton">
+            <i class="ri-heart-line"></i>
+        </button>
+        <div class="support-modal-overlay" id="supportModalOverlay"></div>
+        <div class="support-modal" id="supportModal">
+            <button class="close-support" id="closeSupport">
+                <i class="ri-close-line"></i>
+            </button>
+            <h3><i class="ri-heart-fill"></i> Спасибо за вашу поддержку!</h3>
+            <p>Автор очень старается впечатлить своих зрителей и коллег по учёбе, и ему очень было бы приятно услышать пару идей или благодарностей в свой адрес.</p>
+            <p>Если же хотите его прям порадовать, можете нарисовать по автору рисунок по его майнкрафт персонажу.</p>
+            <a href="https://namemc.com/skin/51f0ca7a48e29545" target="_blank" class="namemc-button">
+                <i class="ri-gamepad-line"></i> NameMC
+            </a>
+            <p>Ваша обратная связь помогает улучшать инструмент и мотивирует на дальнейшую работу!</p>
+            <a href="https://t.me/endermanik13" target="_blank" class="telegram-support">
+                <i class="ri-telegram-fill mr-2"></i> Telegram
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script>
+        // Инициализация переменных
+        let pagesData = [];
+        let currentHighlightedItem = null;
+        let lastPageSlug = null;
+
+        // Установка настроек для marked.js
+        marked.setOptions({
+            breaks: true,
+            gfm: true,
+            smartypants: true,
+        });
+
+        // Инициализация particles.js
+        particlesJS('particles-js', {
+            particles: {
+                number: {
+                    value: 60,
+                    density: {
+                        enable: true,
+                        value_area: 800
+                    }
+                },
+                color: {
+                    value: '#58a6ff'
+                },
+                shape: {
+                    type: 'circle'
+                },
+                opacity: {
+                    value: 0.3,
+                    random: false
+                },
+                size: {
+                    value: 3,
+                    random: true
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#58a6ff',
+                    opacity: 0.2,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1.5,
+                    direction: 'none',
+                    random: false,
+                    straight: false,
+                    out_mode: 'out',
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: 'grab'
+                    },
+                    resize: true
+                },
+                modes: {
+                    grab: {
+                        distance: 140,
+                        line_linked: {
+                            opacity: 0.5
+                        }
+                    }
+                }
+            },
+            retina_detect: true
+        });
+
+        // Загрузка данных страниц
+        async function loadPagesData() {
+            try {
+                const response = await fetch('pages.json', {
+                    cache: 'no-store',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                pagesData = await response.json();
+                pagesData = pagesData.filter(page =>
+                    !page.path?.includes('Excalidraw') &&
+                    page.category?.toUpperCase() !== 'EXCALIDRAW'
+                );
+
+                // Сортировка по дате (новые сначала)
+                pagesData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+
+                renderCategories();
+                updateSidebarStats();
+
+                // Проверяем, есть ли сохраненная страница в localStorage
+                lastPageSlug = localStorage.getItem('lastPageSlug');
+                let pageToLoad = pagesData[0];
+
+                if (lastPageSlug) {
+                    const savedPage = pagesData.find(page => page.slug === lastPageSlug);
+                    if (savedPage) pageToLoad = savedPage;
+                }
+
+                if (pagesData.length > 0) {
+                    loadPage(pageToLoad);
+                } else {
+                    showErrorMessage('Страницы не найдены.');
+                }
+            } catch (error) {
+                console.error('Error loading pages:', error);
+                showErrorMessage(`Ошибка загрузки: ${error.message}`);
+            }
+        }
+
+        // Обновление статистики вверху боковой панели
+        function updateSidebarStats() {
+            const articleCount = pagesData.length;
+            const categoryCount = new Set(
+                pagesData.map(page => page.category || 'безкатегории')
+                    .filter(cat => cat.toUpperCase() !== 'EXCALIDRAW')
+            ).size;
+            document.getElementById('articleCount').textContent = articleCount;
+            document.getElementById('categoryCount').textContent = categoryCount;
+        }
+
+        // Функция отображения сообщения об ошибке
+        function showErrorMessage(message) {
+            document.getElementById('mainContent').innerHTML = `
+                <div class="text-center py-12">
+                    <div class="inline-flex items-center text-lg text-red-400">
+                        <i class="ri-error-warning-line mr-2"></i>
+                        ${message}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Рендеринг категорий и статей
+        function renderCategories() {
+            const categoryList = document.getElementById('categoryList');
+
+            // Группировка страниц по категориям
+            const categories = {};
+            pagesData.forEach(page => {
+                const category = page.category || 'безкатегории';
+                if (category.toUpperCase() === 'EXCALIDRAW') return;
+                if (!categories[category]) {
+                    categories[category] = [];
+                }
+                categories[category].push(page);
+            });
+
+            // Сортировка категорий по алфавиту
+            const sortedCategories = Object.keys(categories).sort((a, b) => {
+                if (a === 'безкатегории') return 1;
+                if (b === 'безкатегории') return -1;
+                return a.localeCompare(b);
+            });
+
+            // Очистка списка категорий
+            categoryList.innerHTML = '';
+
+            if (sortedCategories.length === 0) {
+                categoryList.innerHTML = `
+                    <div class="text-center text-sm text-gray-400 py-4">
+                        <p>Нет категорий</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Создание элементов категорий
+            sortedCategories.forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = `category ${category === 'безкатегории' ? 'no-category' : ''}`;
+
+                // Заголовок категории
+                const categoryTitle = document.createElement('h3');
+                categoryTitle.innerHTML = `
+                    <i class="ri-folder-${category === 'безкатегории' ? 'unknow' : 'line'}"></i>
+                    <span>${category === 'безкатегории' ? 'Без категории' : category}</span>
+                    <i class="ri-arrow-down-s-line ml-auto transition-transform duration-300"></i>
+                `;
+                categoryDiv.appendChild(categoryTitle);
+
+                // Список статей в категории
+                const categoryItems = document.createElement('div');
+                categoryItems.className = 'category-items';
+
+                // Сортировка статей в категории по дате (новые сначала)
+                const sortedPages = categories[category].sort((a, b) =>
+                    new Date(b.date || 0) - new Date(a.date || 0)
+                );
+
+                sortedPages.forEach(page => {
+                    const articleItem = document.createElement('a');
+                    articleItem.href = `#${page.slug}`;
+                    articleItem.className = `article-item ${page.slug === lastPageSlug ? 'active' : ''}`;
+                    articleItem.innerHTML = `
+                        <i class="ri-${page.icon || 'file-text-line'}"></i>
+                        <span class="truncate">${page.title || 'Без названия'}</span>
+                    `;
+                    articleItem.dataset.slug = page.slug;
+                    articleItem.title = page.title || 'Без названия';
+
+                    articleItem.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        loadPage(page);
+                        localStorage.setItem('lastPageSlug', page.slug);
+                        updateActiveStates(page.slug);
+                    });
+
+                    categoryItems.appendChild(articleItem);
+                });
+
+                categoryDiv.appendChild(categoryItems);
+                categoryList.appendChild(categoryDiv);
+
+                // Обработчик клика по заголовку категории
+                categoryTitle.addEventListener('click', () => {
+                    const isActive = categoryItems.classList.toggle('active');
+                    const arrowIcon = categoryTitle.querySelector('.ri-arrow-down-s-line');
+                    arrowIcon.style.transform = isActive ? 'rotate(180deg)' : 'rotate(0)';
+                });
+
+                // Автоматически раскрываем категорию, если в ней есть активная статья
+                if (sortedPages.some(page => page.slug === lastPageSlug)) {
+                    categoryItems.classList.add('active');
+                    categoryTitle.querySelector('.ri-arrow-down-s-line').style.transform = 'rotate(180deg)';
+                }
+            });
+        }
+
+        // Обновление активных состояний статей
+        function updateActiveStates(slug) {
+            document.querySelectorAll('.article-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.slug === slug);
+            });
+        }
+
+        // Извлечение заголовков из контента
+        function extractHeadings(htmlContent) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlContent, 'text/html');
+            const headings = Array.from(doc.querySelectorAll('h2, h3')).map((heading, index) => {
+                const level = heading.tagName.toLowerCase() === 'h2' ? 0 : 1;
+                const id = heading.id || `heading-${index}`;
+                heading.id = id;
+                return {
+                    text: heading.textContent,
+                    level,
+                    id,
+                    tag: heading.tagName.toLowerCase()
+                };
+            });
+            return {
+                headings,
+                updatedContent: doc.body.innerHTML
+            };
+        }
+
+        // Обработка заголовков с **текстом** и удаление первого h1
+        function processContent(content, title) {
+            let htmlContent = marked.parse(content || '');
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlContent, 'text/html');
+            const firstH1 = doc.querySelector('h1');
+            if (firstH1 && firstH1.textContent.trim() === title?.trim()) {
+                firstH1.remove();
+            }
+            return doc.body.innerHTML;
+        }
+
+        // Обработка заголовков с **текстом**
+        function processTitle(title) {
+            if (!title) return 'Без названия';
+            return marked.parseInline(title.replace(/\*\*(.*?)\*\*/g, '**$1**'));
+        }
+
+        // Загрузка страницы
+        async function loadPage(page) {
+            const mainContent = document.getElementById('mainContent');
+            mainContent.innerHTML = `
+                <div class="text-center py-12">
+                    <div class="inline-flex items-center text-lg">
+                        <div class="loading-spinner"></div>
+                        Загрузка статьи...
+                    </div>
+                </div>
+            `;
+
+            try {
+                const processedContent = processContent(page.content, page.title);
+                const { headings, updatedContent } = extractHeadings(processedContent);
+
+                const dateString = page.date ? new Date(page.date).toLocaleDateString('ru-RU', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                }) : '';
+
+                mainContent.innerHTML = `
+                    <div class="article-header">
+                        <h1 class="text-3xl font-bold mb-2">${processTitle(page.title)}</h1>
+                        ${dateString ? `<p class="text-sm text-gray-400"><i class="ri-calendar-line"></i> ${dateString}</p>` : ''}
+                    </div>
+                    <article class="mb-12">
+                        <div class="article-content">
+                            <div class="article-text">
+                                ${updatedContent}
+                            </div>
+                            ${headings.length > 0 ? `
+                            <div class="headings-block">
+                                <div class="headings-header">
+                                    <h4><i class="ri-list-check"></i> Содержание</h4>
+                                    <button class="toggle-headings" id="toggleHeadings">
+                                        <i class="ri-eye-line"></i>
+                                    </button>
+                                </div>
+                                <div class="headings-container" id="headingsContainer">
+                                    ${headings.map(heading => `
+                                        <a href="#${heading.id}" 
+                                           class="heading-item ${heading.tag}" 
+                                           data-id="${heading.id}"
+                                           style="padding-left: ${heading.level * 12 + 12}px;">
+                                            ${heading.text}
+                                        </a>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </article>
+                `;
+
+                setupCodeBlocks();
+                Prism.highlightAll();
+                if (headings.length > 0) {
+                    setupHeadingsNavigation();
+                    setupHeadingsToggle();
+                }
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                history.pushState(null, '', `#${page.slug}`);
+            } catch (error) {
+                console.error('Error rendering page:', error);
+                showErrorMessage(`Ошибка при загрузке статьи: ${error.message}`);
+            }
+        }
+
+        // Настройка сворачивания/разворачивания содержимого
+        function setupHeadingsToggle() {
+            const toggleButton = document.getElementById('toggleHeadings');
+            const headingsContainer = document.getElementById('headingsContainer');
+
+            if (!toggleButton || !headingsContainer) return;
+
+            toggleButton.addEventListener('click', () => {
+                const isCollapsed = headingsContainer.classList.toggle('collapsed');
+                toggleButton.innerHTML = `<i class="ri-${isCollapsed ? 'eye-off' : 'eye'}-line"></i>`;
+            });
+        }
+
+        // Настройка блоков с кодом
+        function setupCodeBlocks() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const block = entry.target;
+                        if (!block.querySelector('.copy-code-btn')) {
+                            const button = document.createElement('button');
+                            button.className = 'copy-code-btn';
+                            button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
+                            button.addEventListener('click', () => copyCode(block, button));
+                            block.appendChild(button);
+                        }
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.article-text pre').forEach(block => {
+                const code = block.querySelector('code');
+                if (code) {
+                    const langMatch = /language-(\w+)/.exec(code.className);
+                    if (langMatch) {
+                        block.dataset.language = langMatch[1];
+                    }
+                }
+                observer.observe(block);
+            });
+        }
+
+        // Копирование кода
+        async function copyCode(block, button) {
+            const code = block.querySelector('code')?.textContent || '';
+            try {
+                await navigator.clipboard.writeText(code);
+                button.innerHTML = '<i class="ri-check-line"></i> Скопировано!';
+                setTimeout(() => {
+                    button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
+                }, 2000);
+            } catch (err) {
+                console.error('Copy failed:', err);
+                button.innerHTML = '<i class="ri-close-line"></i> Ошибка';
+                setTimeout(() => {
+                    button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
+                }, 2000);
+            }
+        }
+
+        // Настройка навигации по заголовкам
+        function setupHeadingsNavigation() {
+            document.querySelectorAll('.heading-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = item.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 20,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+
+        // Поиск
+        const searchInput = document.getElementById('searchInput');
+        const searchPanel = document.getElementById('searchPanel');
+        const searchOverlay = document.getElementById('searchOverlay');
+        const searchPanelInput = document.getElementById('searchPanelInput');
+        const searchResults = document.getElementById('searchResults');
+        const closeSearch = document.getElementById('closeSearch');
+
+        searchInput.addEventListener('input', () => {
+            if (searchInput.value.trim()) {
+                searchPanel.classList.add('active');
+                searchOverlay.classList.add('active');
+                searchPanelInput.value = searchInput.value;
+                searchPanelInput.focus();
+                searchInput.value = '';
+                performSearch(searchPanelInput.value);
+            }
+        });
+
+        function closeSearchPanel() {
+            searchPanel.classList.remove('active');
+            searchOverlay.classList.remove('active');
+            searchPanelInput.value = '';
+            searchResults.innerHTML = '';
+        }
+
+        closeSearch.addEventListener('click', closeSearchPanel);
+        searchOverlay.addEventListener('click', closeSearchPanel);
+
+        // Закрытие поиска по Esc
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && searchPanel.classList.contains('active')) {
+                closeSearchPanel();
+            }
+        });
+
+        searchPanelInput.addEventListener('input', debounce(() => {
+            performSearch(searchPanelInput.value);
+        }, 300));
+
+        function performSearch(query) {
+            query = query.trim().toLowerCase();
+            searchResults.innerHTML = '';
+
+            if (query.length < 2) {
+                searchResults.innerHTML = `
+                    <div class="text-center py-4 text-gray-400">
+                        Введите минимум 2 символа для поиска
+                    </div>
+                `;
+                return;
+            }
+
+            // Умный поиск с весами
+            const results = pagesData.map(page => {
+                const title = (page.title || '').toLowerCase();
+                const description = (page.description || '').toLowerCase();
+                const content = (page.content || '').toLowerCase();
+                const tags = (page.tags || []).join(' ').toLowerCase();
+
+                let score = 0;
+                const terms = query.split(/\s+/);
+
+                terms.forEach(term => {
+                    if (title.includes(term)) score += 3;
+                    if (description.includes(term)) score += 2;
+                    if (content.includes(term)) score += 1;
+                    if (tags.includes(term)) score += 2;
+                });
+
+                return { page, score };
+            }).filter(result => result.score > 0);
+
+            // Сортировка по релевантности
+            results.sort((a, b) => b.score - a.score);
+
+            if (results.length === 0) {
+                searchResults.innerHTML = `
+                    <div class="text-center py-4 text-gray-400">
+                        Ничего не найдено
+                    </div>
+                `;
+                return;
+            }
+
+            results.forEach(({ page }) => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'search-result-item';
+                resultItem.onclick = () => loadPageFromSearch(null, page.slug);
+
+                const dateString = page.date ? new Date(page.date).toLocaleDateString('ru-RU', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                }) : '';
+
+                let preview = '';
+                const content = page.content || '';
+                const queryIndex = content.toLowerCase().indexOf(query);
+
+                if (queryIndex !== -1) {
+                    const start = Math.max(0, queryIndex - 50);
+                    const end = Math.min(content.length, queryIndex + query.length + 50);
+                    preview = content.substring(start, end);
+                    preview = preview.replace(/\s+/g, ' ');
+                    if (start > 0) preview = '...' + preview;
+                    if (end < content.length) preview = preview + '...';
+                    preview = marked.parse(preview);
+                }
+
+                resultItem.innerHTML = `
+                    <div class="search-result-title">
+                        ${highlightMatches(page.title || 'Без названия', query)}
+                    </div>
+                    <div class="search-result-meta">
+                        <span>${dateString || 'Без даты'}</span>
+                        <span>${page.category || 'Без категории'}</span>
+                    </div>
+                    <div class="search-result-description">
+                        ${preview || (page.description ? marked.parse(page.description) : '')}
+                    </div>
+                `;
+
+                searchResults.appendChild(resultItem);
+            });
+        }
+
+        function highlightMatches(text, query) {
+            if (!text || !query) return text;
+            const regex = new RegExp(`(${escapeRegExp(query)})`, 'gi');
+            return text.replace(regex, '<span class="bg-yellow-500/20 text-yellow-400">$1</span>');
+        }
+
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function loadPageFromSearch(event, slug) {
+            if (event) event.preventDefault();
+            const page = pagesData.find(p => p.slug === slug);
+            if (page) {
+                loadPage(page);
+                localStorage.setItem('lastPageSlug', slug);
+                updateActiveStates(slug);
+                closeSearchPanel();
+                if (window.innerWidth < 1024) {
+                    toggleMobileMenu(false);
+                }
+            }
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function() {
+                const context = this;
+                const args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    func.apply(context, args);
+                }, wait);
+            };
+        }
+
+        // Мобильное меню
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const articlesColumn = document.getElementById('articlesColumn');
+
+        function toggleMobileMenu(show) {
+            if (show === undefined) {
+                articlesColumn.classList.toggle('active');
+            } else {
+                show ? articlesColumn.classList.add('active') : articlesColumn.classList.remove('active');
+            }
+        }
+
+        mobileMenuToggle.addEventListener('click', () => toggleMobileMenu());
+
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth >= 1024) return;
+            const isClickInsideMenu = articlesColumn.contains(e.target) || mobileMenuToggle.contains(e.target);
+            if (!isClickInsideMenu && articlesColumn.classList.contains('active')) {
+                toggleMobileMenu(false);
+            }
+        });
+
+        // Подсветка меню
+        const menuContainer = document.querySelector('.menu-container');
+        const menuHighlight = document.getElementById('menuHighlight');
+
+        if (menuContainer && menuHighlight) {
+            menuContainer.addEventListener('mouseover', (e) => {
+                const item = e.target.closest('.menu-item');
+                if (!item || item === currentHighlightedItem) return;
+
+                if (currentHighlightedItem) {
+                    currentHighlightedItem.classList.remove('active');
+                }
+
+                item.classList.add('active');
+                updateHighlight(item, menuHighlight);
+                currentHighlightedItem = item;
+            });
+
+            menuContainer.addEventListener('mouseout', () => {
+                if (currentHighlightedItem) {
+                    currentHighlightedItem.classList.add('active');
+                    updateHighlight(currentHighlightedItem, menuHighlight);
+                }
+            });
+        }
+
+        // Telegram меню
+        const telegramButton = document.getElementById('telegramButton');
+        const telegramMenu = document.getElementById('telegramMenu');
+
+        telegramButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            telegramMenu.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!telegramButton.contains(e.target) && !telegramMenu.contains(e.target)) {
+                telegramMenu.classList.remove('active');
+            }
+        });
+
+        document.addEventListener('contextmenu', (e) => {
+            if (!telegramMenu.contains(e.target)) {
+                telegramMenu.classList.remove('active');
+            }
+        });
+
+        document.addEventListener('wheel', () => {
+            telegramMenu.classList.remove('active');
+        });
+
+        document.addEventListener('keydown', () => {
+            telegramMenu.classList.remove('active');
+        });
+
+        // Support модалка
+        const supportButton = document.getElementById('supportButton');
+        const supportModal = document.getElementById('supportModal');
+        const supportModalOverlay = document.getElementById('supportModalOverlay');
+        const closeSupport = document.getElementById('closeSupport');
+
+        function openSupportModal() {
+            supportModal.classList.add('active');
+            supportModalOverlay.classList.add('active');
+        }
+
+        function closeSupportModal() {
+            supportModal.classList.remove('active');
+            supportModalOverlay.classList.remove('active');
+        }
+
+        supportButton.addEventListener('click', openSupportModal);
+        closeSupport.addEventListener('click', closeSupportModal);
+        supportModalOverlay.addEventListener('click', closeSupportModal);
+
+        // Закрытие модалки по Esc
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && supportModal.classList.contains('active')) {
+                closeSupportModal();
+            }
+        });
+
+        // Обработка навигации по истории
+        window.addEventListener('popstate', () => {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                const page = pagesData.find(p => p.slug === hash);
+                if (page) {
+                    loadPage(page);
+                    localStorage.setItem('lastPageSlug', page.slug);
+                    updateActiveStates(page.slug);
+                }
+            }
+        });
+
+        // Интерактивность иконок
+        function setupIconInteractions() {
+            const icons = document.querySelectorAll('.sidebar-header i, .article-header i');
+            icons.forEach(icon => {
+                const parent = icon.parentElement;
+                parent.addEventListener('mousemove', (e) => {
+                    const rect = parent.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    const maxOffset = 5;
+                    const offsetX = Math.max(-maxOffset, Math.min(maxOffset, x / 10));
+                    const offsetY = Math.max(-maxOffset, Math.min(maxOffset, y / 10));
+                    icon.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(1.2)`;
+                });
+
+                parent.addEventListener('mouseleave', () => {
+                    icon.style.transform = 'translate(0, 0) scale(1)';
+                });
+            });
+        }
+
+        // Загрузка первой статьи для "Главная"
+        function loadHomePage() {
+            const homeLink = document.getElementById('homeLink');
+            homeLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                const categories = {};
+                pagesData.forEach(page => {
+                    const category = page.category || 'безкатегории';
+                    if (category.toUpperCase() === 'EXCALIDRAW') return;
+                    if (!categories[category]) categories[category] = [];
+                    categories[category].push(page);
+                });
+                const sortedCategories = Object.keys(categories).sort((a, b) => {
+                    if (a === 'безкатегории') return 1;
+                    if (b === 'безкатегории') return -1;
+                    return a.localeCompare(b);
+                });
+                const firstCategory = sortedCategories[0];
+                const firstPage = categories[firstCategory]?.sort((a, b) =>
+                    new Date(b.date || 0) - new Date(a.date || 0)
+                )[0];
+                if (firstPage) {
+                    loadPage(firstPage);
+                    localStorage.setItem('lastPageSlug', firstPage.slug);
+                    updateActiveStates(firstPage.slug);
+                }
+            });
+        }
+
+        // Загрузка данных
+        document.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                lastPageSlug = hash;
+                localStorage.setItem('lastPageSlug', hash);
+            }
+
+            loadPagesData().then(() => {
+                loadHomePage();
+                setupIconInteractions();
+            });
+        });
+
+        window.loadPageFromSearch = loadPageFromSearch;
+    </script>
+</body>
+</html>
