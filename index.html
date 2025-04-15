@@ -7,8 +7,8 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Энциклопедия Эндера</title>
-    <!-- Иконка сайта -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMzYjgyZjYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMTEuNSAyMS41djhoMXYtOGEyIDIgMCAwIDAgMi0yaC03YTIgMiAwIDAgMCAyIDJabTAtM3Y4aC03YTIgMiAwIDAgMS0yLTJoN3ptMCAwdi04YTIgMiAwIDAgMCAyLTJoN2EyIDIgMCAwIDEgMiAydjhaTTE3IDN2OGEyIDIgMCAwIDAgMiAyaDd2LTdoLTdhMiAyIDAgMCAwLTIgMnptMCAwdjhoN2EyIDIgMCAwIDEgMi0yaC03em0wIDB2OGEyIDIgMCAwIDAtMi0yaC03YTIgMiAwIDAgMC0yIDJ2OGgxdi04YTIgMiAwIDAgMCAyLTJabTAtMTFINHYzSDN2Mmg5di0zem0wIDB2LTNoLTd2M2g3em0wIDB2M2g3di0zaC03eiIvPjwvc3ZnPg==">
+    <!-- Иконка сайта: эмодзи 📘 -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text x='0' y='20' font-size='20'>📘</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
@@ -174,17 +174,8 @@
             background: var(--bg-quaternary);
         }
 
-        .category h3 i.ri-folder-line,
-        .category h3 i.ri-folder-unknow {
+        .category h3 i.ri-folder-line {
             margin-right: 0.5rem;
-        }
-
-        .category.no-category h3 {
-            background: var(--bg-tertiary);
-        }
-
-        .category.no-category h3:hover {
-            background: var(--bg-quaternary);
         }
 
         .category-items {
@@ -806,7 +797,6 @@
             position: sticky;
             top: 0;
             max-height: fit-content;
-            overflow-y: auto;
             border: 1px solid var(--border-color);
         }
 
@@ -831,10 +821,13 @@
         }
 
         .headings-container.collapsed {
+            max-height: 0;
+            overflow: hidden;
             animation: slideOut 0.3s ease forwards;
         }
 
         .headings-container:not(.collapsed) {
+            max-height: 500px;
             animation: slideIn 0.3s ease forwards;
         }
 
@@ -954,7 +947,6 @@
             margin-right: 0.5rem;
             color: var(--accent-color);
             transition: transform 0.3s ease;
-            display: inline-block;
         }
 
         .sidebar-header i:hover,
@@ -1197,14 +1189,14 @@
             <div class="articles-column" id="articlesColumn">
                 <div class="sidebar-header">
                     <p><i class="ri-file-text-line"></i> Статьи: <span id="articleCount">0</span></p>
-                    <p><i class="ri-folder-line"></i> Категории: <span id="categoryCount">0</span></p>
+                    <p><i class="ri-folder-line"></i> Кол-во предметов: <span id="categoryCount">0</span></p>
                 </div>
                 <div class="p-4 flex-1">
                     <div class="menu-container">
                         <div class="menu-highlight" id="menuHighlight"></div>
                         <ul class="mb-8">
                             <li><a href="#" class="menu-item" id="homeLink"><i class="ri-home-line"></i> Главная</a></li>
-                            <li><a href="#" class="menu-item"><i class="ri-article-line"></i> Статьи</a></li>
+                            <li><a href="https://endermanik13.github.io/top/news.html" class="menu-item"><i class="ri-newspaper-line"></i> Важная информация</a></li>
                             <li><a href="https://endermanik13.gitbook.io/info" target="_blank" class="menu-item"><i class="ri-book-line"></i> GitBook</a></li>
                             <li><a href="#" class="menu-item"><i class="ri-user-line"></i> Обо мне</a></li>
                         </ul>
@@ -1354,7 +1346,7 @@
 
                 // Проверяем, есть ли сохраненная страница в localStorage
                 lastPageSlug = localStorage.getItem('lastPageSlug');
-                let pageToLoad = pagesData[0];
+                let pageToLoad = pagesData.find(page => page.path === 'README.md') || pagesData[0];
 
                 if (lastPageSlug) {
                     const savedPage = pagesData.find(page => page.slug === lastPageSlug);
@@ -1376,8 +1368,8 @@
         function updateSidebarStats() {
             const articleCount = pagesData.length;
             const categoryCount = new Set(
-                pagesData.map(page => page.category || 'безкатегории')
-                    .filter(cat => cat.toUpperCase() !== 'EXCALIDRAW')
+                pagesData.map(page => page.category)
+                    .filter(cat => cat && cat.toUpperCase() !== 'EXCALIDRAW')
             ).size;
             document.getElementById('articleCount').textContent = articleCount;
             document.getElementById('categoryCount').textContent = categoryCount;
@@ -1402,20 +1394,16 @@
             // Группировка страниц по категориям
             const categories = {};
             pagesData.forEach(page => {
-                const category = page.category || 'безкатегории';
-                if (category.toUpperCase() === 'EXCALIDRAW') return;
-                if (!categories[category]) {
-                    categories[category] = [];
+                if (!page.category || page.path === 'README.md') return;
+                if (page.category.toUpperCase() === 'EXCALIDRAW') return;
+                if (!categories[page.category]) {
+                    categories[page.category] = [];
                 }
-                categories[category].push(page);
+                categories[page.category].push(page);
             });
 
             // Сортировка категорий по алфавиту
-            const sortedCategories = Object.keys(categories).sort((a, b) => {
-                if (a === 'безкатегории') return 1;
-                if (b === 'безкатегории') return -1;
-                return a.localeCompare(b);
-            });
+            const sortedCategories = Object.keys(categories).sort();
 
             // Очистка списка категорий
             categoryList.innerHTML = '';
@@ -1423,7 +1411,7 @@
             if (sortedCategories.length === 0) {
                 categoryList.innerHTML = `
                     <div class="text-center text-sm text-gray-400 py-4">
-                        <p>Нет категорий</p>
+                        <p>Нет предметов</p>
                     </div>
                 `;
                 return;
@@ -1432,13 +1420,13 @@
             // Создание элементов категорий
             sortedCategories.forEach(category => {
                 const categoryDiv = document.createElement('div');
-                categoryDiv.className = `category ${category === 'безкатегории' ? 'no-category' : ''}`;
+                categoryDiv.className = 'category';
 
                 // Заголовок категории
                 const categoryTitle = document.createElement('h3');
                 categoryTitle.innerHTML = `
-                    <i class="ri-folder-${category === 'безкатегории' ? 'unknow' : 'line'}"></i>
-                    <span>${category === 'безкатегории' ? 'Без категории' : category}</span>
+                    <i class="ri-folder-line"></i>
+                    <span>${category}</span>
                     <i class="ri-arrow-down-s-line ml-auto transition-transform duration-300"></i>
                 `;
                 categoryDiv.appendChild(categoryTitle);
@@ -1478,6 +1466,16 @@
 
                 // Обработчик клика по заголовку категории
                 categoryTitle.addEventListener('click', () => {
+                    // Закрываем все другие категории
+                    document.querySelectorAll('.category-items.active').forEach(item => {
+                        if (item !== categoryItems) {
+                            item.classList.remove('active');
+                            const arrow = item.parentElement.querySelector('.ri-arrow-down-s-line');
+                            arrow.style.transform = 'rotate(0)';
+                        }
+                    });
+
+                    // Переключаем текущую категорию
                     const isActive = categoryItems.classList.toggle('active');
                     const arrowIcon = categoryTitle.querySelector('.ri-arrow-down-s-line');
                     arrowIcon.style.transform = isActive ? 'rotate(180deg)' : 'rotate(0)';
@@ -1802,7 +1800,7 @@
                     </div>
                     <div class="search-result-meta">
                         <span>${dateString || 'Без даты'}</span>
-                        <span>${page.category || 'Без категории'}</span>
+                        <span>${page.category || ''}</span>
                     </div>
                     <div class="search-result-description">
                         ${preview || (page.description ? marked.parse(page.description) : '')}
@@ -1966,52 +1964,16 @@
             }
         });
 
-        // Интерактивность иконок
-        function setupIconInteractions() {
-            const icons = document.querySelectorAll('.sidebar-header i, .article-header i');
-            icons.forEach(icon => {
-                const parent = icon.parentElement;
-                parent.addEventListener('mousemove', (e) => {
-                    const rect = parent.getBoundingClientRect();
-                    const x = e.clientX - rect.left - rect.width / 2;
-                    const y = e.clientY - rect.top - rect.height / 2;
-                    const maxOffset = 5;
-                    const offsetX = Math.max(-maxOffset, Math.min(maxOffset, x / 10));
-                    const offsetY = Math.max(-maxOffset, Math.min(maxOffset, y / 10));
-                    icon.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(1.2)`;
-                });
-
-                parent.addEventListener('mouseleave', () => {
-                    icon.style.transform = 'translate(0, 0) scale(1)';
-                });
-            });
-        }
-
         // Загрузка первой статьи для "Главная"
         function loadHomePage() {
             const homeLink = document.getElementById('homeLink');
             homeLink.addEventListener('click', (e) => {
                 e.preventDefault();
-                const categories = {};
-                pagesData.forEach(page => {
-                    const category = page.category || 'безкатегории';
-                    if (category.toUpperCase() === 'EXCALIDRAW') return;
-                    if (!categories[category]) categories[category] = [];
-                    categories[category].push(page);
-                });
-                const sortedCategories = Object.keys(categories).sort((a, b) => {
-                    if (a === 'безкатегории') return 1;
-                    if (b === 'безкатегории') return -1;
-                    return a.localeCompare(b);
-                });
-                const firstCategory = sortedCategories[0];
-                const firstPage = categories[firstCategory]?.sort((a, b) =>
-                    new Date(b.date || 0) - new Date(a.date || 0)
-                )[0];
-                if (firstPage) {
-                    loadPage(firstPage);
-                    localStorage.setItem('lastPageSlug', firstPage.slug);
-                    updateActiveStates(firstPage.slug);
+                const homePage = pagesData.find(page => page.path === 'README.md');
+                if (homePage) {
+                    loadPage(homePage);
+                    localStorage.setItem('lastPageSlug', homePage.slug);
+                    updateActiveStates(homePage.slug);
                 }
             });
         }
@@ -2026,7 +1988,6 @@
 
             loadPagesData().then(() => {
                 loadHomePage();
-                setupIconInteractions();
             });
         });
 
