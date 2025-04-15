@@ -1,0 +1,122 @@
+name: Update Pages
+
+on:
+  push:
+    paths:
+      - '**/*.md'  # Учитываем файлы .md в любых папках
+
+jobs:
+  update-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: |
+          npm install -g @actions/github
+          npm install @octokit/rest@18.12.0
+          npm install marked
+
+      - name: Generate pages.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const { Octokit } = require('@octokit/rest');
+            const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+
+            async function getFileCreationDate(owner, repo, filePath) {
+              try {
+                const commits = await octokit.repos.listCommits({
+                  owner,
+                  repo,
+                  path: filePath,
+                  per_page: 1,
+                });
+                return commits.data.length > 0 ? commits.data[0].commit.committer.date : new Date().toISOString();
+              } catch (error) {
+                console.error('Error fetching commit date for', filePath, error.message);
+                return new Date().toISOString();
+              }
+            }
+
+            function findMarkdownFiles(dir) {
+              let results = [];
+              const files = fs.readdirSync(dir, { withFileTypes: true });
+              for (const file of files) {
+                const fullPath = path.join(dir, file.name);
+                // Игнорируем папки node_modules и другие системные папки
+                if (file.isDirectory()) {
+                  if (file.name === 'node_modules' || file.name.startsWith('.')) {
+                    continue; // Пропускаем системные папки
+                  }
+                  results = results.concat(findMarkdownFiles(fullPath));
+                } else if (file.name.endsWith('.md')) {
+                  results.push(fullPath);
+                }
+              }
+              return results;
+            }
+
+            (async () => {
+              try {
+                const files = findMarkdownFiles('.').map(filePath => ({
+                  name: path.basename(filePath),
+                  path: filePath
+                }));
+
+                console.log('Found files:', files.map(f => f.path));
+
+                const pages = [];
+                for (const file of files) {
+                  const content = fs.readFileSync(file.path, 'utf8');
+                  const slug = file.name.replace('.md', '').toLowerCase().replace(/\s+/g, '-');
+                  const date = await getFileCreationDate('Endermanik13', 'obsidian', file.path);
+
+                  // Определяем категорию по имени папки
+                  const relativePath = file.path.replace(/\\\\/g, '/'); // Для совместимости с Windows
+                  const dirName = path.dirname(relativePath) === '.' ? 'безкатегории' : path.basename(path.dirname(relativePath));
+
+                  // Извлекаем заголовок и описание
+                  const titleMatch = content.match(/^# (.+)/m);
+                  const title = titleMatch ? titleMatch[1] : file.name.replace('.md', '');
+                  const description = content.split('\n').slice(1).join(' ').substring(0, 100) + '...';
+
+                  pages.push({
+                    title: title,
+                    slug: slug,
+                    description: description,
+                    link: 'https://Endermanik13.github.io/obsidian/page/' + slug,
+                    category: dirName,
+                    content: content,
+                    date: date
+                  });
+                }
+
+                pages.sort((a, b) => new Date(b.date) - new Date(a.date));
+                fs.writeFileSync('pages.json', JSON.stringify(pages, null, 2));
+                console.log('Generated pages.json with', pages.length, 'pages');
+              } catch (error) {
+                console.error('Error in script:', error.message);
+                process.exit(1);
+              }
+            })();
+          "
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add pages.json
+          git commit -m "Update pages.json with new pages" || echo "No changes to commit"
+          git push
