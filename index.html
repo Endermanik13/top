@@ -281,6 +281,7 @@
             margin-right: 0.75rem;
             color: var(--accent-color);
             transition: transform 0.3s ease;
+            cursor: default;
         }
 
         .blog-title:hover i {
@@ -462,16 +463,20 @@
         }
 
         .telegram-button {
-            background: var(--accent-color);
+            background: linear-gradient(135deg, #2AABEE, #1A8BCF);
             color: white;
             position: relative;
             transition: all 0.3s ease;
         }
 
         .telegram-button:hover {
-            background: var(--accent-hover);
             transform: scale(1.05);
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .telegram-button:active {
+            transform: scale(0.95);
+            box-shadow: none;
         }
 
         .telegram-menu {
@@ -488,14 +493,14 @@
             padding: 0.5rem;
             min-width: 200px;
             opacity: 0;
-            transform: scale(0.95);
-            transition: all 0.3s ease;
+            transform: scale(0.95) translateY(-10px);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
         .telegram-menu.active {
             display: flex;
             opacity: 1;
-            transform: scale(1);
+            transform: scale(1) translateY(0);
         }
 
         .telegram-menu a {
@@ -504,11 +509,14 @@
             text-decoration: none;
             border-radius: 6px;
             transition: all 0.3s ease;
+            background: linear-gradient(135deg, #2A4365, #2C5282);
+            margin: 0.25rem 0;
         }
 
         .telegram-menu a:hover {
-            background: var(--bg-quaternary);
+            background: linear-gradient(135deg, #3B5998, #4A6EAD);
             color: var(--accent-color);
+            transform: translateX(4px);
         }
 
         .md-pdf-button {
@@ -789,14 +797,13 @@
         }
 
         .headings-block {
-            flex: 0 0 280px;
+            flex: 0 0 320px;
             background-color: var(--bg-tertiary);
             border-radius: 12px;
             padding: 1rem;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             position: sticky;
             top: 0;
-            max-height: fit-content;
             border: 1px solid var(--border-color);
         }
 
@@ -827,7 +834,7 @@
         }
 
         .headings-container:not(.collapsed) {
-            max-height: 500px;
+            overflow-y: auto;
             animation: slideIn 0.3s ease forwards;
         }
 
@@ -865,12 +872,14 @@
             margin: 0.5rem 0;
             padding: 0.5rem 1rem;
             border-radius: 6px;
-            transition: all 0.3s ease;
+            transition: all 0.5s ease;
             text-decoration: none;
         }
 
         .heading-item:hover {
             color: var(--accent-color);
+            background-color: rgba(59, 130, 246, 0.1);
+            transform: translateX(4px);
         }
 
         .heading-item::after {
@@ -881,7 +890,7 @@
             width: 0;
             height: 2px;
             background: var(--accent-color);
-            transition: width 0.3s ease;
+            transition: width 0.5s ease;
         }
 
         .heading-item:hover::after {
@@ -1051,14 +1060,14 @@
             text-decoration: none;
             font-size: 0.9rem;
             margin: 0.5rem 0;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
         }
 
         .support-modal .namemc-button:hover {
             background: linear-gradient(90deg, #333, #555);
             color: var(--text-primary);
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .support-modal .namemc-button i {
@@ -1075,13 +1084,13 @@
             text-decoration: none;
             font-size: 0.9rem;
             margin-top: 0.5rem;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
         }
 
         .support-modal .telegram-support:hover {
             background: var(--accent-hover);
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
         .support-modal .close-support {
@@ -1124,14 +1133,14 @@
             }
             to {
                 opacity: 1;
-                max-height: 500px;
+                max-height: 1000px;
             }
         }
 
         @keyframes slideOut {
             from {
                 opacity: 1;
-                max-height: 500px;
+                max-height: 1000px;
             }
             to {
                 opacity: 0;
@@ -1155,7 +1164,7 @@
                     <i class="ri-menu-line"></i>
                 </button>
                 <span class="blog-title">
-                    <i class="ri-book-open-line"></i>
+                    <i class="ri-book-open-line" id="easterEggIcon"></i>
                     Энциклопедия Эндера
                 </span>
                 <a href="https://endermanik13.github.io/importer/" class="md-pdf-button">
@@ -1170,8 +1179,8 @@
                     Telegram
                 </button>
                 <div class="telegram-menu" id="telegramMenu">
-                    <a href="https://t.me/endermanik13" target="_blank">Автор сайта: @endermanik13</a>
-                    <a href="https://t.me/endermanik12" target="_blank">Тгк автора</a>
+                    <a href="https://t.me/endermanik13" target="_blank">Личный чат автора</a>
+                    <a href="https://t.me/endermanik12" target="_blank">Канал автора</a>
                 </div>
             </div>
         </header>
@@ -1188,14 +1197,14 @@
         <div class="flex flex-1">
             <div class="articles-column" id="articlesColumn">
                 <div class="sidebar-header">
-                    <p><i class="ri-file-text-line"></i> Статьи: <span id="articleCount">0</span></p>
+                    <p><i class="ri-file-text-line"></i> Лекции: <span id="articleCount">0</span></p>
                     <p><i class="ri-folder-line"></i> Кол-во предметов: <span id="categoryCount">0</span></p>
                 </div>
                 <div class="p-4 flex-1">
                     <div class="menu-container">
                         <div class="menu-highlight" id="menuHighlight"></div>
                         <ul class="mb-8">
-                            <li><a href="#" class="menu-item" id="homeLink"><i class="ri-home-line"></i> Главная</a></li>
+                            <li><a href="https://endermanik13.github.io/top/#readme" class="menu-item" id="homeLink"><i class="ri-home-line"></i> Главная</a></li>
                             <li><a href="https://endermanik13.github.io/top/news.html" class="menu-item"><i class="ri-newspaper-line"></i> Важная информация</a></li>
                             <li><a href="https://endermanik13.gitbook.io/info" target="_blank" class="menu-item"><i class="ri-book-line"></i> GitBook</a></li>
                             <li><a href="#" class="menu-item"><i class="ri-user-line"></i> Обо мне</a></li>
@@ -1335,7 +1344,8 @@
                 pagesData = await response.json();
                 pagesData = pagesData.filter(page =>
                     !page.path?.includes('Excalidraw') &&
-                    page.category?.toUpperCase() !== 'EXCALIDRAW'
+                    page.category?.toUpperCase() !== 'EXCALIDRAW' &&
+                    page.category?.toUpperCase() !== 'БЕЗ КАТЕГОРИИ'
                 );
 
                 // Сортировка по дате (новые сначала)
@@ -1369,7 +1379,7 @@
             const articleCount = pagesData.length;
             const categoryCount = new Set(
                 pagesData.map(page => page.category)
-                    .filter(cat => cat && cat.toUpperCase() !== 'EXCALIDRAW')
+                    .filter(cat => cat && cat.toUpperCase() !== 'EXCALIDRAW' && cat.toUpperCase() !== 'БЕЗ КАТЕГОРИИ')
             ).size;
             document.getElementById('articleCount').textContent = articleCount;
             document.getElementById('categoryCount').textContent = categoryCount;
@@ -1395,7 +1405,7 @@
             const categories = {};
             pagesData.forEach(page => {
                 if (!page.category || page.path === 'README.md') return;
-                if (page.category.toUpperCase() === 'EXCALIDRAW') return;
+                if (page.category.toUpperCase() === 'EXCALIDRAW' || page.category.toUpperCase() === 'БЕЗ КАТЕГОРИИ') return;
                 if (!categories[page.category]) {
                     categories[page.category] = [];
                 }
@@ -1951,6 +1961,12 @@
             }
         });
 
+        // Пасхалка на иконке книги
+        const easterEggIcon = document.getElementById('easterEggIcon');
+        easterEggIcon.addEventListener('click', () => {
+            window.open('https://www.google.com/maps/@52.5952022,39.5248965,3a,75y,359.07h,82.97t/data=!3m7!1e1!3m5!1sCIHM0ogKEICAgICa5tjvxwE!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgpms-cs-s%2FAIMqDu21lgzR3PQCz7Fcnvug4Wap9dJI4tKQ-gAbaQ8ergN6Xr9J2o8lgXuYKxw7xxq5Pw0QjHqdS4EdMQ3-pUqdblICnUDSthThx2beg0YHHfXLWmSf4jzc8ezfLdbgjGk5iR1QQQrI%3Dw900-h600-k-no-pi7.034647060289103-ya184.0695531759182-ro0-fo100!7i7216!8i3608?entry=ttu&g_ep=EgoyMDI1MDQxMy4wIKXMDSoASAFQAw%3D%3D', '_blank');
+        });
+
         // Обработка навигации по истории
         window.addEventListener('popstate', () => {
             const hash = window.location.hash.substring(1);
@@ -1964,20 +1980,6 @@
             }
         });
 
-        // Загрузка первой статьи для "Главная"
-        function loadHomePage() {
-            const homeLink = document.getElementById('homeLink');
-            homeLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                const homePage = pagesData.find(page => page.path === 'README.md');
-                if (homePage) {
-                    loadPage(homePage);
-                    localStorage.setItem('lastPageSlug', homePage.slug);
-                    updateActiveStates(homePage.slug);
-                }
-            });
-        }
-
         // Загрузка данных
         document.addEventListener('DOMContentLoaded', () => {
             const hash = window.location.hash.substring(1);
@@ -1986,9 +1988,7 @@
                 localStorage.setItem('lastPageSlug', hash);
             }
 
-            loadPagesData().then(() => {
-                loadHomePage();
-            });
+            loadPagesData();
         });
 
         window.loadPageFromSearch = loadPageFromSearch;
