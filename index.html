@@ -930,10 +930,11 @@
             border-radius: 12px;
             padding: 1rem;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
             border: 1px solid var(--border-color);
+            overflow: hidden;
             max-height: fit-content;
             transition: all 0.3s ease;
-            position: static; /* Убираем фиксированное позиционирование */
         }
 
         .headings-header {
@@ -1409,7 +1410,7 @@
             <a href="https://namemc.com/skin/51f0ca7a48e29545" target="_blank" class="namemc-button">
                 <i class="ri-gamepad-line"></i> NameMC
             </a>
-            <p>Ваша обратная связь помогает улучшать сайт и мотивирует на дальнейшую работу!</p>
+            <p>Ваша обратная связь помогает улучшать инструмент и мотивирует на дальнейшую работу!</p>
             <a href="https://t.me/endermanik13" target="_blank" class="telegram-support">
                 <i class="ri-telegram-fill mr-2"></i> Telegram
             </a>
@@ -1513,19 +1514,19 @@
                 }
 
                 pagesData = await response.json();
-                // Фильтрация страниц - исключаем Excalidraw и "О странице"
+                // Фильтрация страниц - исключаем Excalidraw и "БЕЗ КАТЕГОРИИ"
                 pagesData = pagesData.filter(page => 
                     page.category && 
                     page.category.trim() !== '' && 
                     !page.path?.includes('Excalidraw') &&
                     page.category?.toUpperCase() !== 'EXCALIDRAW' &&
-                    page.category?.toUpperCase() !== 'О СТРАНИЦЕ'
+                    page.category?.toUpperCase() !== 'БЕЗ КАТЕГОРИИ'
                 );
 
-                // Для страниц без категории или с пустой категорией устанавливаем "О странице"
+                // Для страниц без категории или с пустой категорией устанавливаем "Немного о странице"
                 pagesData.forEach(page => {
                     if (!page.category || page.category.trim() === '') {
-                        page.category = 'О странице';
+                        page.category = 'Немного о странице';
                     }
                 });
 
@@ -2052,4 +2053,136 @@
 
         mobileMenuToggle.addEventListener('click', () => toggleMobileMenu());
 
-        document.addEventListener('click',
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth >= 1024) return;
+            const isClickInsideMenu = articlesColumn.contains(e.target) || mobileMenuToggle.contains(e.target);
+            if (!isClickInsideMenu && articlesColumn.classList.contains('active')) {
+                toggleMobileMenu(false);
+            }
+        });
+
+        // Подсветка меню
+        const menuContainer = document.querySelector('.menu-container');
+        const menuHighlight = document.getElementById('menuHighlight');
+
+        if (menuContainer && menuHighlight) {
+            menuContainer.addEventListener('mouseover', (e) => {
+                const item = e.target.closest('.menu-item');
+                if (!item || item === currentHighlightedItem) return;
+
+                if (currentHighlightedItem) {
+                    currentHighlightedItem.classList.remove('active');
+                }
+
+                item.classList.add('active');
+                currentHighlightedItem = item;
+            });
+
+            menuContainer.addEventListener('mouseout', () => {
+                if (currentHighlightedItem) {
+                    currentHighlightedItem.classList.remove('active');
+                    currentHighlightedItem = null;
+                }
+            });
+        }
+
+        // Telegram меню
+        const telegramButton = document.getElementById('telegramButton');
+        const telegramMenu = document.getElementById('telegramMenu');
+
+        function closeTelegramMenu() {
+            telegramMenu.classList.remove('active');
+            setTimeout(() => {
+                telegramMenu.style.display = 'none';
+            }, 400);
+        }
+
+        telegramButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            telegramMenu.style.display = 'flex';
+            setTimeout(() => {
+                telegramMenu.classList.toggle('active');
+            }, 10);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!telegramButton.contains(e.target) && !telegramMenu.contains(e.target)) {
+                closeTelegramMenu();
+            }
+        });
+
+        document.addEventListener('contextmenu', (e) => {
+            if (!telegramMenu.contains(e.target)) {
+                closeTelegramMenu();
+            }
+        });
+
+        document.addEventListener('wheel', () => {
+            closeTelegramMenu();
+        });
+
+        document.addEventListener('keydown', () => {
+            closeTelegramMenu();
+        });
+
+        // Support модалка
+        const supportButton = document.getElementById('supportButton');
+        const supportModal = document.getElementById('supportModal');
+        const supportModalOverlay = document.getElementById('supportModalOverlay');
+        const closeSupport = document.getElementById('closeSupport');
+
+        function openSupportModal() {
+            supportModal.classList.add('active');
+            supportModalOverlay.classList.add('active');
+        }
+
+        function closeSupportModal() {
+            supportModal.classList.remove('active');
+            supportModalOverlay.classList.remove('active');
+        }
+
+        supportButton.addEventListener('click', openSupportModal);
+        closeSupport.addEventListener('click', closeSupportModal);
+        supportModalOverlay.addEventListener('click', closeSupportModal);
+
+        // Закрытие модалки по Esc
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && supportModal.classList.contains('active')) {
+                closeSupportModal();
+            }
+        });
+
+        // Пасхалка на иконке книги
+        const easterEggIcon = document.getElementById('easterEggIcon');
+        easterEggIcon.addEventListener('click', () => {
+            window.open('https://www.google.com/maps/@52.5952022,39.5248965,3a,75y,359.07h,82.97t/data=!3m7!1e1!3m5!1sCIHM0ogKEICAgICa5tjvxwE!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgpms-cs-s%2FAIMqDu21lgzR3PQCz7Fcnvug4Wap9dJI4tKQ-gAbaQ8ergN6Xr9J2o8lgXuYKxw7xxq5Pw0QjHqdS4EdMQ3-pUqdblICnUDSthThx2beg0YHHfXLWmSf4jzc8ezfLdbgjGk5iR1QQQrI%3Dw900-h600-k-no-pi7.034647060289103-ya184.0695531759182-ro0-fo100!7i7216!8i3608?entry=ttu&g_ep=EgoyMDI1MDQxMy4wIKXMDSoASAFQAw%3D%3D', '_blank');
+        });
+
+        // Обработка навигации по истории
+        window.addEventListener('popstate', () => {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                const page = pagesData.find(p => p.slug === hash);
+                if (page) {
+                    loadPage(page);
+                    localStorage.setItem('lastPageSlug', page.slug);
+                    updateActiveStates(page.slug);
+                }
+            }
+        });
+
+        // Загрузка данных
+        document.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                lastPageSlug = hash;
+                localStorage.setItem('lastPageSlug', hash);
+            }
+
+            loadPagesData();
+        });
+
+        window.loadPageFromSearch = loadPageFromSearch;
+    </script>
+</body>
+</html>
