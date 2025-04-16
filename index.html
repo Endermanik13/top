@@ -930,11 +930,10 @@
             border-radius: 12px;
             padding: 1rem;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            position: relative;
             border: 1px solid var(--border-color);
-            overflow: hidden;
             max-height: fit-content;
             transition: all 0.3s ease;
+            position: static;
         }
 
         .headings-header {
@@ -1410,7 +1409,7 @@
             <a href="https://namemc.com/skin/51f0ca7a48e29545" target="_blank" class="namemc-button">
                 <i class="ri-gamepad-line"></i> NameMC
             </a>
-            <p>Ваша обратная связь помогает улучшать инструмент и мотивирует на дальнейшую работу!</p>
+            <p>Ваша обратная связь помогает улучшать сайт и мотивирует на дальнейшую работу!</p>
             <a href="https://t.me/endermanik13" target="_blank" class="telegram-support">
                 <i class="ri-telegram-fill mr-2"></i> Telegram
             </a>
@@ -1436,107 +1435,83 @@
             smartypants: true,
         });
 
-        // Инициализация particles.js
-        particlesJS('particles-js', {
-            particles: {
-                number: {
-                    value: 60,
-                    density: {
-                        enable: true,
-                        value_area: 800
-                    }
-                },
-                color: {
-                    value: '#58a6ff'
-                },
-                shape: {
-                    type: 'circle'
-                },
-                opacity: {
-                    value: 0.3,
-                    random: false
-                },
-                size: {
-                    value: 3,
-                    random: true
-                },
-                line_linked: {
-                    enable: true,
-                    distance: 150,
-                    color: '#58a6ff',
-                    opacity: 0.2,
-                    width: 1
-                },
-                move: {
-                    enable: true,
-                    speed: 1.5,
-                    direction: 'none',
-                    random: false,
-                    straight: false,
-                    out_mode: 'out',
-                    bounce: false
-                }
-            },
-            interactivity: {
-                detect_on: 'canvas',
-                events: {
-                    onhover: {
-                        enable: true,
-                        mode: 'grab'
-                    },
-                    resize: true
-                },
-                modes: {
-                    grab: {
-                        distance: 140,
-                        line_linked: {
-                            opacity: 0.5
-                        }
-                    }
-                }
-            },
-            retina_detect: true
-        });
-
-        // Загрузка данных страниц
-        async function loadPagesData() {
+        // Инициализация particles.js с обработкой ошибок
+        function initParticles() {
             try {
-                const response = await fetch('pages.json', {
-                    cache: 'no-store',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    }
+                particlesJS('particles-js', {
+                    particles: {
+                        number: { value: 60, density: { enable: true, value_area: 800 } },
+                        color: { value: '#58a6ff' },
+                        shape: { type: 'circle' },
+                        opacity: { value: 0.3, random: false },
+                        size: { value: 3, random: true },
+                        line_linked: { enable: true, distance: 150, color: '#58a6ff', opacity: 0.2, width: 1 },
+                        move: { enable: true, speed: 1.5, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
+                    },
+                    interactivity: {
+                        detect_on: 'canvas',
+                        events: { onhover: { enable: true, mode: 'grab' }, resize: true },
+                        modes: { grab: { distance: 140, line_linked: { opacity: 0.5 } } }
+                    },
+                    retina_detect: true
                 });
+                console.log('Particles.js initialized successfully');
+            } catch (error) {
+                console.error('Error initializing particles.js:', error);
+            }
+        }
+
+        // Загрузка данных страниц с тайм-аутом
+        async function loadPagesData() {
+            console.log('Starting to load pages data...');
+            const mainContent = document.getElementById('mainContent');
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => {
+                    controller.abort();
+                    throw new Error('Request timeout: Failed to load pages.json within 10 seconds');
+                }, 10000); // Тайм-аут 10 секунд
+
+                const response = await fetch('pages.json', {
+                    signal: controller.signal,
+                    cache: 'no-store',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+                });
+
+                clearTimeout(timeoutId);
+                console.log('Fetch response received:', response.status);
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 pagesData = await response.json();
-                // Фильтрация страниц - исключаем Excalidraw и "БЕЗ КАТЕГОРИИ"
+                console.log('Pages data loaded:', pagesData.length, 'pages found');
+
+                // Фильтрация страниц
                 pagesData = pagesData.filter(page => 
                     page.category && 
                     page.category.trim() !== '' && 
                     !page.path?.includes('Excalidraw') &&
                     page.category?.toUpperCase() !== 'EXCALIDRAW' &&
-                    page.category?.toUpperCase() !== 'БЕЗ КАТЕГОРИИ'
+                    page.category?.toUpperCase() !== 'О СТРАНИЦЕ'
                 );
 
-                // Для страниц без категории или с пустой категорией устанавливаем "Немного о странице"
                 pagesData.forEach(page => {
                     if (!page.category || page.category.trim() === '') {
-                        page.category = 'Немного о странице';
+                        page.category = 'О странице';
                     }
                 });
 
                 // Сортировка по дате (новые сначала)
                 pagesData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+                console.log('Pages sorted and filtered');
 
                 renderCategories();
                 updateSidebarStats();
+                console.log('Categories and sidebar stats updated');
 
-                // Проверяем, есть ли сохраненная страница в localStorage
+                // Загрузка последней страницы или первой по умолчанию
                 lastPageSlug = localStorage.getItem('lastPageSlug');
                 let pageToLoad = pagesData.find(page => page.path === 'README.md') || pagesData[0];
 
@@ -1546,13 +1521,14 @@
                 }
 
                 if (pagesData.length > 0) {
-                    loadPage(pageToLoad);
+                    console.log('Loading initial page:', pageToLoad.title);
+                    await loadPage(pageToLoad);
                 } else {
-                    showErrorMessage('Страницы не найдены.');
+                    throw new Error('No pages found after filtering');
                 }
             } catch (error) {
                 console.error('Error loading pages:', error);
-                showErrorMessage(`Ошибка загрузки: ${error.message}`);
+                showErrorMessage(`Ошибка загрузки данных: ${error.message}`);
             }
         }
 
@@ -1565,11 +1541,13 @@
             ).size;
             document.getElementById('articleCount').textContent = articleCount;
             document.getElementById('categoryCount').textContent = categoryCount;
+            console.log('Sidebar stats updated:', articleCount, 'articles,', categoryCount, 'categories');
         }
 
         // Функция отображения сообщения об ошибке
         function showErrorMessage(message) {
-            document.getElementById('mainContent').innerHTML = `
+            const mainContent = document.getElementById('mainContent');
+            mainContent.innerHTML = `
                 <div class="text-center py-12">
                     <div class="inline-flex items-center text-lg text-red-400">
                         <i class="ri-error-warning-line mr-2"></i>
@@ -1577,13 +1555,14 @@
                     </div>
                 </div>
             `;
+            console.log('Error message displayed:', message);
         }
 
         // Рендеринг категорий и статей
         function renderCategories() {
+            console.log('Rendering categories...');
             const categoryList = document.getElementById('categoryList');
 
-            // Группировка страниц по категориям
             const categories = {};
             pagesData.forEach(page => {
                 if (!page.category || page.path === 'README.md') return;
@@ -1593,10 +1572,7 @@
                 categories[page.category].push(page);
             });
 
-            // Сортировка категорий по алфавиту
             const sortedCategories = Object.keys(categories).sort();
-
-            // Очистка списка категорий
             categoryList.innerHTML = '';
 
             if (sortedCategories.length === 0) {
@@ -1605,15 +1581,14 @@
                         <p>Нет предметов</p>
                     </div>
                 `;
+                console.log('No categories to render');
                 return;
             }
 
-            // Создание элементов категорий
             sortedCategories.forEach(category => {
                 const categoryDiv = document.createElement('div');
                 categoryDiv.className = 'category';
 
-                // Заголовок категории
                 const categoryTitle = document.createElement('h3');
                 categoryTitle.innerHTML = `
                     <i class="ri-folder-line"></i>
@@ -1622,11 +1597,9 @@
                 `;
                 categoryDiv.appendChild(categoryTitle);
 
-                // Список статей в категории
                 const categoryItems = document.createElement('div');
                 categoryItems.className = 'category-items';
 
-                // Сортировка статей в категории по дате (новые сначала)
                 const sortedPages = categories[category].sort((a, b) =>
                     new Date(b.date || 0) - new Date(a.date || 0)
                 );
@@ -1644,6 +1617,7 @@
 
                     articleItem.addEventListener('click', (e) => {
                         e.preventDefault();
+                        console.log('Article clicked:', page.title);
                         loadPage(page);
                         localStorage.setItem('lastPageSlug', page.slug);
                         updateActiveStates(page.slug);
@@ -1655,9 +1629,7 @@
                 categoryDiv.appendChild(categoryItems);
                 categoryList.appendChild(categoryDiv);
 
-                // Обработчик клика по заголовку категории
                 categoryTitle.addEventListener('click', () => {
-                    // Закрываем все другие категории
                     document.querySelectorAll('.category-items.active').forEach(item => {
                         if (item !== categoryItems) {
                             item.classList.remove('active');
@@ -1666,18 +1638,17 @@
                         }
                     });
 
-                    // Переключаем текущую категорию
                     const isActive = categoryItems.classList.toggle('active');
                     const arrowIcon = categoryTitle.querySelector('.ri-arrow-down-s-line');
                     arrowIcon.style.transform = isActive ? 'rotate(180deg)' : 'rotate(0)';
                 });
 
-                // Автоматически раскрываем категорию, если в ней есть активная статья
                 if (sortedPages.some(page => page.slug === lastPageSlug)) {
                     categoryItems.classList.add('active');
                     categoryTitle.querySelector('.ri-arrow-down-s-line').style.transform = 'rotate(180deg)';
                 }
             });
+            console.log('Categories rendered:', sortedCategories.length);
         }
 
         // Обновление активных состояний статей
@@ -1685,31 +1656,27 @@
             document.querySelectorAll('.article-item').forEach(item => {
                 item.classList.toggle('active', item.dataset.slug === slug);
             });
+            console.log('Active states updated for slug:', slug);
         }
 
         // Извлечение заголовков из контента
         function extractHeadings(htmlContent) {
+            console.log('Extracting headings...');
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlContent, 'text/html');
             const headings = Array.from(doc.querySelectorAll('h2, h3')).map((heading, index) => {
                 const level = heading.tagName.toLowerCase() === 'h2' ? 0 : 1;
                 const id = heading.id || `heading-${index}`;
                 heading.id = id;
-                return {
-                    text: heading.textContent,
-                    level,
-                    id,
-                    tag: heading.tagName.toLowerCase()
-                };
+                return { text: heading.textContent, level, id, tag: heading.tagName.toLowerCase() };
             });
-            return {
-                headings,
-                updatedContent: doc.body.innerHTML
-            };
+            console.log('Headings extracted:', headings.length);
+            return { headings, updatedContent: doc.body.innerHTML };
         }
 
         // Обработка заголовков с **текстом** и удаление первого h1
         function processContent(content, title) {
+            console.log('Processing content...');
             let htmlContent = marked.parse(content || '');
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlContent, 'text/html');
@@ -1717,6 +1684,7 @@
             if (firstH1 && firstH1.textContent.trim() === title?.trim()) {
                 firstH1.remove();
             }
+            console.log('Content processed');
             return doc.body.innerHTML;
         }
 
@@ -1728,6 +1696,7 @@
 
         // Загрузка страницы
         async function loadPage(page) {
+            console.log('Starting to load page:', page.title);
             const mainContent = document.getElementById('mainContent');
             mainContent.innerHTML = `
                 <div class="text-center py-12">
@@ -1739,7 +1708,9 @@
             `;
 
             try {
+                console.log('Processing content for page:', page.title);
                 const processedContent = processContent(page.content, page.title);
+                console.log('Extracting headings for page:', page.title);
                 const { headings, updatedContent } = extractHeadings(processedContent);
 
                 const dateString = page.date ? new Date(page.date).toLocaleDateString('ru-RU', {
@@ -1748,6 +1719,7 @@
                     year: 'numeric'
                 }) : '';
 
+                console.log('Rendering page:', page.title);
                 mainContent.innerHTML = `
                     <div class="article-header">
                         <h1 class="text-3xl font-bold mb-2">${processTitle(page.title)}</h1>
@@ -1782,15 +1754,24 @@
                     </article>
                 `;
 
+                console.log('Setting up code blocks for page:', page.title);
                 setupCodeBlocks();
-                Prism.highlightAll();
+                console.log('Highlighting code with Prism.js for page:', page.title);
+                try {
+                    Prism.highlightAll();
+                } catch (error) {
+                    console.error('Error in Prism highlighting:', error);
+                }
+
                 if (headings.length > 0) {
+                    console.log('Setting up headings navigation for page:', page.title);
                     setupHeadingsNavigation();
                     setupHeadingsToggle();
                 }
 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 history.pushState(null, '', `#${page.slug}`);
+                console.log('Page loaded successfully:', page.title);
             } catch (error) {
                 console.error('Error rendering page:', error);
                 showErrorMessage(`Ошибка при загрузке статьи: ${error.message}`);
@@ -1807,11 +1788,13 @@
             toggleButton.addEventListener('click', () => {
                 const isCollapsed = headingsContainer.classList.toggle('collapsed');
                 toggleButton.innerHTML = `<i class="ri-${isCollapsed ? 'eye-off' : 'eye'}-line"></i>`;
+                console.log('Headings container toggled, collapsed:', isCollapsed);
             });
         }
 
         // Настройка блоков с кодом
         function setupCodeBlocks() {
+            console.log('Setting up code blocks...');
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -1837,6 +1820,7 @@
                 }
                 observer.observe(block);
             });
+            console.log('Code blocks setup completed');
         }
 
         // Копирование кода
@@ -1848,6 +1832,7 @@
                 setTimeout(() => {
                     button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
                 }, 2000);
+                console.log('Code copied successfully');
             } catch (err) {
                 console.error('Copy failed:', err);
                 button.innerHTML = '<i class="ri-close-line"></i> Ошибка';
@@ -1859,6 +1844,7 @@
 
         // Настройка навигации по заголовкам
         function setupHeadingsNavigation() {
+            console.log('Setting up headings navigation...');
             document.querySelectorAll('.heading-item').forEach(item => {
                 item.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -1870,6 +1856,7 @@
                             top: targetElement.offsetTop - 20,
                             behavior: 'smooth'
                         });
+                        console.log('Scrolled to heading:', targetId);
                     }
                 });
             });
@@ -1891,6 +1878,7 @@
                 searchPanelInput.focus();
                 searchInput.value = '';
                 performSearch(searchPanelInput.value);
+                console.log('Search panel opened');
             }
         });
 
@@ -1899,12 +1887,12 @@
             searchOverlay.classList.remove('active');
             searchPanelInput.value = '';
             searchResults.innerHTML = '';
+            console.log('Search panel closed');
         }
 
         closeSearch.addEventListener('click', closeSearchPanel);
         searchOverlay.addEventListener('click', closeSearchPanel);
 
-        // Закрытие поиска по Esc
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && searchPanel.classList.contains('active')) {
                 closeSearchPanel();
@@ -1916,6 +1904,7 @@
         }, 300));
 
         function performSearch(query) {
+            console.log('Performing search with query:', query);
             query = query.trim().toLowerCase();
             searchResults.innerHTML = '';
 
@@ -1928,7 +1917,6 @@
                 return;
             }
 
-            // Умный поиск с весами
             const results = pagesData.map(page => {
                 const title = (page.title || '').toLowerCase();
                 const description = (page.description || '').toLowerCase();
@@ -1948,7 +1936,6 @@
                 return { page, score };
             }).filter(result => result.score > 0);
 
-            // Сортировка по релевантности
             results.sort((a, b) => b.score - a.score);
 
             if (results.length === 0) {
@@ -2000,11 +1987,11 @@
 
                 searchResults.appendChild(resultItem);
             });
+            console.log('Search results rendered:', results.length);
         }
 
         function highlightMatches(text, query) {
             if (!text || !query) return text;
-            // Используем регулярное выражение для поиска целых слов
             const regex = new RegExp(`(\\b${escapeRegExp(query)}\\b)`, 'gi');
             return text.replace(regex, '<span style="background-color: var(--search-highlight); border-radius: 4px; padding: 0 2px;">$1</span>');
         }
@@ -2017,6 +2004,7 @@
             if (event) event.preventDefault();
             const page = pagesData.find(p => p.slug === slug);
             if (page) {
+                console.log('Loading page from search:', page.title);
                 loadPage(page);
                 localStorage.setItem('lastPageSlug', slug);
                 updateActiveStates(slug);
@@ -2029,9 +2017,8 @@
 
         function debounce(func, wait) {
             let timeout;
-            return function() {
+            return function(...args) {
                 const context = this;
-                const args = arguments;
                 clearTimeout(timeout);
                 timeout = setTimeout(() => {
                     func.apply(context, args);
@@ -2043,146 +2030,86 @@
         const mobileMenuToggle = document.getElementById('mobileMenuToggle');
         const articlesColumn = document.getElementById('articlesColumn');
 
-        function toggleMobileMenu(show) {
-            if (show === undefined) {
-                articlesColumn.classList.toggle('active');
-            } else {
-                show ? articlesColumn.classList.add('active') : articlesColumn.classList.remove('active');
-            }
+        function toggleMobileMenu(forceState = null) {
+            const isActive = forceState !== null ? forceState : !articlesColumn.classList.contains('active');
+            articlesColumn.classList.toggle('active', isActive);
+            mobileMenuToggle.innerHTML = `<i class="ri-${isActive ? 'close' : 'menu'}-line"></i>`;
+            console.log('Mobile menu toggled:', isActive ? 'opened' : 'closed');
         }
 
         mobileMenuToggle.addEventListener('click', () => toggleMobileMenu());
-
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth >= 1024) return;
-            const isClickInsideMenu = articlesColumn.contains(e.target) || mobileMenuToggle.contains(e.target);
-            if (!isClickInsideMenu && articlesColumn.classList.contains('active')) {
-                toggleMobileMenu(false);
-            }
-        });
-
-        // Подсветка меню
-        const menuContainer = document.querySelector('.menu-container');
-        const menuHighlight = document.getElementById('menuHighlight');
-
-        if (menuContainer && menuHighlight) {
-            menuContainer.addEventListener('mouseover', (e) => {
-                const item = e.target.closest('.menu-item');
-                if (!item || item === currentHighlightedItem) return;
-
-                if (currentHighlightedItem) {
-                    currentHighlightedItem.classList.remove('active');
-                }
-
-                item.classList.add('active');
-                currentHighlightedItem = item;
-            });
-
-            menuContainer.addEventListener('mouseout', () => {
-                if (currentHighlightedItem) {
-                    currentHighlightedItem.classList.remove('active');
-                    currentHighlightedItem = null;
-                }
-            });
-        }
 
         // Telegram меню
         const telegramButton = document.getElementById('telegramButton');
         const telegramMenu = document.getElementById('telegramMenu');
 
-        function closeTelegramMenu() {
-            telegramMenu.classList.remove('active');
-            setTimeout(() => {
-                telegramMenu.style.display = 'none';
-            }, 400);
-        }
-
         telegramButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            telegramMenu.style.display = 'flex';
-            setTimeout(() => {
-                telegramMenu.classList.toggle('active');
-            }, 10);
+            e.stopPropagation();
+            telegramMenu.classList.toggle('active');
+            console.log('Telegram menu toggled:', telegramMenu.classList.contains('active') ? 'opened' : 'closed');
         });
 
         document.addEventListener('click', (e) => {
-            if (!telegramButton.contains(e.target) && !telegramMenu.contains(e.target)) {
-                closeTelegramMenu();
+            if (!telegramMenu.contains(e.target) && !telegramButton.contains(e.target)) {
+                telegramMenu.classList.remove('active');
+                console.log('Telegram menu closed by outside click');
             }
         });
 
-        document.addEventListener('contextmenu', (e) => {
-            if (!telegramMenu.contains(e.target)) {
-                closeTelegramMenu();
-            }
-        });
-
-        document.addEventListener('wheel', () => {
-            closeTelegramMenu();
-        });
-
-        document.addEventListener('keydown', () => {
-            closeTelegramMenu();
-        });
-
-        // Support модалка
+        // Модальное окно поддержки
         const supportButton = document.getElementById('supportButton');
         const supportModal = document.getElementById('supportModal');
         const supportModalOverlay = document.getElementById('supportModalOverlay');
         const closeSupport = document.getElementById('closeSupport');
 
-        function openSupportModal() {
-            supportModal.classList.add('active');
-            supportModalOverlay.classList.add('active');
+        function toggleSupportModal() {
+            const isActive = !supportModal.classList.contains('active');
+            supportModal.classList.toggle('active', isActive);
+            supportModalOverlay.classList.toggle('active', isActive);
+            console.log('Support modal toggled:', isActive ? 'opened' : 'closed');
         }
 
-        function closeSupportModal() {
-            supportModal.classList.remove('active');
-            supportModalOverlay.classList.remove('active');
-        }
+        supportButton.addEventListener('click', toggleSupportModal);
+        closeSupport.addEventListener('click', toggleSupportModal);
+        supportModalOverlay.addEventListener('click', toggleSupportModal);
 
-        supportButton.addEventListener('click', openSupportModal);
-        closeSupport.addEventListener('click', closeSupportModal);
-        supportModalOverlay.addEventListener('click', closeSupportModal);
-
-        // Закрытие модалки по Esc
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && supportModal.classList.contains('active')) {
-                closeSupportModal();
+                toggleSupportModal();
             }
         });
 
-        // Пасхалка на иконке книги
+        // Пасхалка
         const easterEggIcon = document.getElementById('easterEggIcon');
+        let clickCount = 0;
+
         easterEggIcon.addEventListener('click', () => {
-            window.open('https://www.google.com/maps/@52.5952022,39.5248965,3a,75y,359.07h,82.97t/data=!3m7!1e1!3m5!1sCIHM0ogKEICAgICa5tjvxwE!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgpms-cs-s%2FAIMqDu21lgzR3PQCz7Fcnvug4Wap9dJI4tKQ-gAbaQ8ergN6Xr9J2o8lgXuYKxw7xxq5Pw0QjHqdS4EdMQ3-pUqdblICnUDSthThx2beg0YHHfXLWmSf4jzc8ezfLdbgjGk5iR1QQQrI%3Dw900-h600-k-no-pi7.034647060289103-ya184.0695531759182-ro0-fo100!7i7216!8i3608?entry=ttu&g_ep=EgoyMDI1MDQxMy4wIKXMDSoASAFQAw%3D%3D', '_blank');
+            clickCount++;
+            if (clickCount === 5) {
+                easterEggIcon.classList.add('animate-blink');
+                clickCount = 0;
+                console.log('Easter egg triggered');
+            }
         });
 
-        // Обработка навигации по истории
-        window.addEventListener('popstate', () => {
-            const hash = window.location.hash.substring(1);
-            if (hash) {
-                const page = pagesData.find(p => p.slug === hash);
+        // Обработка изменения хэша в URL
+        window.addEventListener('hashchange', () => {
+            const slug = window.location.hash.slice(1);
+            if (slug) {
+                const page = pagesData.find(p => p.slug === slug);
                 if (page) {
+                    console.log('Hash changed, loading page:', page.title);
                     loadPage(page);
-                    localStorage.setItem('lastPageSlug', page.slug);
-                    updateActiveStates(page.slug);
+                    localStorage.setItem('lastPageSlug', slug);
+                    updateActiveStates(slug);
                 }
             }
         });
 
-        // Загрузка данных
+        // Инициализация
         document.addEventListener('DOMContentLoaded', () => {
-            const hash = window.location.hash.substring(1);
-            if (hash) {
-                lastPageSlug = hash;
-                localStorage.setItem('lastPageSlug', hash);
-            }
-
+            console.log('DOM fully loaded, initializing...');
+            initParticles();
             loadPagesData();
         });
-
-        window.loadPageFromSearch = loadPageFromSearch;
     </script>
-</body>
-</html>
