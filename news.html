@@ -3,164 +3,865 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Погода в Липецке</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Проекты по C++ | Энциклопедия Эндера</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text x='0' y='20' font-size='20'>📘</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
     <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --bg-quaternary: #30363d;
+            --text-primary: #e6edf3;
+            --text-secondary: #c9d1d9;
+            --text-tertiary: #8b949e;
+            --accent-color: #3b82f6;
+            --accent-hover: #60a5fa;
+            --accent-active: #2563eb;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --highlight-yellow: #4a4a1a;
+            --highlight-red: #4a1a1a;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            margin: 0;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .articles-column {
+            min-height: calc(100vh - 68px);
+            overflow-y: auto;
+            border-right: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            transition: all 0.3s ease;
+            width: 320px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (max-width: 1024px) {
+            .articles-column {
+                position: fixed;
+                left: -320px;
+                top: 68px;
+                z-index: 100;
+                transition: transform 0.3s ease;
+            }
+
+            .articles-column.active {
+                transform: translateX(320px);
+            }
+
+            .mobile-menu-toggle {
+                display: block !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .articles-column {
+                width: 280px;
+                left: -280px;
+            }
+            
+            .articles-column.active {
+                transform: translateX(280px);
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .menu-container {
+            position: relative;
+            padding: 1rem;
+        }
+
+        .menu-item {
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+            color: var(--text-tertiary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.25rem;
+            text-decoration: none;
+        }
+
+        .menu-item:hover {
+            color: var(--accent-color);
+            background-color: var(--bg-tertiary);
+        }
+
+        .menu-item.active {
+            color: var(--accent-color);
+            background-color: var(--bg-tertiary);
+        }
+
+        .menu-item i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+            width: 20px;
             text-align: center;
-            background-color: #f0f8ff;
+            transition: transform 0.3s ease;
         }
-        .weather-container {
-            margin-top: 20px;
-            padding: 20px;
-            border-radius: 10px;
-            background-color: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+        .menu-item:hover i {
+            transform: scale(1.2);
         }
-        .error {
-            color: #d9534f;
-            font-weight: bold;
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(13, 17, 23, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
         }
-        .loading {
-            color: #5bc0de;
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 0.75rem 1rem;
+            }
         }
-        .weather-icon {
-            font-size: 3rem;
-            margin: 10px 0;
+
+        @media (max-width: 640px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 0.75rem;
+            }
+            
+            .blog-title {
+                margin-bottom: 0.5rem;
+            }
+            
+            .search-container {
+                width: 100%;
+                margin-top: 0.5rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .search-input {
+                width: 100%;
+                min-width: auto;
+            }
+            
+            .telegram-button {
+                display: none;
+            }
         }
-        .temperature {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin: 10px 0;
+
+        .blog-title {
+            display: flex;
+            align-items: center;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            cursor: default;
         }
-        .refresh-btn {
-            margin-top: 15px;
-            padding: 8px 16px;
-            background-color: #5cb85c;
-            color: white;
+
+        .blog-title:hover {
+            color: var(--accent-color);
+        }
+
+        .blog-title i {
+            margin-right: 0.75rem;
+            color: var(--accent-color);
+            transition: transform 0.3s ease;
+            cursor: default;
+        }
+
+        .blog-title:hover i {
+            transform: scale(1.1);
+        }
+
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-input {
+            padding: 0.6rem 2.5rem 0.6rem 1rem;
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            min-width: 200px;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background-color: var(--bg-quaternary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
             border: none;
-            border-radius: 4px;
+            color: var(--text-primary);
+            font-size: 1.5rem;
             cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 6px;
+        }
+
+        .mobile-menu-toggle:hover {
+            background: var(--bg-tertiary);
+            color: var(--accent-color);
+            transform: rotate(90deg);
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem;
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuMjHxIGmVAAAAL0lEQVQYV2P4//8/AwYQhxitgA8Y0cTwZ2A4DMMiYBhOwwKCAX4GBoa4oXgAHy0HLLM8a5kAAAAASUVORK5CYII=') repeat;
+            background-size: 10px 10px;
+            background-opacity: 0.05;
+        }
+
+        .article-text h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 2rem 0 1.5rem;
+            color: var(--text-primary);
+            position: relative;
+            line-height: 1.3;
+        }
+
+        .article-text h1::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-color);
+            transition: width 0.5s ease-in-out;
+        }
+
+        .article-text h1:hover::after {
+            width: 100%;
+        }
+
+        .article-text p {
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            color: var(--text-secondary);
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .project-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .project-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .project-item {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .project-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .project-item.has-topic {
+            background: var(--highlight-yellow);
+        }
+
+        .project-item.no-topic {
+            background: var(--highlight-red);
+        }
+
+        .project-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-status {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .project-description {
+            display: none;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .project-description.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .clock-emoji {
+            display: inline-block;
+            animation: rotateClock 4s infinite steps(12);
+        }
+
+        @keyframes rotateClock {
+            0% { content: '🕓'; }
+            8.33% { content: '🕔'; }
+            16.67% { content: '🕕'; }
+            25% { content: '🕖'; }
+            33.33% { content: '🕗'; }
+            41.67% { content: '🕘'; }
+            50% { content: '🕙'; }
+            58.33% { content: '🕚'; }
+            66.67% { content: '🕛'; }
+            75% { content: '🕐'; }
+            83.33% { content: '🕑'; }
+            91.67% { content: '🕒'; }
+            100% { content: '🕓'; }
+        }
+
+        .telegram-button {
+            background: linear-gradient(135deg, #2AABEE, #1A8BCF);
+            color: white;
+            position: relative;
+            transition: all 0.3s ease;
+            padding: 0.6rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+
+        .telegram-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .support-button {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            width: 50px;
+            height: 50px;
+            background: var(--bg-tertiary);
+            color: var(--accent-color);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 50;
+        }
+
+        .support-button:hover {
+            background: var(--bg-quaternary);
+            transform: scale(1.1);
+        }
+
+        .support-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            width: min(90%, 500px);
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .support-modal.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .support-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 90;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .support-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .support-modal h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .support-modal h3 i {
+            margin-right: 0.5rem;
+            color: #ff5555;
+        }
+
+        .support-modal p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .support-modal .namemc-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(90deg, #000, #444);
+            color: var(--text-primary);
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .support-modal .namemc-button:hover {
+            background: linear-gradient(90deg, #333, #555);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .support-modal .telegram-support {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .support-modal .telegram-support:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(15, 130, 246, 0.3);
+        }
+
+        .support-modal .close-support {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-tertiary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .support-modal .close-support:hover {
+            color: var(--accent-color);
+            transform: rotate(90deg);
         }
     </style>
 </head>
 <body>
-    <h1>Погода в Липецке</h1>
-    
-    <div id="weather" class="weather-container">
-        <p class="loading">Загружаем данные о погоде...</p>
-    </div>
-    
-    <button id="refresh" class="refresh-btn">Обновить</button>
+    <div id="particles-js"></div>
+    <div class="content-wrapper">
+        <header class="header">
+            <div class="flex items-center">
+                <button class="mobile-menu-toggle mr-4" id="mobileMenuToggle">
+                    <i class="ri-menu-line"></i>
+                </button>
+                <span class="blog-title">
+                    <i class="ri-book-open-line"></i>
+                    Энциклопедия Эндера
+                </span>
+            </div>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Поиск..." id="searchInput">
+                <button class="telegram-button" id="telegramButton">
+                    <i class="ri-telegram-fill mr-2"></i>
+                    Telegram
+                </button>
+                <div class="telegram-menu" id="telegramMenu">
+                    <a href="https://t.me/endermanik13" target="_blank">Тг автора</a>
+                    <a href="https://t.me/endermanik12" target="_blank">Канал автора</a>
+                </div>
+            </div>
+        </header>
 
+        <div class="flex flex-1">
+            <div class="articles-column" id="articlesColumn">
+                <div class="menu-container">
+                    <ul class="mb-8">
+                        <li><a href="https://endermanik13.github.io/top/#readme" class="menu-item"><i class="ri-home-line"></i> Главная</a></li>
+                        <li><a href="#" class="menu-item active"><i class="ri-newspaper-line"></i> Важная информация</a></li>
+                        <li><a href="https://endermanik13.gitbook.io/info" target="_blank" class="menu-item"><i class="ri-book-line"></i> GitBook</a></li>
+                        <li><a href="#" class="menu-item"><i class="ri-user-line"></i> Обо мне</a></li>
+                    </ul>
+                </div>
+                <div class="p-4 flex-1">
+                    <div class="category">
+                        <h3><i class="ri-folder-line"></i> C++ <i class="ri-arrow-down-s-line ml-auto transition-transform duration-300" style="transform: rotate(180deg);"></i></h3>
+                        <div class="category-items active">
+                            <a href="#" class="article-item active"><i class="ri-file-text-line"></i> Проекты по C++</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <main id="mainContent">
+                <div class="article-text">
+                    <h1>Проекты по C++</h1>
+                    <p>Ниже представлен список студентов и их проектов по C++, выполненных в рамках учебного курса. Студенты, выбравшие тему, подсвечены жёлтым, а те, кто ещё не выбрал — красным. Нажмите на карточку студента, чтобы узнать подробности проекта.</p>
+                    <div class="project-grid">
+                        <div class="project-item has-topic" data-project="leventsov">
+                            <div class="project-title">Левенцов Никита</div>
+                            <div class="project-status"><span class="clock-emoji">🕓</span> В разработке</div>
+                            <div class="project-description" id="leventsov-desc">
+                                <p>Проект: <strong>Почтовый клиент (упрощенный)</strong></p>
+                                <p>Основные классы:</p>
+                                <ul class="list-disc pl-5">
+                                    <li><strong>Email</strong>: содержит информацию о письме (отправитель, тема, текст, дата).</li>
+                                    <li><strong>Inbox</strong>: хранит список писем.</li>
+                                </ul>
+                                <p>Функционал:</p>
+                                <ul class="list-disc pl-5">
+                                    <li>Отправка писем (сохранение в файл).</li>
+                                    <li>Поиск писем по теме или отправителю.</li>
+                                    <li>Пометка писем как прочитанных.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="project-item no-topic" data-project="vorotnikov">
+                            <div class="project-title">Воротников Макар</div>
+                            <div class="project-status"><span>❌</span> Не выбрана тема</div>
+                            <div class="project-description" id="vorotnikov-desc">
+                                <p>Студент пока не выбрал тему для проекта.</p>
+                            </div>
+                        </div>
+                        <div class="project-item no-topic" data-project="klimov">
+                            <div class="project-title">Климов Илья</div>
+                            <div class="project-status"><span>❌</span> Не выбрана тема</div>
+                            <div class="project-description" id="klimov-desc">
+                                <p>Студент пока не выбрал тему для проекта.</p>
+                            </div>
+                        </div>
+                        <div class="project-item has-topic" data-project="kleymenov">
+                            <div class="project-title">Клеймёнов Саня</div>
+                            <div class="project-status"><span class="clock-emoji">🕓</span> В разработке</div>
+                            <div class="project-description" id="kleymenov-desc">
+                                <p>Проект: <strong>Сборщик тачки</strong></p>
+                                <p>Моделирует сборку автомобиля из комплектующих. Основная задача — рассчитать конечные характеристики автомобиля на основе выбранных деталей.</p>
+                                <p>Функционал:</p>
+                                <ul class="list-disc pl-5">
+                                    <li>Сборка автомобиля из заранее подготовленных комплектующих.</li>
+                                    <li>Расчет характеристик (например, скорость, мощность) на основе компонентов.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="project-item no-topic" data-project="misyurev">
+                            <div class="project-title">Мисюрёв Сергей</div>
+                            <div class="project-status"><span>❌</span> Не выбрана тема</div>
+                            <div class="project-description" id="misyurev-desc">
+                                <p>Студент пока не выбрал тему для проекта.</p>
+                            </div>
+                        </div>
+                        <div class="project-item no-topic" data-project="nefedov">
+                            <div class="project-title">Нефёдов Ваня</div>
+                            <div class="project-status"><span>❌</span> Не выбрана тема</div>
+                            <div class="project-description" id="nefedov-desc">
+                                <p>Студент пока не выбрал тему для проекта.</p>
+                            </div>
+                        </div>
+                        <div class="project-item has-topic" data-project="perov">
+                            <div class="project-title">Перов Дима</div>
+                            <div class="project-status"><span class="clock-emoji">🕓</span> В разработке</div>
+                            <div class="project-description" id="perov-desc">
+                                <p>Проект: <strong>Банкомат</strong></p>
+                                <p>Моделирует работу банкомата. Основные классы:</p>
+                                <ul class="list-disc pl-5">
+                                    <li><strong>Client</strong>: клиент с ФИО и PIN-кодом.</li>
+                                    <li><strong>Account</strong>: счет с номером, балансом и привязкой к клиенту.</li>
+                                    <li><strong>ATM</strong>: банкомат с методами входа по PIN, пополнения, снятия и просмотра баланса.</li>
+                                </ul>
+                                <p>Логика:</p>
+                                <ul class="list-disc pl-5">
+                                    <li>Проверка PIN-кода.</li>
+                                    <li>Лимиты на снятие средств.</li>
+                                    <li>Отображение текущего баланса.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="project-item has-topic" data-project="podugolnikov">
+                            <div class="project-title">Подугольников Антон</div>
+                            <div class="project-status"><span class="clock-emoji">🕓</span> В разработке</div>
+                            <div class="project-description" id="podugolnikov-desc">
+                                <p>Проект: <strong>Кафе</strong></p>
+                                <p>Симулирует работу кафе с системой заказов. Основные классы:</p>
+                                <ul class="list-disc pl-5">
+                                    <li><strong>MenuItem</strong>: блюдо с названием и ценой.</li>
+                                    <li><strong>Client</strong>: клиент с именем и балансом.</li>
+                                    <li><strong>Order</strong>: заказ, содержащий список блюд и информацию о клиенте.</li>
+                                </ul>
+                                <p>Логика:</p>
+                                <ul class="list-disc pl-5">
+                                    <li>Добавление блюда в заказ (метод addItemToOrder).</li>
+                                    <li>Проверка наличия средств у клиента.</li>
+                                    <li>Подсчет итоговой суммы заказа.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="project-item has-topic" data-project="popov_andrey">
+                            <div class="project-title">Попов Андрей</div>
+                            <div class="project-status"><span class="clock-emoji">🕓</span> В разработке</div>
+                            <div class="project-description" id="popov_andrey-desc">
+                                <p>Проект: <strong>Библиотека книг (с арендой)</strong></p>
+                                <p>Реализует систему управления библиотекой книг с функцией аренды. Основной класс:</p>
+                                <ul class="list-disc pl-5">
+                                    <li><strong>Book</strong>: книга с названием, автором, годом издания и статусом ("доступна" или "арендована").</li>
+                                </ul>
+                                <p>Функционал:</p>
+                                <ul class="list-disc pl-5">
+                                    <li>Поиск книг по автору.</li>
+                                    <li>Аренда и возврат книг.</li>
+                                    <li>Автосохранение статуса книг в файл.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="project-item no-topic" data-project="popov_sanya">
+                            <div class="project-title">Попов Саня</div>
+                            <div class="project-status"><span>❌</span> Не выбрана тема</div>
+                            <div class="project-description" id="popov_sanya-desc">
+                                <p>Студент пока не выбрал тему для проекта.</p>
+                            </div>
+                        </div>
+                        <div class="project-item no-topic" data-project="khlupin">
+                            <div class="project-title">Хлупин Влад</div>
+                            <div class="project-status"><span>❌</span> Не выбрана тема</div>
+                            <div class="project-description" id="khlupin-desc">
+                                <p>Студент пока не выбрал тему для проекта.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <button class="support-button" id="supportButton">
+            <i class="ri-heart-line"></i>
+        </button>
+        <div class="support-modal-overlay" id="supportModalOverlay"></div>
+        <div class="support-modal" id="supportModal">
+            <button class="close-support" id="closeSupport">
+                <i class="ri-close-line"></i>
+            </button>
+            <h3><i class="ri-heart-fill"></i> Спасибо за вашу поддержку!</h3>
+            <p>Автор очень старается впечатлить своих зрителей и коллег по учёбе, и ему очень было бы приятно услышать пару идей или благодарностей в свой адрес.</p>
+            <p>Если же хотите его прям порадовать, можете нарисовать по автору рисунок по его майнкрафт персонажу.</p>
+            <a href="https://namemc.com/skin/51f0ca7a48e29545" target="_blank" class="namemc-button">
+                <i class="ri-gamepad-line"></i> NameMC
+            </a>
+            <p>Ваша обратная связь помогает улучшать сайт и мотивирует на дальнейшую работу!</p>
+            <a href="https://t.me/endermanik13" target="_blank" class="telegram-support">
+                <i class="ri-telegram-fill mr-2"></i> Telegram
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        // Координаты Липецка
-        const latitude = 52.60882;
-        const longitude = 39.59922;
-        
-        // Получаем и отображаем погоду
-        async function getWeather() {
-            const weatherContainer = document.getElementById('weather');
-            
+        // Инициализация particles.js
+        function initParticles() {
             try {
-                weatherContainer.innerHTML = '<p class="loading">Загружаем данные о погоде...</p>';
-                
-                // Используем Open-Meteo (не требует API ключа для базового использования)
-                const response = await fetch(
-                    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`
-                );
-                
-                if (!response.ok) {
-                    throw new Error('Сервер погоды недоступен');
-                }
-                
-                const data = await response.json();
-                
-                if (!data.current_weather) {
-                    throw new Error('Данные о погоде не получены');
-                }
-                
-                const weather = data.current_weather;
-                const temperature = weather.temperature;
-                const weatherCode = weather.weathercode;
-                
-                // Преобразуем код погоды в текстовое описание
-                const weatherDescription = getWeatherDescription(weatherCode);
-                const weatherEmoji = getWeatherEmoji(weatherCode);
-                
-                weatherContainer.innerHTML = `
-                    <div class="weather-icon">${weatherEmoji}</div>
-                    <div class="temperature">${temperature}°C</div>
-                    <p>${weatherDescription}</p>
-                    <p><small>Обновлено: ${new Date().toLocaleTimeString()}</small></p>
-                `;
+                particlesJS('particles-js', {
+                    particles: {
+                        number: { value: 60, density: { enable: true, value_area: 800 } },
+                        color: { value: '#58a6ff' },
+                        shape: { type: 'circle' },
+                        opacity: { value: 0.3, random: false },
+                        size: { value: 3, random: true },
+                        line_linked: { enable: true, distance: 150, color: '#58a6ff', opacity: 0.2, width: 1 },
+                        move: { enable: true, speed: 1.5, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
+                    },
+                    interactivity: {
+                        detect_on: 'canvas',
+                        events: { onhover: { enable: true, mode: 'grab' }, resize: true },
+                        modes: { grab: { distance: 140, line_linked: { opacity: 0.5 } } }
+                    },
+                    retina_detect: true
+                });
             } catch (error) {
-                weatherContainer.innerHTML = `
-                    <p class="error">Ошибка: ${error.message}</p>
-                    <p>Проверьте подключение к интернету и попробуйте снова.</p>
-                `;
+                console.error('Error initializing particles.js:', error);
             }
         }
-        
-        // Функция для преобразования кода погоды в описание
-        function getWeatherDescription(code) {
-            const descriptions = {
-                0: 'Ясно',
-                1: 'Преимущественно ясно',
-                2: 'Переменная облачность',
-                3: 'Пасмурно',
-                45: 'Туман',
-                48: 'Туман с инеем',
-                51: 'Морось: слабая',
-                53: 'Морось: умеренная',
-                55: 'Морось: сильная',
-                56: 'Ледяная морось: слабая',
-                57: 'Ледяная морось: сильная',
-                61: 'Дождь: слабый',
-                63: 'Дождь: умеренный',
-                65: 'Дождь: сильный',
-                66: 'Ледяной дождь: слабый',
-                67: 'Ледяной дождь: сильный',
-                71: 'Снег: слабый',
-                73: 'Снег: умеренный',
-                75: 'Снег: сильный',
-                77: 'Снежные зерна',
-                80: 'Ливень: слабый',
-                81: 'Ливень: умеренный',
-                82: 'Ливень: сильный',
-                85: 'Снегопад: слабый',
-                86: 'Снегопад: сильный',
-                95: 'Гроза: слабая или умеренная',
-                96: 'Гроза с градом: слабая',
-                99: 'Гроза с градом: сильная'
-            };
-            
-            return descriptions[code] || 'Неизвестные погодные условия';
+
+        // Мобильное меню
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const articlesColumn = document.getElementById('articlesColumn');
+
+        function toggleMobileMenu(forceState = null) {
+            const isActive = forceState !== null ? forceState : !articlesColumn.classList.contains('active');
+            articlesColumn.classList.toggle('active', isActive);
+            mobileMenuToggle.innerHTML = `<i class="ri-${isActive ? 'close' : 'menu'}-line"></i>`;
         }
-        
-        // Функция для получения emoji по коду погоды
-        function getWeatherEmoji(code) {
-            if (code === 0) return '☀️';
-            if (code <= 3) return '⛅';
-            if (code <= 48) return '🌫️';
-            if (code <= 67) return '🌧️';
-            if (code <= 77) return '❄️';
-            if (code <= 86) return '🌨️';
-            if (code <= 99) return '⛈️';
-            return '🌈';
+
+        mobileMenuToggle.addEventListener('click', () => toggleMobileMenu());
+
+        // Telegram меню
+        const telegramButton = document.getElementById('telegramButton');
+        const telegramMenu = document.getElementById('telegramMenu');
+
+        telegramButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            telegramMenu.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!telegramMenu.contains(e.target) && !telegramButton.contains(e.target)) {
+                telegramMenu.classList.remove('active');
+            }
+        });
+
+        // Модальное окно поддержки
+        const supportButton = document.getElementById('supportButton');
+        const supportModal = document.getElementById('supportModal');
+        const supportModalOverlay = document.getElementById('supportModalOverlay');
+        const closeSupport = document.getElementById('closeSupport');
+
+        function toggleSupportModal() {
+            const isActive = !supportModal.classList.contains('active');
+            supportModal.classList.toggle('active', isActive);
+            supportModalOverlay.classList.toggle('active', isActive);
         }
-        
-        // Загружаем погоду при загрузке страницы
-        document.addEventListener('DOMContentLoaded', getWeather);
-        
-        // Обновляем по кнопке
-        document.getElementById('refresh').addEventListener('click', getWeather);
-        
-        // Автообновление каждые 30 минут
-        setInterval(getWeather, 30 * 60 * 1000);
+
+        supportButton.addEventListener('click', toggleSupportModal);
+        closeSupport.addEventListener('click', toggleSupportModal);
+        supportModalOverlay.addEventListener('click', toggleSupportModal);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && supportModal.classList.contains('active')) {
+                toggleSupportModal();
+            }
+        });
+
+        // Показ/скрытие описания проекта
+        document.querySelectorAll('.project-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const desc = item.querySelector('.project-description');
+                desc.classList.toggle('active');
+            });
+        });
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            initParticles();
+        });
     </script>
 </body>
 </html>
