@@ -1045,7 +1045,7 @@
             opacity: 0;
             visibility: hidden;
             transform: translateY(20px);
-            transition: opacity 0.3s ease, transform 0.3s ease, background 0.3s ease;
+            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease, background 0.3s ease;
         }
 
         .scroll-top-button.visible {
@@ -1185,7 +1185,6 @@
             transform: rotate(90deg);
         }
 
-        /* NEW: Стили для модального окна просмотра изображений */
         .image-viewer-overlay {
             position: fixed;
             top: 0;
@@ -1461,7 +1460,6 @@
             </a>
         </div>
 
-        <!-- NEW: Модальное окно для просмотра изображений -->
         <div class="image-viewer-overlay" id="imageViewerOverlay"></div>
         <div class="image-viewer" id="imageViewer">
             <button class="image-viewer-close" id="imageViewerClose">
@@ -1494,12 +1492,14 @@
             smartypants: true,
         });
 
-        // NEW: Кастомный рендерер для изображений и YouTube-видео
         const renderer = new marked.Renderer();
         renderer.image = function(href, title, text) {
             return `<img src="${href}" alt="${text || ''}" title="${title || ''}" class="markdown-image" onerror="this.src='https://via.placeholder.com/400x300?text=Image+Not+Found'; this.alt='Image Not Found';">`;
         };
         renderer.paragraph = function(text) {
+            if (typeof text !== 'string') {
+                return `<p>${text}</p>`;
+            }
             const youtubeRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})$/;
             const lines = text.split('\n').map(line => line.trim());
             for (let line of lines) {
@@ -1573,7 +1573,6 @@
                     }
                 });
 
-                // Сортировка страниц по дате (новые первыми)
                 pagesData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
                 renderCategories();
@@ -1647,7 +1646,6 @@
                 const categoryItems = document.createElement('div');
                 categoryItems.className = 'category-items';
 
-                // Сортировка статей в категории по дате (новые первыми)
                 const sortedPages = categories[category].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
                 sortedPages.forEach(page => {
@@ -1877,7 +1875,6 @@
             });
         }
 
-        // NEW: Настройка просмотра изображений
         function setupImageViewer() {
             const images = document.querySelectorAll('.article-text img.markdown-image');
             const viewerOverlay = document.getElementById('imageViewerOverlay');
@@ -2091,7 +2088,6 @@
             };
         }
 
-        // Настройка мобильного меню
         const mobileMenuToggle = document.getElementById('mobileMenuToggle');
         const articlesColumn = document.getElementById('articlesColumn');
 
@@ -2101,7 +2097,6 @@
             console.log('Mobile menu toggled, active:', articlesColumn.classList.contains('active'));
         });
 
-        // Настройка Telegram-меню
         const telegramButton = document.getElementById('telegramButton');
         const telegramMenu = document.getElementById('telegramMenu');
 
@@ -2110,7 +2105,6 @@
             telegramMenu.classList.toggle('active');
             console.log('Telegram menu toggled, active:', telegramMenu.classList.contains('active'));
         });
-
         document.addEventListener('click', (e) => {
             if (!telegramMenu.contains(e.target) && !telegramButton.contains(e.target)) {
                 telegramMenu.classList.remove('active');
