@@ -7,12 +7,10 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Энциклопедия Эндера</title>
-    <!-- Иконка сайта: эмодзи 📘 -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text x='0' y='20' font-size='20'>📘</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
-    <!-- Prism.js для подсветки кода -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-one-dark.min.css" rel="stylesheet">
     <style>
         :root {
@@ -373,29 +371,6 @@
             position: relative;
         }
 
-        .search-input::after,
-        .search-panel-input::after {
-            content: '\e6b2';
-            font-family: 'remixicon';
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-tertiary);
-            opacity: 0.5;
-            font-size: 1rem;
-        }
-
-        .search-input:focus::after,
-        .search-panel-input:focus::after {
-            opacity: 0.7;
-        }
-
-        .search-input::placeholder,
-        .search-panel-input::placeholder {
-            color: var(--text-tertiary);
-        }
-
         .search-input:focus,
         .search-panel-input:focus {
             outline: none;
@@ -500,10 +475,6 @@
             -webkit-mask-image: linear-gradient(180deg, #fff 60%, transparent 100%);
         }
 
-        .search-result-description p {
-            margin: 0;
-        }
-
         .close-search {
             position: absolute;
             top: 1rem;
@@ -544,11 +515,6 @@
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
-        .telegram-button:active {
-            transform: scale(0.95);
-            box-shadow: none;
-        }
-
         .telegram-menu {
             position: absolute;
             top: 100%;
@@ -566,12 +532,6 @@
             transform: scale(0.95) translateY(-10px);
             transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             transform-origin: top right;
-        }
-
-        .telegram-menu:not(.active) {
-            opacity: 0;
-            transform: scale(0.95) translateY(-10px);
-            pointer-events: none;
         }
 
         .telegram-menu.active {
@@ -630,15 +590,6 @@
             color: var(--accent-color);
         }
 
-        .md-pdf-button i {
-            margin-right: 0.5rem;
-            transition: transform 0.3s ease;
-        }
-
-        .md-pdf-button:hover i {
-            transform: scale(1.2);
-        }
-
         .mobile-menu-toggle {
             display: none;
             background: none;
@@ -670,7 +621,7 @@
             min-width: 0;
             max-width: 100%;
             overflow-wrap: break-word;
-            padding: 0 1rem; /* NEW: Added padding to ensure proper indents */
+            padding: 0 1rem;
         }
 
         @media (max-width: 1024px) {
@@ -753,13 +704,6 @@
             font-size: 1.3rem;
             font-weight: 600;
             margin: 1.5rem 0 0.75rem;
-            color: var(--text-primary);
-        }
-
-        .article-text h4 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin: 1.25rem 0 0.5rem;
             color: var(--text-primary);
         }
 
@@ -857,14 +801,6 @@
             color: var(--accent-color);
         }
 
-        .copy-code-btn:active {
-            transform: scale(0.95);
-        }
-
-        .copy-code-btn i {
-            font-size: 0.9rem;
-        }
-
         .article-text table {
             width: 100%;
             border-collapse: collapse;
@@ -873,7 +809,7 @@
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            border: 1px solid var(--border-color); /* NEW: Added explicit border for table */
+            border: 1px solid var(--border-color);
         }
 
         .article-text th,
@@ -882,7 +818,7 @@
             border: 1px solid var(--border-color);
             text-align: left;
             color: var(--text-secondary);
-            font-size: 0.9rem; /* NEW: Consistent font size */
+            font-size: 0.9rem;
         }
 
         .article-text th {
@@ -895,7 +831,7 @@
             background-color: rgba(255, 255, 255, 0.03);
         }
 
-        .article-text tr:hover { /* NEW: Added hover effect for table rows */
+        .article-text tr:hover {
             background-color: rgba(59, 130, 246, 0.1);
         }
 
@@ -903,19 +839,20 @@
             max-width: 100%;
             height: auto;
             border-radius: 8px;
-            margin: 1.5rem auto; /* NEW: Centered images */
+            margin: 1.5rem auto;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             display: block;
-            transition: transform 0.3s ease; /* NEW: Added hover animation */
+            transition: transform 0.3s ease;
+            cursor: pointer;
         }
 
-        .article-text img:hover { /* NEW: Hover effect for images */
+        .article-text img:hover {
             transform: scale(1.02);
         }
 
-        .article-text .embed-container { /* NEW: Styling for YouTube embeds */
+        .article-text .embed-container {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
             max-width: 100%;
@@ -925,7 +862,7 @@
             transition: transform 0.3s ease;
         }
 
-        .article-text .embed-container:hover { /* NEW: Hover effect for embeds */
+        .article-text .embed-container:hover {
             transform: scale(1.02);
         }
 
@@ -946,10 +883,6 @@
             border-radius: 0 8px 8px 0;
             color: var(--text-secondary);
             font-style: italic;
-        }
-
-        .article-text blockquote p {
-            margin-bottom: 0;
         }
 
         .article-text hr {
@@ -1005,19 +938,6 @@
             animation: slideIn 0.3s ease forwards;
         }
 
-        .headings-container::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .headings-container::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 2px;
-        }
-
-        .headings-container::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
         .headings-block h4 {
             margin: 0;
             font-size: 1.1rem;
@@ -1025,10 +945,6 @@
             color: var(--accent-color);
             display: flex;
             align-items: center;
-        }
-
-        .headings-block h4 i {
-            margin-right: 0.75rem;
         }
 
         .headings-container {
@@ -1057,21 +973,6 @@
             transform: translateX(4px);
         }
 
-        .heading-item::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 1rem;
-            width: 0;
-            height: 2px;
-            background: var(--accent-color);
-            transition: width 0.3s ease;
-        }
-
-        .heading-item:hover::after {
-            width: calc(100% - 2rem);
-        }
-
         main {
             flex: 1;
             padding: 2rem;
@@ -1083,21 +984,6 @@
         @media (max-width: 768px) {
             main {
                 padding: 1.5rem;
-            }
-
-            .article-content {
-                flex-direction: column;
-                gap: 1.5rem;
-            }
-
-            .article-text h1 {
-                font-size: 1.8rem;
-                margin: 1.5rem 0 1rem;
-            }
-
-            .article-text h2 {
-                font-size: 1.4rem;
-                margin: 1.5rem 0 0.75rem;
             }
         }
 
@@ -1121,23 +1007,6 @@
             border-bottom: 1px solid var(--border-color);
         }
 
-        .sidebar-header p {
-            margin: 0.25rem 0;
-        }
-
-        .sidebar-header i,
-        .article-header i {
-            font-size: 14px;
-            margin-right: 0.5rem;
-            color: var(--accent-color);
-            transition: transform 0.3s ease;
-        }
-
-        .sidebar-header i:hover,
-        .article-header i:hover {
-            transform: scale(1.2);
-        }
-
         .support-button {
             position: fixed;
             bottom: 1.5rem;
@@ -1157,10 +1026,9 @@
             z-index: 50;
         }
 
-        /* NEW: Scroll-to-top button styles */
         .scroll-top-button {
             position: fixed;
-            bottom: 6.5rem; /* Positioned above support button */
+            bottom: 6.5rem;
             right: 1.5rem;
             width: 50px;
             height: 50px;
@@ -1199,7 +1067,7 @@
                 height: 40px;
             }
 
-            .scroll-top-button { /* NEW: Responsive adjustments */
+            .scroll-top-button {
                 bottom: 5rem;
                 width: 40px;
                 height: 40px;
@@ -1262,18 +1130,6 @@
             align-items: center;
         }
 
-        .support-modal h3 i {
-            margin-right: 0.5rem;
-            color: #ff5555;
-        }
-
-        .support-modal p {
-            font-size: 1rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-            line-height: 1.6;
-        }
-
         .support-modal .namemc-button {
             display: inline-flex;
             align-items: center;
@@ -1291,15 +1147,6 @@
             background: linear-gradient(90deg, #333, #555);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .support-modal .namemc-button i {
-            margin-right: 0.5rem;
-            transition: transform 0.3s ease;
-        }
-
-        .support-modal .namemc-button:hover i {
-            transform: scale(1.2);
         }
 
         .support-modal .telegram-support {
@@ -1321,14 +1168,6 @@
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
-        .support-modal .telegram-support i {
-            transition: transform 0.3s ease;
-        }
-
-        .support-modal .telegram-support:hover i {
-            transform: scale(1.2);
-        }
-
         .support-modal .close-support {
             position: absolute;
             top: 1rem;
@@ -1342,6 +1181,129 @@
         }
 
         .support-modal .close-support:hover {
+            color: var(--accent-color);
+            transform: rotate(90deg);
+        }
+
+        /* NEW: Стили для модального окна просмотра изображений */
+        .image-viewer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+        }
+
+        .image-viewer-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .image-viewer {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90vh;
+            z-index: 210;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .image-viewer.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .image-viewer img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 8px;
+            object-fit: contain;
+            transform-origin: center;
+            transition: transform 0.2s ease;
+            cursor: grab;
+        }
+
+        .image-viewer img.dragging {
+            cursor: grabbing;
+        }
+
+        .image-viewer-controls {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .image-viewer-controls button {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 4px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .image-viewer-controls button:hover {
+            background: var(--bg-quaternary);
+            color: var(--accent-color);
+        }
+
+        .image-viewer-controls span {
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .image-viewer-magnifier {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            pointer-events: none;
+        }
+
+        .image-viewer-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 220;
+        }
+
+        .image-viewer-close:hover {
+            background: var(--bg-quaternary);
             color: var(--accent-color);
             transform: rotate(90deg);
         }
@@ -1402,7 +1364,6 @@
             }
         }
 
-        /* NEW: Animation for Easter egg */
         .animate-blink {
             animation: blink 0.5s infinite;
         }
@@ -1480,7 +1441,6 @@
         <button class="support-button" id="supportButton">
             <i class="ri-heart-line"></i>
         </button>
-        <!-- NEW: Scroll-to-top button -->
         <button class="scroll-top-button" id="scrollTopButton">
             <i class="ri-arrow-up-line"></i>
         </button>
@@ -1500,6 +1460,21 @@
                 <i class="ri-telegram-fill mr-2"></i> Telegram
             </a>
         </div>
+
+        <!-- NEW: Модальное окно для просмотра изображений -->
+        <div class="image-viewer-overlay" id="imageViewerOverlay"></div>
+        <div class="image-viewer" id="imageViewer">
+            <button class="image-viewer-close" id="imageViewerClose">
+                <i class="ri-close-line"></i>
+            </button>
+            <img id="imageViewerImg" src="" alt="">
+            <div class="image-viewer-controls">
+                <button id="zoomOut"><i class="ri-subtract-line"></i></button>
+                <span id="zoomLevel">100%</span>
+                <button id="zoomIn"><i class="ri-add-line"></i></button>
+            </div>
+            <i class="ri-zoom-in-line image-viewer-magnifier"></i>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
@@ -1509,36 +1484,38 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
     <script>
-        // Инициализация переменных
         let pagesData = [];
         let currentHighlightedItem = null;
         let lastPageSlug = null;
 
-        // Установка настроек для marked.js с кастомным рендерером
         marked.setOptions({
             breaks: true,
             gfm: true,
             smartypants: true,
         });
 
-        // NEW: Кастомный рендерер для исправления изображений и YouTube-видео
+        // NEW: Кастомный рендерер для изображений и YouTube-видео
         const renderer = new marked.Renderer();
         renderer.image = function(href, title, text) {
-            return `<img src="${href}" alt="${text || ''}" title="${title || ''}" />`;
+            return `<img src="${href}" alt="${text || ''}" title="${title || ''}" class="markdown-image" onerror="this.src='https://via.placeholder.com/400x300?text=Image+Not+Found'; this.alt='Image Not Found';">`;
+        };
+        renderer.paragraph = function(text) {
+            const youtubeRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})$/;
+            const lines = text.split('\n').map(line => line.trim());
+            for (let line of lines) {
+                if (youtubeRegex.test(line)) {
+                    const match = line.match(youtubeRegex);
+                    const videoId = match[1];
+                    return `<div class="embed-container"><iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen title="YouTube video"></iframe></div>`;
+                }
+            }
+            return `<p>${text}</p>`;
         };
         renderer.link = function(href, title, text) {
-            // NEW: Обработка YouTube-ссылок для встраивания видео
-            const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-            if (href && youtubeRegex.test(href)) {
-                const match = href.match(youtubeRegex);
-                const videoId = match[1];
-                return `<div class="embed-container"><iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen title="${title || text || 'YouTube video'}"></iframe></div>`;
-            }
             return `<a href="${href}" title="${title || ''}" target="_blank" rel="noopener">${text}</a>`;
         };
         marked.setOptions({ renderer });
 
-        // Инициализация particles.js с обработкой ошибок
         function initParticles() {
             try {
                 particlesJS('particles-js', {
@@ -1558,22 +1535,19 @@
                     },
                     retina_detect: true
                 });
-                console.log('Particles.js initialized successfully');
             } catch (error) {
                 console.error('Error initializing particles.js:', error);
             }
         }
 
-        // Загрузка данных страниц с тайм-аутом
         async function loadPagesData() {
-            console.log('Starting to load pages data...');
             const mainContent = document.getElementById('mainContent');
             try {
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => {
                     controller.abort();
-                    throw new Error('Request timeout: Failed to load pages.json within 10 seconds');
-                }, 10000); // Тайм-аут 10 секунд
+                    throw new Error('Request timeout');
+                }, 10000);
 
                 const response = await fetch('pages.json', {
                     signal: controller.signal,
@@ -1582,16 +1556,9 @@
                 });
 
                 clearTimeout(timeoutId);
-                console.log('Fetch response received:', response.status);
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 pagesData = await response.json();
-                console.log('Pages data loaded:', pagesData.length, 'pages found');
 
-                // Фильтрация страниц
                 pagesData = pagesData.filter(page => 
                     page.category && 
                     page.category.trim() !== '' && 
@@ -1606,53 +1573,35 @@
                     }
                 });
 
-                // NEW: Сортировка страниц по дате (новые первыми)
-                // Сортировка выполняется сравнением дат, преобразуя их в объекты Date
-                // Если дата отсутствует, используется 0, чтобы такие страницы оказались в конце
+                // Сортировка страниц по дате (новые первыми)
                 pagesData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
-                console.log('Pages sorted and filtered');
 
                 renderCategories();
                 updateSidebarStats();
-                console.log('Categories and sidebar stats updated');
 
-                // Загрузка последней страницы или первой по умолчанию
                 lastPageSlug = localStorage.getItem('lastPageSlug');
                 let pageToLoad = pagesData.find(page => page.path === 'README.md') || pagesData[0];
-
                 if (lastPageSlug) {
                     const savedPage = pagesData.find(page => page.slug === lastPageSlug);
                     if (savedPage) pageToLoad = savedPage;
                 }
-
-                if (pagesData.length > 0) {
-                    console.log('Loading initial page:', pageToLoad.title);
-                    await loadPage(pageToLoad);
-                } else {
-                    throw new Error('No pages found after filtering');
-                }
+                if (pagesData.length > 0) await loadPage(pageToLoad);
+                else throw new Error('No pages found');
             } catch (error) {
                 console.error('Error loading pages:', error);
                 showErrorMessage(`Ошибка загрузки данных: ${error.message}`);
             }
         }
 
-        // Обновление статистики вверху боковой панели
         function updateSidebarStats() {
             const articleCount = pagesData.length;
-            const categoryCount = new Set(
-                pagesData.map(page => page.category)
-                    .filter(cat => cat && cat.toUpperCase() !== 'EXCALIDRAW')
-            ).size;
+            const categoryCount = new Set(pagesData.map(page => page.category).filter(cat => cat && cat.toUpperCase() !== 'EXCALIDRAW')).size;
             document.getElementById('articleCount').textContent = articleCount;
             document.getElementById('categoryCount').textContent = categoryCount;
-            console.log('Sidebar stats updated:', articleCount, 'articles,', categoryCount, 'categories');
         }
 
-        // Функция отображения сообщения об ошибке
         function showErrorMessage(message) {
-            const mainContent = document.getElementById('mainContent');
-            mainContent.innerHTML = `
+            document.getElementById('mainContent').innerHTML = `
                 <div class="text-center py-12">
                     <div class="inline-flex items-center text-lg text-red-400">
                         <i class="ri-error-warning-line mr-2"></i>
@@ -1660,20 +1609,14 @@
                     </div>
                 </div>
             `;
-            console.log('Error message displayed:', message);
         }
 
-        // Рендеринг категорий и статей
         function renderCategories() {
-            console.log('Rendering categories...');
             const categoryList = document.getElementById('categoryList');
-
             const categories = {};
             pagesData.forEach(page => {
                 if (!page.category || page.path === 'README.md') return;
-                if (!categories[page.category]) {
-                    categories[page.category] = [];
-                }
+                if (!categories[page.category]) categories[page.category] = [];
                 categories[page.category].push(page);
             });
 
@@ -1686,7 +1629,6 @@
                         <p>Нет предметов</p>
                     </div>
                 `;
-                console.log('No categories to render');
                 return;
             }
 
@@ -1705,10 +1647,8 @@
                 const categoryItems = document.createElement('div');
                 categoryItems.className = 'category-items';
 
-                // NEW: Сортировка статей в категории по дате (новые первыми)
-                const sortedPages = categories[category].sort((a, b) =>
-                    new Date(b.date || 0) - new Date(a.date || 0)
-                );
+                // Сортировка статей в категории по дате (новые первыми)
+                const sortedPages = categories[category].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
                 sortedPages.forEach(page => {
                     const articleItem = document.createElement('a');
@@ -1720,15 +1660,12 @@
                     `;
                     articleItem.dataset.slug = page.slug;
                     articleItem.title = page.title || 'Без названия';
-
                     articleItem.addEventListener('click', (e) => {
                         e.preventDefault();
-                        console.log('Article clicked:', page.title);
                         loadPage(page);
                         localStorage.setItem('lastPageSlug', page.slug);
                         updateActiveStates(page.slug);
                     });
-
                     categoryItems.appendChild(articleItem);
                 });
 
@@ -1739,11 +1676,9 @@
                     document.querySelectorAll('.category-items.active').forEach(item => {
                         if (item !== categoryItems) {
                             item.classList.remove('active');
-                            const arrow = item.parentElement.querySelector('.ri-arrow-down-s-line');
-                            arrow.style.transform = 'rotate(0)';
+                            item.parentElement.querySelector('.ri-arrow-down-s-line').style.transform = 'rotate(0)';
                         }
                     });
-
                     const isActive = categoryItems.classList.toggle('active');
                     const arrowIcon = categoryTitle.querySelector('.ri-arrow-down-s-line');
                     arrowIcon.style.transform = isActive ? 'rotate(180deg)' : 'rotate(0)';
@@ -1754,20 +1689,15 @@
                     categoryTitle.querySelector('.ri-arrow-down-s-line').style.transform = 'rotate(180deg)';
                 }
             });
-            console.log('Categories rendered:', sortedCategories.length);
         }
 
-        // Обновление активных состояний статей
         function updateActiveStates(slug) {
             document.querySelectorAll('.article-item').forEach(item => {
                 item.classList.toggle('active', item.dataset.slug === slug);
             });
-            console.log('Active states updated for slug:', slug);
         }
 
-        // Извлечение заголовков из контента
         function extractHeadings(htmlContent) {
-            console.log('Extracting headings...');
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlContent, 'text/html');
             const headings = Array.from(doc.querySelectorAll('h2, h3')).map((heading, index) => {
@@ -1776,13 +1706,10 @@
                 heading.id = id;
                 return { text: heading.textContent, level, id, tag: heading.tagName.toLowerCase() };
             });
-            console.log('Headings extracted:', headings.length);
             return { headings, updatedContent: doc.body.innerHTML };
         }
 
-        // Обработка заголовков с **текстом** и удаление первого h1
         function processContent(content, title) {
-            console.log('Processing content...');
             let htmlContent = marked.parse(content || '');
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlContent, 'text/html');
@@ -1790,19 +1717,15 @@
             if (firstH1 && firstH1.textContent.trim() === title?.trim()) {
                 firstH1.remove();
             }
-            console.log('Content processed');
             return doc.body.innerHTML;
         }
 
-        // Обработка заголовков с **текстом**
         function processTitle(title) {
             if (!title) return 'Без названия';
             return marked.parseInline(title.replace(/\*\*(.*?)\*\*/g, '**$1**'));
         }
 
-        // Загрузка страницы
         async function loadPage(page) {
-            console.log('Starting to load page:', page.title);
             const mainContent = document.getElementById('mainContent');
             mainContent.innerHTML = `
                 <div class="text-center py-12">
@@ -1814,18 +1737,14 @@
             `;
 
             try {
-                console.log('Processing content for page:', page.title);
                 const processedContent = processContent(page.content, page.title);
-                console.log('Extracting headings for page:', page.title);
                 const { headings, updatedContent } = extractHeadings(processedContent);
-
                 const dateString = page.date ? new Date(page.date).toLocaleDateString('ru-RU', {
                     day: '2-digit',
                     month: '2-digit',
                     year: 'numeric'
                 }) : '';
 
-                console.log('Rendering page:', page.title);
                 mainContent.innerHTML = `
                     <div class="article-header">
                         <h1 class="text-3xl font-bold mb-2">${processTitle(page.title)}</h1>
@@ -1860,72 +1779,46 @@
                     </article>
                 `;
 
-                console.log('Setting up code blocks for page:', page.title);
                 setupCodeBlocks();
-                console.log('Highlighting code with Prism.js for page:', page.title);
-                try {
-                    Prism.highlightAll();
-                } catch (error) {
-                    console.error('Error in Prism highlighting:', error);
-                }
-
+                Prism.highlightAll();
                 if (headings.length > 0) {
-                    console.log('Setting up headings navigation for page:', page.title);
                     setupHeadingsNavigation();
                     setupHeadingsToggle();
-                    // NEW: Setup scroll-to-top button after headings are rendered
                     setupScrollTopButton();
                 }
-
+                setupImageViewer();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 history.pushState(null, '', `#${page.slug}`);
-                console.log('Page loaded successfully:', page.title);
             } catch (error) {
                 console.error('Error rendering page:', error);
                 showErrorMessage(`Ошибка при загрузке статьи: ${error.message}`);
             }
         }
 
-        // Настройка сворачивания/разворачивания содержимого
         function setupHeadingsToggle() {
             const toggleButton = document.getElementById('toggleHeadings');
             const headingsContainer = document.getElementById('headingsContainer');
-
             if (!toggleButton || !headingsContainer) return;
-
             toggleButton.addEventListener('click', () => {
                 const isCollapsed = headingsContainer.classList.toggle('collapsed');
                 toggleButton.innerHTML = `<i class="ri-${isCollapsed ? 'eye-off' : 'eye'}-line"></i>`;
-                console.log('Headings container toggled, collapsed:', isCollapsed);
             });
         }
 
-        // NEW: Настройка кнопки "Пролистать наверх"
         function setupScrollTopButton() {
             const scrollTopButton = document.getElementById('scrollTopButton');
             const headingsBlock = document.querySelector('.headings-block');
-
             if (!scrollTopButton || !headingsBlock) return;
-
             const observer = new IntersectionObserver(([entry]) => {
-                // Показываем кнопку, когда блок содержания выходит из области видимости
                 scrollTopButton.classList.toggle('visible', !entry.isIntersecting);
             }, { threshold: 0 });
-
             observer.observe(headingsBlock);
-
             scrollTopButton.addEventListener('click', () => {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-                console.log('Scroll to top clicked');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         }
 
-        // Настройка блоков с кодом
         function setupCodeBlocks() {
-            console.log('Setting up code blocks...');
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -1945,16 +1838,12 @@
                 const code = block.querySelector('code');
                 if (code) {
                     const langMatch = /language-(\w+)/.exec(code.className);
-                    if (langMatch) {
-                        block.dataset.language = langMatch[1];
-                    }
+                    if (langMatch) block.dataset.language = langMatch[1];
                 }
                 observer.observe(block);
             });
-            console.log('Code blocks setup completed');
         }
 
-        // Копирование кода
         async function copyCode(block, button) {
             const code = block.querySelector('code')?.textContent || '';
             try {
@@ -1963,7 +1852,6 @@
                 setTimeout(() => {
                     button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
                 }, 2000);
-                console.log('Code copied successfully');
             } catch (err) {
                 console.error('Copy failed:', err);
                 button.innerHTML = '<i class="ri-close-line"></i> Ошибка';
@@ -1973,27 +1861,107 @@
             }
         }
 
-        // Настройка навигации по заголовкам
         function setupHeadingsNavigation() {
-            console.log('Setting up headings navigation...');
             document.querySelectorAll('.heading-item').forEach(item => {
                 item.addEventListener('click', (e) => {
                     e.preventDefault();
                     const targetId = item.getAttribute('href').substring(1);
                     const targetElement = document.getElementById(targetId);
-
                     if (targetElement) {
                         window.scrollTo({
                             top: targetElement.offsetTop - 20,
                             behavior: 'smooth'
                         });
-                        console.log('Scrolled to heading:', targetId);
                     }
                 });
             });
         }
 
-        // Поиск
+        // NEW: Настройка просмотра изображений
+        function setupImageViewer() {
+            const images = document.querySelectorAll('.article-text img.markdown-image');
+            const viewerOverlay = document.getElementById('imageViewerOverlay');
+            const viewer = document.getElementById('imageViewer');
+            const viewerImg = document.getElementById('imageViewerImg');
+            const closeBtn = document.getElementById('imageViewerClose');
+            const zoomInBtn = document.getElementById('zoomIn');
+            const zoomOutBtn = document.getElementById('zoomOut');
+            const zoomLevelSpan = document.getElementById('zoomLevel');
+
+            let scale = 1;
+            let isDragging = false;
+            let startX, startY, translateX = 0, translateY = 0;
+
+            function updateTransform() {
+                viewerImg.style.transform = `scale(${scale}) translate(${translateX}px, ${translateY}px)`;
+                zoomLevelSpan.textContent = `${Math.round(scale * 100)}%`;
+            }
+
+            images.forEach(img => {
+                img.addEventListener('click', () => {
+                    viewerImg.src = img.src;
+                    viewerImg.alt = img.alt;
+                    scale = 1;
+                    translateX = 0;
+                    translateY = 0;
+                    updateTransform();
+                    viewer.classList.add('active');
+                    viewerOverlay.classList.add('active');
+                });
+            });
+
+            closeBtn.addEventListener('click', () => {
+                viewer.classList.remove('active');
+                viewerOverlay.classList.remove('active');
+            });
+
+            viewerOverlay.addEventListener('click', (e) => {
+                if (e.target === viewerOverlay) {
+                    viewer.classList.remove('active');
+                    viewerOverlay.classList.remove('active');
+                }
+            });
+
+            zoomInBtn.addEventListener('click', () => {
+                scale = Math.min(scale + 0.2, 5);
+                updateTransform();
+            });
+
+            zoomOutBtn.addEventListener('click', () => {
+                scale = Math.max(scale - 0.2, 0.2);
+                updateTransform();
+            });
+
+            viewerImg.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                scale = Math.max(0.2, Math.min(5, scale + delta));
+                updateTransform();
+            });
+
+            viewerImg.addEventListener('mousedown', (e) => {
+                if (scale > 1) {
+                    isDragging = true;
+                    startX = e.clientX - translateX;
+                    startY = e.clientY - translateY;
+                    viewerImg.classList.add('dragging');
+                }
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    translateX = e.clientX - startX;
+                    translateY = e.clientY - startY;
+                    updateTransform();
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                viewerImg.classList.remove('dragging');
+            });
+        }
+
         const searchInput = document.getElementById('searchInput');
         const searchPanel = document.getElementById('searchPanel');
         const searchOverlay = document.getElementById('searchOverlay');
@@ -2009,7 +1977,6 @@
                 searchPanelInput.focus();
                 searchInput.value = '';
                 performSearch(searchPanelInput.value);
-                console.log('Search panel opened');
             }
         });
 
@@ -2018,16 +1985,12 @@
             searchOverlay.classList.remove('active');
             searchPanelInput.value = '';
             searchResults.innerHTML = '';
-            console.log('Search panel closed');
         }
 
         closeSearch.addEventListener('click', closeSearchPanel);
         searchOverlay.addEventListener('click', closeSearchPanel);
-
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && searchPanel.classList.contains('active')) {
-                closeSearchPanel();
-            }
+            if (e.key === 'Escape' && searchPanel.classList.contains('active')) closeSearchPanel();
         });
 
         searchPanelInput.addEventListener('input', debounce(() => {
@@ -2035,10 +1998,8 @@
         }, 300));
 
         function performSearch(query) {
-            console.log('Performing search with query:', query);
             query = query.trim().toLowerCase();
             searchResults.innerHTML = '';
-
             if (query.length < 1) {
                 searchResults.innerHTML = `
                     <div class="text-center py-4 text-gray-400">
@@ -2053,22 +2014,18 @@
                 const description = (page.description || '').toLowerCase();
                 const content = (page.content || '').toLowerCase();
                 const tags = (page.tags || []).join(' ').toLowerCase();
-
                 let score = 0;
                 const terms = query.split(/\s+/);
-
                 terms.forEach(term => {
                     if (title.includes(term)) score += 3;
                     if (description.includes(term)) score += 2;
                     if (content.includes(term)) score += 1;
                     if (tags.includes(term)) score += 2;
                 });
-
                 return { page, score };
             }).filter(result => result.score > 0);
 
             results.sort((a, b) => b.score - a.score);
-
             if (results.length === 0) {
                 searchResults.innerHTML = `
                     <div class="text-center py-4 text-gray-400">
@@ -2082,30 +2039,24 @@
                 const resultItem = document.createElement('div');
                 resultItem.className = 'search-result-item';
                 resultItem.onclick = () => loadPageFromSearch(null, page.slug);
-
                 const dateString = page.date ? new Date(page.date).toLocaleDateString('ru-RU', {
                     day: '2-digit',
                     month: '2-digit',
                     year: 'numeric'
                 }) : '';
-
                 let preview = '';
                 const content = page.content || '';
                 const queryIndex = content.toLowerCase().indexOf(query);
-
                 if (queryIndex !== -1) {
                     const start = Math.max(0, queryIndex - 50);
                     const end = Math.min(content.length, queryIndex + query.length + 50);
-                    preview = content.substring(start, end);
-                    preview = preview.replace(/\s+/g, ' ');
+                    preview = content.substring(start, end).replace(/\s+/g, ' ');
                     if (start > 0) preview = '...' + preview;
                     if (end < content.length) preview += '...';
                 } else {
                     preview = page.description || content.substring(0, 100) + '...';
                 }
-
                 preview = marked.parseInline(preview);
-
                 resultItem.innerHTML = `
                     <div class="search-result-title">${processTitle(page.title)}</div>
                     <div class="search-result-meta">
@@ -2116,19 +2067,15 @@
                 `;
                 searchResults.appendChild(resultItem);
             });
-            console.log('Search results rendered:', results.length);
         }
 
         function loadPageFromSearch(e, slug) {
-            console.log('Loading page from search:', slug);
             const page = pagesData.find(p => p.slug === slug);
             if (page) {
                 loadPage(page);
                 localStorage.setItem('lastPageSlug', slug);
                 updateActiveStates(slug);
                 closeSearchPanel();
-            } else {
-                console.error('Page not found for slug:', slug);
             }
         }
 
