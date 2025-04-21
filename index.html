@@ -825,25 +825,27 @@
         }
 
         .article-text code {
-            font-family: 'Courier New', Courier, monospace;
-            background-color: var(--bg-quaternary);
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            color: var(--text-primary);
+            font-family: 'Fira Code', 'JetBrains Mono', monospace;
+            background-color: #1e3a8a;
+            color: #bfdbfe;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
             font-size: 0.9em;
-            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: none;
         }
 
         .article-text pre {
             position: relative;
-            background: linear-gradient(135deg, #1a1f2a, #21262d);
+            background: #1c2526;
             padding: 1.5rem;
-            border-radius: 12px;
+            border-radius: 8px;
             margin: 1.5rem 0;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             overflow-x: auto;
             border: 1px solid var(--border-color);
             transition: transform 0.3s ease;
+            font-family: 'Fira Code', 'JetBrains Mono', monospace;
         }
 
         .article-text pre:hover {
@@ -854,9 +856,9 @@
             background: none;
             padding: 0;
             border: none;
-            color: inherit;
+            color: #e6edf3;
             font-size: 0.9rem;
-            line-height: 1.5;
+            line-height: 1.6;
             white-space: pre;
             display: block;
         }
@@ -983,17 +985,20 @@
         }
 
         .article-text blockquote {
+            background: var(--bg-quaternary);
             border-left: 4px solid var(--accent-color);
             padding: 1rem 1.5rem;
             margin: 1.5rem 0;
-            background-color: var(--bg-tertiary);
-            border-radius: 0 8px 8px 0;
+            border-radius: 4px;
             color: var(--text-secondary);
-            font-style: italic;
+            font-style: normal;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
 
         .article-text blockquote p {
-            margin-bottom: 0;
+            margin: 0;
         }
 
         .article-text hr {
@@ -1006,25 +1011,45 @@
         }
 
         .headings-block {
-            flex: 0 0 320px;
+            flex: 0 0 280px;
             background-color: var(--bg-tertiary);
-            border-radius: 12px;
+            border-radius: 8px;
             padding: 1rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             border: 1px solid var(--border-color);
-            max-height: calc(100vh - 100px);
             transition: all 0.3s ease;
             position: sticky;
             top: 80px;
-            width: 320px;
-            overflow-y: auto;
+            width: 280px;
+            max-height: calc(100vh - 100px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .headings-block.collapsed {
+            width: 60px;
+            overflow: hidden;
         }
 
         .headings-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .headings-block h4 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .headings-block h4 i {
+            margin-right: 0.5rem;
+            color: var(--accent-color);
         }
 
         .toggle-headings {
@@ -1032,7 +1057,7 @@
             border: none;
             color: var(--text-tertiary);
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.9rem;
             transition: all 0.3s ease;
         }
 
@@ -1040,16 +1065,17 @@
             color: var(--accent-color);
         }
 
-        .headings-container.collapsed {
-            max-height: 0;
-            overflow: hidden;
-            animation: slideOut 0.3s ease forwards;
+        .headings-container {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
         }
 
-        .headings-container:not(.collapsed) {
-            max-height: calc(100vh - 180px);
-            overflow-y: auto;
-            animation: slideIn 0.3s ease forwards;
+        .headings-container.collapsed {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
         }
 
         .headings-container::-webkit-scrollbar {
@@ -1065,58 +1091,25 @@
             background: rgba(255, 255, 255, 0.3);
         }
 
-        .headings-block h4 {
-            margin: 0;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--accent-color);
-            display: flex;
-            align-items: center;
-        }
-
-        .headings-block h4 i {
-            margin-right: 0.75rem;
-        }
-
-        .headings-container {
-            position: relative;
-            padding-left: 0.5rem;
-            overflow-x: hidden;
-        }
-
         .heading-item {
-            position: relative;
-            z-index: 1;
             display: flex;
             align-items: center;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: var(--text-secondary);
-            margin: 0.3rem 0;
-            padding: 0.4rem 1rem;
-            border-radius: 6px;
+            margin: 0.25rem 0;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
             transition: all 0.3s ease;
             text-decoration: none;
         }
 
         .heading-item:hover {
             color: var(--accent-color);
-            background-color: rgba(59, 130, 246, 0.1);
-            transform: translateX(4px);
+            background-color: var(--bg-quaternary);
         }
 
-        .heading-item::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 1rem;
-            width: 0;
-            height: 2px;
-            background: var(--accent-color);
-            transition: width 0.3s ease;
-        }
-
-        .heading-item:hover::after {
-            width: calc(100% - 2rem);
+        .heading-item.h3 {
+            padding-left: 1.5rem;
         }
 
         main {
@@ -1224,8 +1217,8 @@
             right: 5rem;
             width: 50px;
             height: 50px;
-            background: linear-gradient(135deg, #2AABEE, #1A8BCF);
-            color: white;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
             border: none;
             border-radius: 50%;
             display: flex;
@@ -1246,6 +1239,17 @@
             pointer-events: auto;
         }
 
+        .scroll-top-button:hover {
+            background: var(--accent-color);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .scroll-top-button i {
+            font-size: 1.5rem;
+        }
+
         @media (max-width: 640px) {
             .scroll-top-button {
                 bottom: 1rem;
@@ -1253,11 +1257,10 @@
                 width: 40px;
                 height: 40px;
             }
-        }
 
-        .scroll-top-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+            .scroll-top-button i {
+                font-size: 1.2rem;
+            }
         }
 
         .support-modal {
@@ -1472,6 +1475,13 @@
         .image-viewer .close-viewer:hover {
             color: var(--accent-color);
             transform: scale(1.1);
+        }
+
+        @font-face {
+            font-family: 'Fira Code';
+            src: url('https://fonts.gstatic.com/s/firacode/v21/uU9eCBsR6Z2vfE9aq3bL0fxyUs4tcw4W_AjE7W0.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
         }
 
         @keyframes spin {
@@ -1923,7 +1933,6 @@
             let htmlContent = marked.parse(content || '', {
                 renderer: new marked.Renderer({
                     link(href, title, text) {
-                        // Обработка YouTube-ссылок
                         const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|v\/)?([A-Za-z0-9_-]{11})(\S*)?$/;
                         const match = href.match(youtubeRegex);
                         if (match && match[5]) {
@@ -1934,7 +1943,6 @@
                                 </div>
                             `;
                         }
-                        // Обработка других ссылок с embed
                         const embedServices = [
                             { regex: /(vimeo\.com)\/(\d+)/, embed: id => `https://player.vimeo.com/video/${id}` },
                             { regex: /(dailymotion\.com|dai\.ly)\/([a-zA-Z0-9]+)/, embed: id => `https://www.dailymotion.com/embed/video/${id}` },
@@ -2055,19 +2063,12 @@
 
             toggleButton.addEventListener('click', () => {
                 const isCollapsed = headingsContainer.classList.toggle('collapsed');
+                headingsBlock.classList.toggle('collapsed', isCollapsed);
                 toggleButton.innerHTML = `<i class="ri-${isCollapsed ? 'eye-off' : 'eye'}-line"></i>`;
-                if (window.innerWidth >= 1024) {
-                    headingsBlock.style.width = isCollapsed ? '60px' : '320px';
-                    headingsBlock.style.overflow = isCollapsed ? 'hidden' : 'auto';
-                    headingsContainer.style.display = isCollapsed ? 'none' : 'block';
-                    const h4 = headingsBlock.querySelector('h4');
-                    h4.style.display = isCollapsed ? 'none' : 'flex';
-                } else {
-                    headingsBlock.classList.toggle('active', !isCollapsed);
-                }
+                const h4 = headingsBlock.querySelector('h4');
+                h4.style.display = isCollapsed ? 'none' : 'flex';
             });
 
-            // Показать/скрыть на мобильных устройствах
             if (window.innerWidth < 1024) {
                 headingsBlock.addEventListener('click', (e) => {
                     if (e.target.closest('.toggle-headings') || e.target.closest('.heading-item')) return;
@@ -2075,6 +2076,7 @@
                     const isCollapsed = !headingsContainer.classList.contains('collapsed');
                     if (!isCollapsed) {
                         headingsContainer.classList.add('collapsed');
+                        headingsBlock.classList.add('collapsed');
                         toggleButton.innerHTML = `<i class="ri-eye-off-line"></i>`;
                     }
                 });
@@ -2218,233 +2220,232 @@
             });
         }
 
-        // Поиск
-        const searchInput = document.getElementById('searchInput');
-        const searchPanel = document.getElementById('searchPanel');
-        const searchOverlay = document.getElementById('searchOverlay');
-        const searchPanelInput = document.getElementById('searchPanelInput');
-        const searchResults = document.getElementById('searchResults');
-        const closeSearch = document.getElementById('closeSearch');
+// Поиск
+    const searchInput = document.getElementById('searchInput');
+    const searchPanel = document.getElementById('searchPanel');
+    const searchOverlay = document.getElementById('searchOverlay');
+    const searchPanelInput = document.getElementById('searchPanelInput');
+    const searchResults = document.getElementById('searchResults');
+    const closeSearch = document.getElementById('closeSearch');
 
-searchInput.addEventListener('input', () => {
-            if (searchInput.value.trim()) {
-                searchPanel.classList.add('active');
-                searchOverlay.classList.add('active');
-                searchPanelInput.value = searchInput.value;
-                performSearch(searchPanelInput.value);
-            } else {
-                searchPanel.classList.remove('active');
-                searchOverlay.classList.remove('active');
-                searchResults.innerHTML = '';
-            }
-        });
-
-        searchPanelInput.addEventListener('input', () => {
-            searchInput.value = searchPanelInput.value;
+    searchInput.addEventListener('input', () => {
+        if (searchInput.value.trim()) {
+            searchPanel.classList.add('active');
+            searchOverlay.classList.add('active');
+            searchPanelInput.value = searchInput.value;
             performSearch(searchPanelInput.value);
-        });
-
-        closeSearch.addEventListener('click', () => {
+        } else {
             searchPanel.classList.remove('active');
             searchOverlay.classList.remove('active');
-            searchInput.value = '';
-            searchPanelInput.value = '';
             searchResults.innerHTML = '';
-        });
+        }
+    });
 
-        searchOverlay.addEventListener('click', () => {
-            searchPanel.classList.remove('active');
-            searchOverlay.classList.remove('active');
-            searchInput.value = '';
-            searchPanelInput.value = '';
-            searchResults.innerHTML = '';
-        });
+    searchPanelInput.addEventListener('input', () => {
+        searchInput.value = searchPanelInput.value;
+        performSearch(searchPanelInput.value);
+    });
 
-        function performSearch(query) {
-            if (!query.trim()) {
-                searchResults.innerHTML = `
-                    <div class="text-center text-sm text-gray-400 py-4">
-                        Введите запрос для поиска
-                    </div>
-                `;
-                return;
-            }
+    closeSearch.addEventListener('click', () => {
+        searchPanel.classList.remove('active');
+        searchOverlay.classList.remove('active');
+        searchInput.value = '';
+        searchPanelInput.value = '';
+        searchResults.innerHTML = '';
+    });
 
-            const filteredPages = pagesData.filter(page =>
-                page.title?.toLowerCase().includes(query.toLowerCase()) ||
-                page.content?.toLowerCase().includes(query.toLowerCase()) ||
-                page.category?.toLowerCase().includes(query.toLowerCase())
-            );
+    searchOverlay.addEventListener('click', () => {
+        searchPanel.classList.remove('active');
+        searchOverlay.classList.remove('active');
+        searchInput.value = '';
+        searchPanelInput.value = '';
+        searchResults.innerHTML = '';
+    });
 
-            if (filteredPages.length === 0) {
-                searchResults.innerHTML = `
-                    <div class="text-center text-sm text-gray-400 py-4">
-                        Ничего не найдено
-                    </div>
-                `;
-                return;
-            }
-
-            searchResults.innerHTML = filteredPages.map(page => `
-                <div class="search-result-item" data-slug="${page.slug}">
-                    <div class="search-result-title">${highlightText(page.title || 'Без названия', query)}</div>
-                    <div class="search-result-meta">
-                        <span><i class="ri-folder-line"></i> ${page.category || 'Без категории'}</span>
-                        ${page.date ? `<span><i class="ri-calendar-line"></i> ${new Date(page.date).toLocaleDateString('ru-RU')}</span>` : ''}
-                    </div>
-                    <div class="search-result-description">
-                        <p>${highlightText(truncateText(page.content || '', 150), query)}</p>
-                    </div>
+    function performSearch(query) {
+        if (!query.trim()) {
+            searchResults.innerHTML = `
+                <div class="text-center text-sm text-gray-400 py-4">
+                    Введите запрос для поиска
                 </div>
-            `).join('');
+            `;
+            return;
+        }
 
-            document.querySelectorAll('.search-result-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const slug = item.dataset.slug;
-                    const page = pagesData.find(p => p.slug === slug);
-                    if (page) {
-                        loadPage(page);
-                        localStorage.setItem('lastPageSlug', page.slug);
-                        updateActiveStates(page.slug);
-                        searchPanel.classList.remove('active');
-                        searchOverlay.classList.remove('active');
-                        searchInput.value = '';
-                        searchPanelInput.value = '';
-                    }
-                });
+        const filteredPages = pagesData.filter(page =>
+            page.title?.toLowerCase().includes(query.toLowerCase()) ||
+            page.content?.toLowerCase().includes(query.toLowerCase()) ||
+            page.category?.toLowerCase().includes(query.toLowerCase())
+        );
+
+        if (filteredPages.length === 0) {
+            searchResults.innerHTML = `
+                <div class="text-center text-sm text-gray-400 py-4">
+                    Ничего не найдено
+                </div>
+            `;
+            return;
+        }
+
+        searchResults.innerHTML = filteredPages.map(page => `
+            <div class="search-result-item" data-slug="${page.slug}">
+                <div class="search-result-title">${highlightText(page.title || 'Без названия', query)}</div>
+                <div class="search-result-meta">
+                    <span><i class="ri-folder-line"></i> ${page.category || 'Без категории'}</span>
+                    ${page.date ? `<span><i class="ri-calendar-line"></i> ${new Date(page.date).toLocaleDateString('ru-RU')}</span>` : ''}
+                </div>
+                <div class="search-result-description">
+                    <p>${highlightText(truncateText(page.content || '', 150), query)}</p>
+                </div>
+            </div>
+        `).join('');
+
+        document.querySelectorAll('.search-result-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const slug = item.dataset.slug;
+                const page = pagesData.find(p => p.slug === slug);
+                if (page) {
+                    loadPage(page);
+                    localStorage.setItem('lastPageSlug', page.slug);
+                    updateActiveStates(page.slug);
+                    searchPanel.classList.remove('active');
+                    searchOverlay.classList.remove('active');
+                    searchInput.value = '';
+                    searchPanelInput.value = '';
+                }
+            });
+        });
+    }
+
+    function highlightText(text, query) {
+        const regex = new RegExp(`(${query})`, 'gi');
+        return text.replace(regex, '<span style="background: var(--search-highlight);">$1</span>');
+    }
+
+    function truncateText(text, maxLength) {
+        if (text.length <= maxLength) return text;
+        return text.substring(0, maxLength) + '...';
+    }
+
+    // Настройка мобильного меню
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const articlesColumn = document.getElementById('articlesColumn');
+
+    mobileMenuToggle.addEventListener('click', () => {
+        articlesColumn.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!articlesColumn.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+            articlesColumn.classList.remove('active');
+        }
+    });
+
+    // Настройка выпадающего меню Telegram
+    const telegramButton = document.getElementById('telegramButton');
+    const telegramMenu = document.getElementById('telegramMenu');
+
+    telegramButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        telegramMenu.classList.toggle('active');
+    });
+
+    document.addEventListener('click', () => {
+        telegramMenu.classList.remove('active');
+    });
+
+    telegramMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+
+    // Настройка модального окна поддержки
+    const supportButton = document.getElementById('supportButton');
+    const supportModal = document.getElementById('supportModal');
+    const supportModalOverlay = document.getElementById('supportModalOverlay');
+    const closeSupport = document.getElementById('closeSupport');
+
+    supportButton.addEventListener('click', () => {
+        supportModal.classList.add('active');
+        supportModalOverlay.classList.add('active');
+    });
+
+    closeSupport.addEventListener('click', () => {
+        supportModal.classList.remove('active');
+        supportModalOverlay.classList.remove('active');
+    });
+
+    supportModalOverlay.addEventListener('click', () => {
+        supportModal.classList.remove('active');
+        supportModalOverlay.classList.remove('active');
+    });
+
+    // Обработка клавиатурных событий
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            searchPanel.classList.remove('active');
+            searchOverlay.classList.remove('active');
+            supportModal.classList.remove('active');
+            supportModalOverlay.classList.remove('active');
+            telegramMenu.classList.remove('active');
+            articlesColumn.classList.remove('active');
+            document.getElementById('imageViewer').classList.remove('active');
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+            e.preventDefault();
+            searchInput.focus();
+            searchPanel.classList.add('active');
+            searchOverlay.classList.add('active');
+            searchPanelInput.focus();
+        }
+    });
+
+    // Пасхалка при клике на иконку заголовка
+    const easterEggIcon = document.getElementById('easterEggIcon');
+    let clickCount = 0;
+
+    easterEggIcon.addEventListener('click', () => {
+        clickCount++;
+        if (clickCount >= 5) {
+            alert('🥚 Пасхалка! Ты нашёл секрет! 🎉');
+            clickCount = 0;
+        }
+    });
+
+    // Обработка изменения размера окна
+    window.addEventListener('resize', () => {
+        if (window.innerWidth >= 1024) {
+            articlesColumn.classList.remove('active');
+        }
+    });
+
+    // Инициализация
+    loadPagesData();
+    setupScrollTopButton();
+
+    // Обработка popstate для поддержки навигации назад/вперёд
+    window.addEventListener('popstate', () => {
+        const slug = window.location.hash.substring(1);
+        const page = pagesData.find(p => p.slug === slug) || pagesData.find(p => p.path === 'README.md') || pagesData[0];
+        if (page) {
+            loadPage(page);
+            updateActiveStates(page.slug);
+        }
+    });
+
+    // Проверка поддержки WebP
+    function testWebP(callback) {
+        const webP = new Image();
+        webP.src = 'data:image/webp;base64,UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA';
+        webP.onload = webP.onerror = () => callback(webP.height === 1);
+    }
+
+    testWebP((support) => {
+        if (!support) {
+            document.querySelectorAll('img[src$=".webp"]').forEach(img => {
+                img.src = img.src.replace('.webp', '.png');
             });
         }
-
-        function highlightText(text, query) {
-            const regex = new RegExp(`(${query})`, 'gi');
-            return text.replace(regex, '<span style="background: var(--search-highlight);">$1</span>');
-        }
-
-        function truncateText(text, maxLength) {
-            if (text.length <= maxLength) return text;
-            return text.substring(0, maxLength) + '...';
-        }
-
-        // Настройка мобильного меню
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const articlesColumn = document.getElementById('articlesColumn');
-
-        mobileMenuToggle.addEventListener('click', () => {
-            articlesColumn.classList.toggle('active');
-        });
-
-        // Закрытие мобильного меню при клике вне его
-        document.addEventListener('click', (e) => {
-            if (!articlesColumn.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
-                articlesColumn.classList.remove('active');
-            }
-        });
-
-        // Настройка выпадающего меню Telegram
-        const telegramButton = document.getElementById('telegramButton');
-        const telegramMenu = document.getElementById('telegramMenu');
-
-        telegramButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            telegramMenu.classList.toggle('active');
-        });
-
-        document.addEventListener('click', () => {
-            telegramMenu.classList.remove('active');
-        });
-
-        telegramMenu.addEventListener('click', (e) => {
-            e.stopPropagation();
-        });
-
-        // Настройка модального окна поддержки
-        const supportButton = document.getElementById('supportButton');
-        const supportModal = document.getElementById('supportModal');
-        const supportModalOverlay = document.getElementById('supportModalOverlay');
-        const closeSupport = document.getElementById('closeSupport');
-
-        supportButton.addEventListener('click', () => {
-            supportModal.classList.add('active');
-            supportModalOverlay.classList.add('active');
-        });
-
-        closeSupport.addEventListener('click', () => {
-            supportModal.classList.remove('active');
-            supportModalOverlay.classList.remove('active');
-        });
-
-        supportModalOverlay.addEventListener('click', () => {
-            supportModal.classList.remove('active');
-            supportModalOverlay.classList.remove('active');
-        });
-
-        // Обработка клавиатурных событий
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                searchPanel.classList.remove('active');
-                searchOverlay.classList.remove('active');
-                supportModal.classList.remove('active');
-                supportModalOverlay.classList.remove('active');
-                telegramMenu.classList.remove('active');
-                articlesColumn.classList.remove('active');
-                document.getElementById('imageViewer').classList.remove('active');
-            }
-            if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
-                e.preventDefault();
-                searchInput.focus();
-                searchPanel.classList.add('active');
-                searchOverlay.classList.add('active');
-                searchPanelInput.focus();
-            }
-        });
-
-        // Пасхалка при клике на иконку заголовка
-        const easterEggIcon = document.getElementById('easterEggIcon');
-        let clickCount = 0;
-
-        easterEggIcon.addEventListener('click', () => {
-            clickCount++;
-            if (clickCount >= 5) {
-                alert('🥚 Пасхалка! Ты нашёл секрет! 🎉');
-                clickCount = 0;
-            }
-        });
-
-        // Обработка изменения размера окна
-        window.addEventListener('resize', () => {
-            if (window.innerWidth >= 1024) {
-                articlesColumn.classList.remove('active');
-            }
-        });
-
-        // Инициализация
-        loadPagesData();
-        setupScrollTopButton();
-
-        // Обработка popstate для поддержки навигации назад/вперёд
-        window.addEventListener('popstate', () => {
-            const slug = window.location.hash.substring(1);
-            const page = pagesData.find(p => p.slug === slug) || pagesData.find(p => p.path === 'README.md') || pagesData[0];
-            if (page) {
-                loadPage(page);
-                updateActiveStates(page.slug);
-            }
-        });
-
-        // Проверка поддержки WebP
-        function testWebP(callback) {
-            const webP = new Image();
-            webP.src = 'data:image/webp;base64,UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA';
-            webP.onload = webP.onerror = () => callback(webP.height === 1);
-        }
-
-        testWebP((support) => {
-            if (!support) {
-                document.querySelectorAll('img[src$=".webp"]').forEach(img => {
-                    img.src = img.src.replace('.webp', '.png');
-                });
-            }
-        });
-    </script>
+    });
+</script>
 </body>
 </html>
