@@ -7,10 +7,12 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Энциклопедия Эндера</title>
+    <!-- Иконка сайта: эмодзи 📘 -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text x='0' y='20' font-size='20'>📘</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+    <!-- Prism.js для подсветки кода -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-one-dark.min.css" rel="stylesheet">
     <style>
         :root {
@@ -371,6 +373,29 @@
             position: relative;
         }
 
+        .search-input::after,
+        .search-panel-input::after {
+            content: '\e6b2';
+            font-family: 'remixicon';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+            opacity: 0.5;
+            font-size: 1rem;
+        }
+
+        .search-input:focus::after,
+        .search-panel-input:focus::after {
+            opacity: 0.7;
+        }
+
+        .search-input::placeholder,
+        .search-panel-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
         .search-input:focus,
         .search-panel-input:focus {
             outline: none;
@@ -475,6 +500,10 @@
             -webkit-mask-image: linear-gradient(180deg, #fff 60%, transparent 100%);
         }
 
+        .search-result-description p {
+            margin: 0;
+        }
+
         .close-search {
             position: absolute;
             top: 1rem;
@@ -515,6 +544,11 @@
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
+        .telegram-button:active {
+            transform: scale(0.95);
+            box-shadow: none;
+        }
+
         .telegram-menu {
             position: absolute;
             top: 100%;
@@ -532,6 +566,12 @@
             transform: scale(0.95) translateY(-10px);
             transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             transform-origin: top right;
+        }
+
+        .telegram-menu:not(.active) {
+            opacity: 0;
+            transform: scale(0.95) translateY(-10px);
+            pointer-events: none;
         }
 
         .telegram-menu.active {
@@ -590,6 +630,15 @@
             color: var(--accent-color);
         }
 
+        .md-pdf-button i {
+            margin-right: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .md-pdf-button:hover i {
+            transform: scale(1.2);
+        }
+
         .mobile-menu-toggle {
             display: none;
             background: none;
@@ -633,6 +682,25 @@
             }
         }
 
+        @media (max-width: 768px) {
+            .article-text {
+                padding: 0 0.5rem;
+            }
+            
+            .article-text h1 {
+                font-size: 1.5rem;
+            }
+            
+            .article-text h2 {
+                font-size: 1.3rem;
+            }
+            
+            .article-text pre {
+                padding: 1rem 0.5rem;
+                font-size: 0.8rem;
+            }
+        }
+
         .article-text h1 {
             font-size: 2rem;
             font-weight: 700;
@@ -640,6 +708,21 @@
             color: var(--text-primary);
             position: relative;
             line-height: 1.3;
+        }
+
+        .article-text h1::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-color);
+            transition: width 0.5s ease-in-out;
+        }
+
+        .article-text h1:hover::after {
+            width: 100%;
         }
 
         .article-text h2 {
@@ -650,11 +733,60 @@
             position: relative;
         }
 
+        .article-text h2::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--accent-hover);
+            transition: width 0.5s ease-in-out;
+        }
+
+        .article-text h2:hover::after {
+            width: 100%;
+        }
+
+        .article-text h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .article-text h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 1.25rem 0 0.5rem;
+            color: var(--text-primary);
+        }
+
         .article-text p {
             font-size: 1rem;
             line-height: 1.8;
             margin-bottom: 1.25rem;
             color: var(--text-secondary);
+        }
+
+        .article-text ul,
+        .article-text ol {
+            margin: 1.25rem 0;
+            padding-left: 1.75rem;
+            color: var(--text-secondary);
+        }
+
+        .article-text ul {
+            list-style-type: disc;
+        }
+
+        .article-text ol {
+            list-style-type: decimal;
+        }
+
+        .article-text li {
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
         }
 
         .article-text a {
@@ -724,6 +856,42 @@
             color: var(--accent-color);
         }
 
+        .copy-code-btn:active {
+            transform: scale(0.95);
+        }
+
+        .copy-code-btn i {
+            font-size: 0.9rem;
+        }
+
+        .article-text table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background-color: var(--bg-tertiary);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .article-text th,
+        .article-text td {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            text-align: left;
+            color: var(--text-secondary);
+        }
+
+        .article-text th {
+            background-color: var(--bg-quaternary);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .article-text tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
         .article-text img {
             max-width: 100%;
             height: auto;
@@ -731,38 +899,29 @@
             margin: 1.5rem 0;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             display: block;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .article-text img:hover {
-            transform: scale(1.02);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-        }
-
-        .article-text .embed-container {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            max-width: 100%;
+        .article-text blockquote {
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem 1.5rem;
             margin: 1.5rem 0;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: var(--bg-tertiary);
+            border-radius: 0 8px 8px 0;
+            color: var(--text-secondary);
+            font-style: italic;
         }
 
-        .article-text .embed-container:hover {
-            transform: scale(1.02);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        .article-text blockquote p {
+            margin-bottom: 0;
         }
 
-        .article-text .embed-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+        .article-text hr {
             border: none;
+            height: 3px;
+            background: var(--border-color);
+            opacity: 0.3;
+            border-radius: 4px;
+            margin: 1.5rem 0;
         }
 
         .headings-block {
@@ -771,7 +930,9 @@
             border-radius: 12px;
             padding: 1rem;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
             border: 1px solid var(--border-color);
+            overflow: hidden;
             max-height: fit-content;
             transition: all 0.3s ease;
         }
@@ -808,6 +969,19 @@
             animation: slideIn 0.3s ease forwards;
         }
 
+        .headings-container::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .headings-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+        }
+
+        .headings-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
         .headings-block h4 {
             margin: 0;
             font-size: 1.1rem;
@@ -815,6 +989,10 @@
             color: var(--accent-color);
             display: flex;
             align-items: center;
+        }
+
+        .headings-block h4 i {
+            margin-right: 0.75rem;
         }
 
         .headings-container {
@@ -843,12 +1021,48 @@
             transform: translateX(4px);
         }
 
+        .heading-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 1rem;
+            width: 0;
+            height: 2px;
+            background: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        .heading-item:hover::after {
+            width: calc(100% - 2rem);
+        }
+
         main {
             flex: 1;
             padding: 2rem;
             background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuMjHxIGmVAAAAL0lEQVQYV2P4//8/AwYQhxitgA8Y0cTwZ2A4DMMiYBhOwwKCAX4GBoa4oXgAHy0HLLM8a5kAAAAASUVORK5CYII=') repeat;
             background-size: 10px 10px;
             background-opacity: 0.05;
+        }
+
+        @media (max-width: 768px) {
+            main {
+                padding: 1.5rem;
+            }
+
+            .article-content {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .article-text h1 {
+                font-size: 1.8rem;
+                margin: 1.5rem 0 1rem;
+            }
+
+            .article-text h2 {
+                font-size: 1.4rem;
+                margin: 1.5rem 0 0.75rem;
+            }
         }
 
         .loading-spinner {
@@ -871,6 +1085,23 @@
             border-bottom: 1px solid var(--border-color);
         }
 
+        .sidebar-header p {
+            margin: 0.25rem 0;
+        }
+
+        .sidebar-header i,
+        .article-header i {
+            font-size: 14px;
+            margin-right: 0.5rem;
+            color: var(--accent-color);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header i:hover,
+        .article-header i:hover {
+            transform: scale(1.2);
+        }
+
         .support-button {
             position: fixed;
             bottom: 1.5rem;
@@ -890,37 +1121,13 @@
             z-index: 50;
         }
 
-        .scroll-top-button {
-            position: fixed;
-            bottom: 6.5rem;
-            right: 1.5rem;
-            width: 50px;
-            height: 50px;
-            background: var(--bg-tertiary);
-            color: var(--accent-color);
-            border: none;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            cursor: pointer;
-            z-index: 50;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(20px);
-            transition: opacity 0.3s ease, transform 0.3s ease, background 0.3s ease;
-        }
-
-        .scroll-top-button.visible {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .scroll-top-button:hover {
-            background: var(--bg-quaternary);
-            transform: scale(1.1);
+        @media (max-width: 640px) {
+            .support-button {
+                bottom: 1rem;
+                right: 1rem;
+                width: 40px;
+                height: 40px;
+            }
         }
 
         .support-button:hover {
@@ -979,6 +1186,18 @@
             align-items: center;
         }
 
+        .support-modal h3 i {
+            margin-right: 0.5rem;
+            color: #ff5555;
+        }
+
+        .support-modal p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
         .support-modal .namemc-button {
             display: inline-flex;
             align-items: center;
@@ -990,6 +1209,21 @@
             font-size: 0.9rem;
             margin: 0.5rem 0;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .support-modal .namemc-button:hover {
+            background: linear-gradient(90deg, #333, #555);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .support-modal .namemc-button i {
+            margin-right: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .support-modal .namemc-button:hover i {
+            transform: scale(1.2);
         }
 
         .support-modal .telegram-support {
@@ -1005,6 +1239,20 @@
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
+        .support-modal .telegram-support:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .support-modal .telegram-support i {
+            transition: transform 0.3s ease;
+        }
+
+        .support-modal .telegram-support:hover i {
+            transform: scale(1.2);
+        }
+
         .support-modal .close-support {
             position: absolute;
             top: 1rem;
@@ -1017,28 +1265,65 @@
             transition: all 0.3s ease;
         }
 
+        .support-modal .close-support:hover {
+            color: var(--accent-color);
+            transform: rotate(90deg);
+        }
+
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @keyframes slideIn {
-            from { opacity: 0; max-height: 0; }
-            to { opacity: 1; max-height: 300px; }
+            from {
+                opacity: 0;
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                max-height: 300px;
+            }
         }
 
         @keyframes slideOut {
-            from { opacity: 1; max-height: 300px; }
-            to { opacity: 0; max-height: 0; }
+            from {
+                opacity: 1;
+                max-height: 300px;
+            }
+            to {
+                opacity: 0;
+                max-height: 0;
+            }
         }
 
         @keyframes slideInMenu {
-            from { opacity: 0; transform: scale(0.95) translateY(-10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
         }
     </style>
 </head>
@@ -1066,7 +1351,7 @@
                     Telegram
                 </button>
                 <div class="telegram-menu" id="telegramMenu">
-                    <a href="https://t.me/endermanik13" target="_blank">Тг автора</a>
+                    <a href="https://t.me/endermanik13" target="_blank">Личный чат автора</a>
                     <a href="https://t.me/endermanik12" target="_blank">Канал автора</a>
                 </div>
             </div>
@@ -1114,9 +1399,6 @@
         <button class="support-button" id="supportButton">
             <i class="ri-heart-line"></i>
         </button>
-        <button class="scroll-top-button" id="scrollTopButton">
-            <i class="ri-arrow-up-line"></i>
-        </button>
         <div class="support-modal-overlay" id="supportModalOverlay"></div>
         <div class="support-modal" id="supportModal">
             <button class="close-support" id="closeSupport">
@@ -1128,7 +1410,7 @@
             <a href="https://namemc.com/skin/51f0ca7a48e29545" target="_blank" class="namemc-button">
                 <i class="ri-gamepad-line"></i> NameMC
             </a>
-            <p>Ваша обратная связь помогает улучшать сайт и мотивирует на дальнейшую работу!</p>
+            <p>Ваша обратная связь помогает улучшать инструмент и мотивирует на дальнейшую работу!</p>
             <a href="https://t.me/endermanik13" target="_blank" class="telegram-support">
                 <i class="ri-telegram-fill mr-2"></i> Telegram
             </a>
@@ -1142,94 +1424,119 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
     <script>
+        // Инициализация переменных
         let pagesData = [];
         let currentHighlightedItem = null;
         let lastPageSlug = null;
 
+        // Установка настроек для marked.js
         marked.setOptions({
             breaks: true,
             gfm: true,
             smartypants: true,
-            renderer: new marked.Renderer()
         });
 
-        const renderer = new marked.Renderer();
-        renderer.image = function(href, title, text) {
-            return `<img src="${href}" alt="${text || ''}" title="${title || ''}">`;
-        };
-        renderer.link = function(href, title, text) {
-            const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-            const youtubeMatch = href.match(youtubeRegex);
-            if (youtubeMatch) {
-                const videoId = youtubeMatch[1];
-                return `<div class="embed-container"><iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen title="${title || text || 'YouTube video'}"></iframe></div>`;
-            }
-            return `<a href="${href}" title="${title || ''}" target="_blank" rel="noopener">${text}</a>`;
-        };
-        marked.setOptions({ renderer });
-
-        function initParticles() {
-            try {
-                particlesJS('particles-js', {
-                    particles: {
-                        number: { value: 60, density: { enable: true, value_area: 800 } },
-                        color: { value: '#58a6ff' },
-                        shape: { type: 'circle' },
-                        opacity: { value: 0.3, random: false },
-                        size: { value: 3, random: true },
-                        line_linked: { enable: true, distance: 150, color: '#58a6ff', opacity: 0.2, width: 1 },
-                        move: { enable: true, speed: 1.5, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
+        // Инициализация particles.js
+        particlesJS('particles-js', {
+            particles: {
+                number: {
+                    value: 60,
+                    density: {
+                        enable: true,
+                        value_area: 800
+                    }
+                },
+                color: {
+                    value: '#58a6ff'
+                },
+                shape: {
+                    type: 'circle'
+                },
+                opacity: {
+                    value: 0.3,
+                    random: false
+                },
+                size: {
+                    value: 3,
+                    random: true
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#58a6ff',
+                    opacity: 0.2,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1.5,
+                    direction: 'none',
+                    random: false,
+                    straight: false,
+                    out_mode: 'out',
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: 'grab'
                     },
-                    interactivity: {
-                        detect_on: 'canvas',
-                        events: { onhover: { enable: true, mode: 'grab' }, resize: true },
-                        modes: { grab: { distance: 140, line_linked: { opacity: 0.5 } } }
-                    },
-                    retina_detect: true
-                });
-            } catch (error) {
-                console.error('Error initializing particles.js:', error);
-            }
-        }
+                    resize: true
+                },
+                modes: {
+                    grab: {
+                        distance: 140,
+                        line_linked: {
+                            opacity: 0.5
+                        }
+                    }
+                }
+            },
+            retina_detect: true
+        });
 
+        // Загрузка данных страниц
         async function loadPagesData() {
-            const mainContent = document.getElementById('mainContent');
             try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => {
-                    controller.abort();
-                    throw new Error('Request timeout');
-                }, 10000);
-
                 const response = await fetch('pages.json', {
-                    signal: controller.signal,
                     cache: 'no-store',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
                 });
 
-                clearTimeout(timeoutId);
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
 
                 pagesData = await response.json();
+                // Фильтрация страниц - исключаем Excalidraw и "БЕЗ КАТЕГОРИИ"
                 pagesData = pagesData.filter(page => 
                     page.category && 
                     page.category.trim() !== '' && 
                     !page.path?.includes('Excalidraw') &&
                     page.category?.toUpperCase() !== 'EXCALIDRAW' &&
-                    page.category?.toUpperCase() !== 'О СТРАНИЦЕ'
+                    page.category?.toUpperCase() !== 'БЕЗ КАТЕГОРИИ'
                 );
 
+                // Для страниц без категории или с пустой категорией устанавливаем "Немного о странице"
                 pagesData.forEach(page => {
                     if (!page.category || page.category.trim() === '') {
-                        page.category = 'О странице';
+                        page.category = 'Немного о странице';
                     }
                 });
 
+                // Сортировка по дате (новые сначала)
                 pagesData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
                 renderCategories();
                 updateSidebarStats();
 
+                // Проверяем, есть ли сохраненная страница в localStorage
                 lastPageSlug = localStorage.getItem('lastPageSlug');
                 let pageToLoad = pagesData.find(page => page.path === 'README.md') || pagesData[0];
 
@@ -1239,16 +1546,17 @@
                 }
 
                 if (pagesData.length > 0) {
-                    await loadPage(pageToLoad);
+                    loadPage(pageToLoad);
                 } else {
-                    throw new Error('No pages found after filtering');
+                    showErrorMessage('Страницы не найдены.');
                 }
             } catch (error) {
                 console.error('Error loading pages:', error);
-                showErrorMessage(`Ошибка загрузки данных: ${error.message}`);
+                showErrorMessage(`Ошибка загрузки: ${error.message}`);
             }
         }
 
+        // Обновление статистики вверху боковой панели
         function updateSidebarStats() {
             const articleCount = pagesData.length;
             const categoryCount = new Set(
@@ -1259,9 +1567,9 @@
             document.getElementById('categoryCount').textContent = categoryCount;
         }
 
+        // Функция отображения сообщения об ошибке
         function showErrorMessage(message) {
-            const mainContent = document.getElementById('mainContent');
-            mainContent.innerHTML = `
+            document.getElementById('mainContent').innerHTML = `
                 <div class="text-center py-12">
                     <div class="inline-flex items-center text-lg text-red-400">
                         <i class="ri-error-warning-line mr-2"></i>
@@ -1271,8 +1579,11 @@
             `;
         }
 
+        // Рендеринг категорий и статей
         function renderCategories() {
             const categoryList = document.getElementById('categoryList');
+
+            // Группировка страниц по категориям
             const categories = {};
             pagesData.forEach(page => {
                 if (!page.category || page.path === 'README.md') return;
@@ -1282,7 +1593,10 @@
                 categories[page.category].push(page);
             });
 
+            // Сортировка категорий по алфавиту
             const sortedCategories = Object.keys(categories).sort();
+
+            // Очистка списка категорий
             categoryList.innerHTML = '';
 
             if (sortedCategories.length === 0) {
@@ -1294,10 +1608,12 @@
                 return;
             }
 
+            // Создание элементов категорий
             sortedCategories.forEach(category => {
                 const categoryDiv = document.createElement('div');
                 categoryDiv.className = 'category';
 
+                // Заголовок категории
                 const categoryTitle = document.createElement('h3');
                 categoryTitle.innerHTML = `
                     <i class="ri-folder-line"></i>
@@ -1306,9 +1622,11 @@
                 `;
                 categoryDiv.appendChild(categoryTitle);
 
+                // Список статей в категории
                 const categoryItems = document.createElement('div');
                 categoryItems.className = 'category-items';
 
+                // Сортировка статей в категории по дате (новые сначала)
                 const sortedPages = categories[category].sort((a, b) =>
                     new Date(b.date || 0) - new Date(a.date || 0)
                 );
@@ -1337,7 +1655,9 @@
                 categoryDiv.appendChild(categoryItems);
                 categoryList.appendChild(categoryDiv);
 
+                // Обработчик клика по заголовку категории
                 categoryTitle.addEventListener('click', () => {
+                    // Закрываем все другие категории
                     document.querySelectorAll('.category-items.active').forEach(item => {
                         if (item !== categoryItems) {
                             item.classList.remove('active');
@@ -1346,11 +1666,13 @@
                         }
                     });
 
+                    // Переключаем текущую категорию
                     const isActive = categoryItems.classList.toggle('active');
                     const arrowIcon = categoryTitle.querySelector('.ri-arrow-down-s-line');
                     arrowIcon.style.transform = isActive ? 'rotate(180deg)' : 'rotate(0)';
                 });
 
+                // Автоматически раскрываем категорию, если в ней есть активная статья
                 if (sortedPages.some(page => page.slug === lastPageSlug)) {
                     categoryItems.classList.add('active');
                     categoryTitle.querySelector('.ri-arrow-down-s-line').style.transform = 'rotate(180deg)';
@@ -1358,12 +1680,14 @@
             });
         }
 
+        // Обновление активных состояний статей
         function updateActiveStates(slug) {
             document.querySelectorAll('.article-item').forEach(item => {
                 item.classList.toggle('active', item.dataset.slug === slug);
             });
         }
 
+        // Извлечение заголовков из контента
         function extractHeadings(htmlContent) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlContent, 'text/html');
@@ -1371,11 +1695,20 @@
                 const level = heading.tagName.toLowerCase() === 'h2' ? 0 : 1;
                 const id = heading.id || `heading-${index}`;
                 heading.id = id;
-                return { text: heading.textContent, level, id, tag: heading.tagName.toLowerCase() };
+                return {
+                    text: heading.textContent,
+                    level,
+                    id,
+                    tag: heading.tagName.toLowerCase()
+                };
             });
-            return { headings, updatedContent: doc.body.innerHTML };
+            return {
+                headings,
+                updatedContent: doc.body.innerHTML
+            };
         }
 
+        // Обработка заголовков с **текстом** и удаление первого h1
         function processContent(content, title) {
             let htmlContent = marked.parse(content || '');
             const parser = new DOMParser();
@@ -1387,11 +1720,13 @@
             return doc.body.innerHTML;
         }
 
+        // Обработка заголовков с **текстом**
         function processTitle(title) {
             if (!title) return 'Без названия';
             return marked.parseInline(title.replace(/\*\*(.*?)\*\*/g, '**$1**'));
         }
 
+        // Загрузка страницы
         async function loadPage(page) {
             const mainContent = document.getElementById('mainContent');
             mainContent.innerHTML = `
@@ -1449,7 +1784,6 @@
 
                 setupCodeBlocks();
                 Prism.highlightAll();
-
                 if (headings.length > 0) {
                     setupHeadingsNavigation();
                     setupHeadingsToggle();
@@ -1457,13 +1791,13 @@
 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 history.pushState(null, '', `#${page.slug}`);
-                setupScrollTopButton();
             } catch (error) {
                 console.error('Error rendering page:', error);
                 showErrorMessage(`Ошибка при загрузке статьи: ${error.message}`);
             }
         }
 
+        // Настройка сворачивания/разворачивания содержимого
         function setupHeadingsToggle() {
             const toggleButton = document.getElementById('toggleHeadings');
             const headingsContainer = document.getElementById('headingsContainer');
@@ -1476,26 +1810,7 @@
             });
         }
 
-        function setupScrollTopButton() {
-            const scrollTopButton = document.getElementById('scrollTopButton');
-            const headingsBlock = document.querySelector('.headings-block');
-
-            if (!scrollTopButton || !headingsBlock) return;
-
-            const observer = new IntersectionObserver(([entry]) => {
-                scrollTopButton.classList.toggle('visible', !entry.isIntersecting);
-            }, { threshold: 0 });
-
-            observer.observe(headingsBlock);
-
-            scrollTopButton.addEventListener('click', () => {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            });
-        }
-
+        // Настройка блоков с кодом
         function setupCodeBlocks() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -1524,6 +1839,7 @@
             });
         }
 
+        // Копирование кода
         async function copyCode(block, button) {
             const code = block.querySelector('code')?.textContent || '';
             try {
@@ -1541,6 +1857,7 @@
             }
         }
 
+        // Настройка навигации по заголовкам
         function setupHeadingsNavigation() {
             document.querySelectorAll('.heading-item').forEach(item => {
                 item.addEventListener('click', (e) => {
@@ -1558,6 +1875,7 @@
             });
         }
 
+        // Поиск
         const searchInput = document.getElementById('searchInput');
         const searchPanel = document.getElementById('searchPanel');
         const searchOverlay = document.getElementById('searchOverlay');
@@ -1586,6 +1904,7 @@
         closeSearch.addEventListener('click', closeSearchPanel);
         searchOverlay.addEventListener('click', closeSearchPanel);
 
+        // Закрытие поиска по Esc
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && searchPanel.classList.contains('active')) {
                 closeSearchPanel();
@@ -1609,6 +1928,7 @@
                 return;
             }
 
+            // Умный поиск с весами
             const results = pagesData.map(page => {
                 const title = (page.title || '').toLowerCase();
                 const description = (page.description || '').toLowerCase();
@@ -1628,6 +1948,7 @@
                 return { page, score };
             }).filter(result => result.score > 0);
 
+            // Сортировка по релевантности
             results.sort((a, b) => b.score - a.score);
 
             if (results.length === 0) {
@@ -1683,6 +2004,7 @@
 
         function highlightMatches(text, query) {
             if (!text || !query) return text;
+            // Используем регулярное выражение для поиска целых слов
             const regex = new RegExp(`(\\b${escapeRegExp(query)}\\b)`, 'gi');
             return text.replace(regex, '<span style="background-color: var(--search-highlight); border-radius: 4px; padding: 0 2px;">$1</span>');
         }
@@ -1707,8 +2029,9 @@
 
         function debounce(func, wait) {
             let timeout;
-            return function(...args) {
+            return function() {
                 const context = this;
+                const args = arguments;
                 clearTimeout(timeout);
                 timeout = setTimeout(() => {
                     func.apply(context, args);
@@ -1716,55 +2039,150 @@
             };
         }
 
+        // Мобильное меню
         const mobileMenuToggle = document.getElementById('mobileMenuToggle');
         const articlesColumn = document.getElementById('articlesColumn');
 
-        function toggleMobileMenu(forceState = null) {
-            const isActive = forceState !== null ? forceState : !articlesColumn.classList.contains('active');
-            articlesColumn.classList.toggle('active', isActive);
-            mobileMenuToggle.innerHTML = `<i class="ri-${isActive ? 'close' : 'menu'}-line"></i>`;
+        function toggleMobileMenu(show) {
+            if (show === undefined) {
+                articlesColumn.classList.toggle('active');
+            } else {
+                show ? articlesColumn.classList.add('active') : articlesColumn.classList.remove('active');
+            }
         }
 
         mobileMenuToggle.addEventListener('click', () => toggleMobileMenu());
 
-        const telegramButton = document.getElementById('telegramButton');
-        const telegramMenu = document.getElementById('telegramMenu');
-
-        telegramButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            telegramMenu.classList.toggle('active');
-        });
-
         document.addEventListener('click', (e) => {
-            if (!telegramMenu.contains(e.target) && !telegramButton.contains(e.target)) {
-                telegramMenu.classList.remove('active');
+            if (window.innerWidth >= 1024) return;
+            const isClickInsideMenu = articlesColumn.contains(e.target) || mobileMenuToggle.contains(e.target);
+            if (!isClickInsideMenu && articlesColumn.classList.contains('active')) {
+                toggleMobileMenu(false);
             }
         });
 
+        // Подсветка меню
+        const menuContainer = document.querySelector('.menu-container');
+        const menuHighlight = document.getElementById('menuHighlight');
+
+        if (menuContainer && menuHighlight) {
+            menuContainer.addEventListener('mouseover', (e) => {
+                const item = e.target.closest('.menu-item');
+                if (!item || item === currentHighlightedItem) return;
+
+                if (currentHighlightedItem) {
+                    currentHighlightedItem.classList.remove('active');
+                }
+
+                item.classList.add('active');
+                currentHighlightedItem = item;
+            });
+
+            menuContainer.addEventListener('mouseout', () => {
+                if (currentHighlightedItem) {
+                    currentHighlightedItem.classList.remove('active');
+                    currentHighlightedItem = null;
+                }
+            });
+        }
+
+        // Telegram меню
+        const telegramButton = document.getElementById('telegramButton');
+        const telegramMenu = document.getElementById('telegramMenu');
+
+        function closeTelegramMenu() {
+            telegramMenu.classList.remove('active');
+            setTimeout(() => {
+                telegramMenu.style.display = 'none';
+            }, 400);
+        }
+
+        telegramButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            telegramMenu.style.display = 'flex';
+            setTimeout(() => {
+                telegramMenu.classList.toggle('active');
+            }, 10);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!telegramButton.contains(e.target) && !telegramMenu.contains(e.target)) {
+                closeTelegramMenu();
+            }
+        });
+
+        document.addEventListener('contextmenu', (e) => {
+            if (!telegramMenu.contains(e.target)) {
+                closeTelegramMenu();
+            }
+        });
+
+        document.addEventListener('wheel', () => {
+            closeTelegramMenu();
+        });
+
+        document.addEventListener('keydown', () => {
+            closeTelegramMenu();
+        });
+
+        // Support модалка
         const supportButton = document.getElementById('supportButton');
         const supportModal = document.getElementById('supportModal');
         const supportModalOverlay = document.getElementById('supportModalOverlay');
         const closeSupport = document.getElementById('closeSupport');
 
-        supportButton.addEventListener('click', () => {
+        function openSupportModal() {
             supportModal.classList.add('active');
             supportModalOverlay.classList.add('active');
-        });
+        }
 
-        closeSupport.addEventListener('click', () => {
+        function closeSupportModal() {
             supportModal.classList.remove('active');
             supportModalOverlay.classList.remove('active');
+        }
+
+        supportButton.addEventListener('click', openSupportModal);
+        closeSupport.addEventListener('click', closeSupportModal);
+        supportModalOverlay.addEventListener('click', closeSupportModal);
+
+        // Закрытие модалки по Esc
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && supportModal.classList.contains('active')) {
+                closeSupportModal();
+            }
         });
 
-        supportModalOverlay.addEventListener('click', () => {
-            supportModal.classList.remove('active');
-            supportModalOverlay.classList.remove('active');
+        // Пасхалка на иконке книги
+        const easterEggIcon = document.getElementById('easterEggIcon');
+        easterEggIcon.addEventListener('click', () => {
+            window.open('https://www.google.com/maps/@52.5952022,39.5248965,3a,75y,359.07h,82.97t/data=!3m7!1e1!3m5!1sCIHM0ogKEICAgICa5tjvxwE!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgpms-cs-s%2FAIMqDu21lgzR3PQCz7Fcnvug4Wap9dJI4tKQ-gAbaQ8ergN6Xr9J2o8lgXuYKxw7xxq5Pw0QjHqdS4EdMQ3-pUqdblICnUDSthThx2beg0YHHfXLWmSf4jzc8ezfLdbgjGk5iR1QQQrI%3Dw900-h600-k-no-pi7.034647060289103-ya184.0695531759182-ro0-fo100!7i7216!8i3608?entry=ttu&g_ep=EgoyMDI1MDQxMy4wIKXMDSoASAFQAw%3D%3D', '_blank');
         });
 
+        // Обработка навигации по истории
+        window.addEventListener('popstate', () => {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                const page = pagesData.find(p => p.slug === hash);
+                if (page) {
+                    loadPage(page);
+                    localStorage.setItem('lastPageSlug', page.slug);
+                    updateActiveStates(page.slug);
+                }
+            }
+        });
+
+        // Загрузка данных
         document.addEventListener('DOMContentLoaded', () => {
-            initParticles();
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                lastPageSlug = hash;
+                localStorage.setItem('lastPageSlug', hash);
+            }
+
             loadPagesData();
         });
+
+        window.loadPageFromSearch = loadPageFromSearch;
     </script>
 </body>
 </html>
