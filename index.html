@@ -7,12 +7,10 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Энциклопедия Эндера</title>
-    <!-- Иконка сайта: эмодзи 📘 -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text x='0' y='20' font-size='20'>📘</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
-    <!-- Prism.js для подсветки кода -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-one-dark.min.css" rel="stylesheet">
     <style>
         :root {
@@ -62,7 +60,7 @@
             overflow-y: auto;
             border-right: 1px solid var(--border-color);
             background: var(--bg-secondary);
-            transition: all 0.3s ease;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             width: 320px;
             flex-shrink: 0;
             display: flex;
@@ -75,7 +73,7 @@
                 left: -320px;
                 top: 68px;
                 z-index: 100;
-                transition: transform 0.3s ease;
+                box-shadow: 4px 0 20px rgba(0, 0, 0, 0.4);
             }
 
             .articles-column.active {
@@ -518,7 +516,7 @@
 
         .close-search:hover {
             color: var(--accent-color);
-            transform: rotate(90deg);
+            transform: scale(1.1);
         }
 
         .action-button {
@@ -654,7 +652,6 @@
         .mobile-menu-toggle:hover {
             background: var(--bg-tertiary);
             color: var(--accent-color);
-            transform: rotate(90deg);
         }
 
         .article-content {
@@ -678,7 +675,20 @@
             }
             
             .headings-block {
-                display: none;
+                position: fixed;
+                right: 1rem;
+                top: 80px;
+                width: 280px;
+                max-height: calc(100vh - 100px);
+                overflow-y: auto;
+                z-index: 40;
+                display: block;
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            }
+
+            .headings-block.active {
+                transform: translateX(0);
             }
         }
 
@@ -698,6 +708,20 @@
             .article-text pre {
                 padding: 1rem 0.5rem;
                 font-size: 0.8rem;
+            }
+
+            .headings-block {
+                width: 250px;
+                right: 0.5rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .headings-block {
+                width: 100%;
+                right: 0;
+                top: 68px;
+                max-height: calc(100vh - 80px);
             }
         }
 
@@ -814,13 +838,18 @@
 
         .article-text pre {
             position: relative;
-            background-color: var(--bg-quaternary);
-            padding: 1.25rem;
-            border-radius: 8px;
+            background: linear-gradient(135deg, #1a1f2a, #21262d);
+            padding: 1.5rem;
+            border-radius: 12px;
             margin: 1.5rem 0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             overflow-x: auto;
             border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+        }
+
+        .article-text pre:hover {
+            transform: translateY(-2px);
         }
 
         .article-text pre code {
@@ -838,22 +867,25 @@
             position: absolute;
             top: 0.75rem;
             right: 0.75rem;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            padding: 0.35rem 0.75rem;
+            background: linear-gradient(135deg, #2AABEE, #1A8BCF);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
+            font-weight: 500;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         .copy-code-btn:hover {
-            background: var(--bg-tertiary);
-            color: var(--accent-color);
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .copy-code-btn:active {
@@ -899,6 +931,46 @@
             margin: 1.5rem 0;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             display: block;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .article-text img:hover {
+            transform: scale(1.02);
+        }
+
+        .article-text .embed-container {
+            position: relative;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .article-text .embed-container:hover {
+            transform: translateY(-2px);
+        }
+
+        .article-text .embed-container iframe {
+            width: 100%;
+            border-radius: 8px;
+            border: none;
+            aspect-ratio: 16 / 9;
+        }
+
+        .article-text .embed-container .embed-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .article-text .embed-container .embed-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
         }
 
         .article-text blockquote {
@@ -933,7 +1005,7 @@
             position: relative;
             border: 1px solid var(--border-color);
             overflow: hidden;
-            max-height: fit-content;
+            max-height: calc(100vh - 100px);
             transition: all 0.3s ease;
         }
 
@@ -964,7 +1036,7 @@
         }
 
         .headings-container:not(.collapsed) {
-            max-height: 300px;
+            max-height: calc(100vh - 180px);
             overflow-y: auto;
             animation: slideIn 0.3s ease forwards;
         }
@@ -1135,6 +1207,48 @@
             transform: scale(1.1);
         }
 
+        .scroll-top-button {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 5rem;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #2AABEE, #1A8BCF);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 50;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+        }
+
+        .scroll-top-button.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        @media (max-width: 640px) {
+            .scroll-top-button {
+                bottom: 1rem;
+                right: 4.5rem;
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        .scroll-top-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+        }
+
         .support-modal {
             position: fixed;
             top: 50%;
@@ -1270,6 +1384,85 @@
             transform: rotate(90deg);
         }
 
+        .image-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .image-viewer.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .image-viewer img {
+            max-width: 90%;
+            max-height: 80vh;
+            object-fit: contain;
+            transform: scale(1);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .image-viewer .controls {
+            position: fixed;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            color: var(--text-primary);
+        }
+
+        .image-viewer .controls button {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .image-viewer .controls button:hover {
+            color: var(--accent-color);
+            transform: scale(1.1);
+        }
+
+        .image-viewer .controls span {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .image-viewer .close-viewer {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .image-viewer .close-viewer:hover {
+            color: var(--accent-color);
+            transform: scale(1.1);
+        }
+
         @keyframes spin {
             to {
                 transform: rotate(360deg);
@@ -1294,14 +1487,14 @@
             }
             to {
                 opacity: 1;
-                max-height: 300px;
+                max-height: calc(100vh - 180px);
             }
         }
 
         @keyframes slideOut {
             from {
                 opacity: 1;
-                max-height: 300px;
+                max-height: calc(100vh - 180px);
             }
             to {
                 opacity: 0;
@@ -1317,12 +1510,6 @@
             to {
                 opacity: 1;
                 transform: scale(1) translateY(0);
-            }
-        }
-
-        @keyframes blink {
-            50% {
-                opacity: 0;
             }
         }
     </style>
@@ -1399,6 +1586,9 @@
         <button class="support-button" id="supportButton">
             <i class="ri-heart-line"></i>
         </button>
+        <button class="scroll-top-button" id="scrollTopButton">
+            <i class="ri-arrow-up-line"></i>
+        </button>
         <div class="support-modal-overlay" id="supportModalOverlay"></div>
         <div class="support-modal" id="supportModal">
             <button class="close-support" id="closeSupport">
@@ -1414,6 +1604,18 @@
             <a href="https://t.me/endermanik13" target="_blank" class="telegram-support">
                 <i class="ri-telegram-fill mr-2"></i> Telegram
             </a>
+        </div>
+
+        <div class="image-viewer" id="imageViewer">
+            <button class="close-viewer" id="closeViewer">
+                <i class="ri-close-line"></i>
+            </button>
+            <img id="viewerImage" src="">
+            <div class="controls">
+                <button id="zoomIn"><i class="ri-zoom-in-line"></i></button>
+                <span id="zoomLevel">100%</span>
+                <button id="zoomOut"><i class="ri-zoom-out-line"></i></button>
+            </div>
         </div>
     </div>
 
@@ -1434,6 +1636,7 @@
             breaks: true,
             gfm: true,
             smartypants: true,
+            renderer: new marked.Renderer()
         });
 
         // Инициализация particles.js
@@ -1514,7 +1717,6 @@
                 }
 
                 pagesData = await response.json();
-                // Фильтрация страниц - исключаем Excalidraw и "БЕЗ КАТЕГОРИИ"
                 pagesData = pagesData.filter(page => 
                     page.category && 
                     page.category.trim() !== '' && 
@@ -1523,20 +1725,17 @@
                     page.category?.toUpperCase() !== 'БЕЗ КАТЕГОРИИ'
                 );
 
-                // Для страниц без категории или с пустой категорией устанавливаем "Немного о странице"
                 pagesData.forEach(page => {
                     if (!page.category || page.category.trim() === '') {
                         page.category = 'Немного о странице';
                     }
                 });
 
-                // Сортировка по дате (новые сначала)
                 pagesData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
                 renderCategories();
                 updateSidebarStats();
 
-                // Проверяем, есть ли сохраненная страница в localStorage
                 lastPageSlug = localStorage.getItem('lastPageSlug');
                 let pageToLoad = pagesData.find(page => page.path === 'README.md') || pagesData[0];
 
@@ -1583,7 +1782,6 @@
         function renderCategories() {
             const categoryList = document.getElementById('categoryList');
 
-            // Группировка страниц по категориям
             const categories = {};
             pagesData.forEach(page => {
                 if (!page.category || page.path === 'README.md') return;
@@ -1593,10 +1791,8 @@
                 categories[page.category].push(page);
             });
 
-            // Сортировка категорий по алфавиту
             const sortedCategories = Object.keys(categories).sort();
 
-            // Очистка списка категорий
             categoryList.innerHTML = '';
 
             if (sortedCategories.length === 0) {
@@ -1608,12 +1804,10 @@
                 return;
             }
 
-            // Создание элементов категорий
             sortedCategories.forEach(category => {
                 const categoryDiv = document.createElement('div');
                 categoryDiv.className = 'category';
 
-                // Заголовок категории
                 const categoryTitle = document.createElement('h3');
                 categoryTitle.innerHTML = `
                     <i class="ri-folder-line"></i>
@@ -1622,11 +1816,9 @@
                 `;
                 categoryDiv.appendChild(categoryTitle);
 
-                // Список статей в категории
                 const categoryItems = document.createElement('div');
                 categoryItems.className = 'category-items';
 
-                // Сортировка статей в категории по дате (новые сначала)
                 const sortedPages = categories[category].sort((a, b) =>
                     new Date(b.date || 0) - new Date(a.date || 0)
                 );
@@ -1655,9 +1847,7 @@
                 categoryDiv.appendChild(categoryItems);
                 categoryList.appendChild(categoryDiv);
 
-                // Обработчик клика по заголовку категории
                 categoryTitle.addEventListener('click', () => {
-                    // Закрываем все другие категории
                     document.querySelectorAll('.category-items.active').forEach(item => {
                         if (item !== categoryItems) {
                             item.classList.remove('active');
@@ -1666,15 +1856,13 @@
                         }
                     });
 
-                    // Переключаем текущую категорию
                     const isActive = categoryItems.classList.toggle('active');
                     const arrowIcon = categoryTitle.querySelector('.ri-arrow-down-s-line');
                     arrowIcon.style.transform = isActive ? 'rotate(180deg)' : 'rotate(0)';
                 });
 
-                // Автоматически раскрываем категорию, если в ней есть активная статья
                 if (sortedPages.some(page => page.slug === lastPageSlug)) {
-                    categoryItems.classList.add('active');
+                    categoryFilms.classList.add('active');
                     categoryTitle.querySelector('.ri-arrow-down-s-line').style.transform = 'rotate(180deg)';
                 }
             });
@@ -1710,7 +1898,27 @@
 
         // Обработка заголовков с **текстом** и удаление первого h1
         function processContent(content, title) {
-            let htmlContent = marked.parse(content || '');
+            let htmlContent = marked.parse(content || '', {
+                renderer: new marked.Renderer({
+                    link(href, title, text) {
+                        // Обработка YouTube-ссылок
+                        const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|v\/)?([A-Za-z0-9_-]{11})(\S*)?$/;
+                        const match = href.match(youtubeRegex);
+                        if (match && match[5]) {
+                            return `
+                                <div class="embed-container">
+                                    <div class="embed-title">${text || 'YouTube видео'}</div>
+                                    <iframe src="https://www.youtube.com/embed/${match[5]}" frameborder="0" allowfullscreen></iframe>
+                                </div>
+                            `;
+                        }
+                        return `<a href="${href}" title="${title || ''}" target="_blank">${text}</a>`;
+                    },
+                    image(href, title, text) {
+                        return `<img src="${href}" alt="${text || ''}" title="${title || ''}" class="markdown-image">`;
+                    }
+                })
+            });
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlContent, 'text/html');
             const firstH1 = doc.querySelector('h1');
@@ -1783,6 +1991,7 @@
                 `;
 
                 setupCodeBlocks();
+                setupImageViewer();
                 Prism.highlightAll();
                 if (headings.length > 0) {
                     setupHeadingsNavigation();
@@ -1801,13 +2010,30 @@
         function setupHeadingsToggle() {
             const toggleButton = document.getElementById('toggleHeadings');
             const headingsContainer = document.getElementById('headingsContainer');
+            const headingsBlock = document.querySelector('.headings-block');
 
             if (!toggleButton || !headingsContainer) return;
 
             toggleButton.addEventListener('click', () => {
                 const isCollapsed = headingsContainer.classList.toggle('collapsed');
                 toggleButton.innerHTML = `<i class="ri-${isCollapsed ? 'eye-off' : 'eye'}-line"></i>`;
+                if (window.innerWidth < 1024) {
+                    headingsBlock.classList.toggle('active', !isCollapsed);
+                }
             });
+
+            // Показать/скрыть на мобильных устройствах
+            if (window.innerWidth < 1024) {
+                headingsBlock.addEventListener('click', (e) => {
+                    if (e.target.closest('.toggle-headings') || e.target.closest('.heading-item')) return;
+                    headingsBlock.classList.toggle('active');
+                    const isCollapsed = !headingsContainer.classList.contains('collapsed');
+                    if (!isCollapsed) {
+                        headingsContainer.classList.add('collapsed');
+                        toggleButton.innerHTML = `<i class="ri-eye-off-line"></i>`;
+                    }
+                });
+            }
         }
 
         // Настройка блоков с кодом
@@ -1875,6 +2101,78 @@
             });
         }
 
+        // Настройка просмотра изображений
+        function setupImageViewer() {
+            const viewer = document.getElementById('imageViewer');
+            const viewerImage = document.getElementById('viewerImage');
+            const closeViewer = document.getElementById('closeViewer');
+            const zoomIn = document.getElementById('zoomIn');
+            const zoomOut = document.getElementById('zoomOut');
+            const zoomLevel = document.getElementById('zoomLevel');
+            let currentScale = 1;
+
+            function openViewer(src) {
+                viewerImage.src = src;
+                viewer.classList.add('active');
+                currentScale = 1;
+                updateZoom();
+            }
+
+            function closeViewerFunc() {
+                viewer.classList.remove('active');
+                viewerImage.style.transform = `scale(1)`;
+                currentScale = 1;
+                updateZoom();
+            }
+
+            function updateZoom() {
+                viewerImage.style.transform = `scale(${currentScale})`;
+                zoomLevel.textContent = `${Math.round(currentScale * 100)}%`;
+            }
+
+            document.querySelectorAll('.article-text img.markdown-image').forEach(img => {
+                img.addEventListener('click', () => openViewer(img.src));
+            });
+
+            closeViewer.addEventListener('click', closeViewerFunc);
+            viewer.addEventListener('click', (e) => {
+                if (e.target === viewer) closeViewerFunc();
+            });
+
+            zoomIn.addEventListener('click', () => {
+                currentScale = Math.min(currentScale + 0.2, 3);
+                updateZoom();
+            });
+
+            zoomOut.addEventListener('click', () => {
+                currentScale = Math.max(currentScale - 0.2, 0.5);
+                updateZoom();
+            });
+
+            viewerImage.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                currentScale = Math.max(0.5, Math.min(3, currentScale + delta));
+                updateZoom();
+            });
+        }
+
+        // Настройка кнопки "Наверх"
+        function setupScrollTopButton() {
+            const scrollTopButton = document.getElementById('scrollTopButton');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 200) {
+                    scrollTopButton.classList.add('visible');
+                } else {
+                    scrollTopButton.classList.remove('visible');
+                }
+            });
+
+            scrollTopButton.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+
         // Поиск
         const searchInput = document.getElementById('searchInput');
         const searchPanel = document.getElementById('searchPanel');
@@ -1904,7 +2202,6 @@
         closeSearch.addEventListener('click', closeSearchPanel);
         searchOverlay.addEventListener('click', closeSearchPanel);
 
-        // Закрытие поиска по Esc
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && searchPanel.classList.contains('active')) {
                 closeSearchPanel();
@@ -1928,7 +2225,6 @@
                 return;
             }
 
-            // Умный поиск с весами
             const results = pagesData.map(page => {
                 const title = (page.title || '').toLowerCase();
                 const description = (page.description || '').toLowerCase();
@@ -1948,7 +2244,6 @@
                 return { page, score };
             }).filter(result => result.score > 0);
 
-            // Сортировка по релевантности
             results.sort((a, b) => b.score - a.score);
 
             if (results.length === 0) {
@@ -1960,229 +2255,196 @@
                 return;
             }
 
-            results.forEach(({ page }) => {
-                const resultItem = document.createElement('div');
-                resultItem.className = 'search-result-item';
-                resultItem.onclick = () => loadPageFromSearch(null, page.slug);
+results.forEach(({ page }) => {
+    const resultItem = document.createElement('div');
+    resultItem.className = 'search-result-item';
+    resultItem.innerHTML = `
+        <div class="search-result-title">${processTitle(page.title)}</div>
+        <div class="search-result-meta">
+            <span><i class="ri-folder-line"></i> ${page.category || 'Без категории'}</span>
+            ${page.date ? `<span><i class="ri-calendar-line"></i> ${new Date(page.date).toLocaleDateString('ru-RU')}</span>` : ''}
+        </div>
+        <div class="search-result-description">
+            <p>${page.description || 'Описание отсутствует'}</p>
+        </div>
+    `;
+    resultItem.addEventListener('click', () => {
+        loadPage(page);
+        localStorage.setItem('lastPageSlug', page.slug);
+        updateActiveStates(page.slug);
+        closeSearchPanel();
+    });
+    searchResults.appendChild(resultItem);
+});
+}
 
-                const dateString = page.date ? new Date(page.date).toLocaleDateString('ru-RU', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric'
-                }) : '';
+// Функция debounce для оптимизации поиска
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
 
-                let preview = '';
-                const content = page.content || '';
-                const queryIndex = content.toLowerCase().indexOf(query);
+// Настройка мобильного меню
+function setupMobileMenu() {
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const articlesColumn = document.getElementById('articlesColumn');
 
-                if (queryIndex !== -1) {
-                    const start = Math.max(0, queryIndex - 50);
-                    const end = Math.min(content.length, queryIndex + query.length + 50);
-                    preview = content.substring(start, end);
-                    preview = preview.replace(/\s+/g, ' ');
-                    if (start > 0) preview = '...' + preview;
-                    if (end < content.length) preview = preview + '...';
-                    preview = marked.parse(preview);
-                }
+    mobileMenuToggle.addEventListener('click', () => {
+        articlesColumn.classList.toggle('active');
+    });
 
-                resultItem.innerHTML = `
-                    <div class="search-result-title">
-                        ${highlightMatches(page.title || 'Без названия', query)}
-                    </div>
-                    <div class="search-result-meta">
-                        <span>${dateString || 'Без даты'}</span>
-                        <span>${page.category || ''}</span>
-                    </div>
-                    <div class="search-result-description">
-                        ${preview || (page.description ? marked.parse(page.description) : '')}
-                    </div>
-                `;
-
-                searchResults.appendChild(resultItem);
-            });
+    document.addEventListener('click', (e) => {
+        if (!articlesColumn.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+            articlesColumn.classList.remove('active');
         }
+    });
+}
 
-        function highlightMatches(text, query) {
-            if (!text || !query) return text;
-            // Используем регулярное выражение для поиска целых слов
-            const regex = new RegExp(`(\\b${escapeRegExp(query)}\\b)`, 'gi');
-            return text.replace(regex, '<span style="background-color: var(--search-highlight); border-radius: 4px; padding: 0 2px;">$1</span>');
+// Настройка модального окна поддержки
+function setupSupportModal() {
+    const supportButton = document.getElementById('supportButton');
+    const supportModal = document.getElementById('supportModal');
+    const supportModalOverlay = document.getElementById('supportModalOverlay');
+    const closeSupport = document.getElementById('closeSupport');
+
+    function openSupportModal() {
+        supportModal.classList.add('active');
+        supportModalOverlay.classList.add('active');
+    }
+
+    function closeSupportModal() {
+        supportModal.classList.remove('active');
+        supportModalOverlay.classList.add('active');
+    }
+
+    supportButton.addEventListener('click', openSupportModal);
+    closeSupport.addEventListener('click', closeSupportModal);
+    supportModalOverlay.addEventListener('click', closeSupportModal);
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && supportModal.classList.contains('active')) {
+            closeSupportModal();
         }
+    });
+}
 
-        function escapeRegExp(string) {
-            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        }
+// Настройка меню Telegram
+function setupTelegramMenu() {
+    const telegramButton = document.getElementById('telegramButton');
+    const telegramMenu = document.getElementById('telegramMenu');
 
-        function loadPageFromSearch(event, slug) {
-            if (event) event.preventDefault();
-            const page = pagesData.find(p => p.slug === slug);
-            if (page) {
-                loadPage(page);
-                localStorage.setItem('lastPageSlug', slug);
-                updateActiveStates(slug);
-                closeSearchPanel();
-                if (window.innerWidth < 1024) {
-                    toggleMobileMenu(false);
-                }
-            }
-        }
+    telegramButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        telegramMenu.classList.toggle('active');
+    });
 
-        function debounce(func, wait) {
-            let timeout;
-            return function() {
-                const context = this;
-                const args = arguments;
-                clearTimeout(timeout);
-                timeout = setTimeout(() => {
-                    func.apply(context, args);
-                }, wait);
-            };
-        }
-
-        // Мобильное меню
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const articlesColumn = document.getElementById('articlesColumn');
-
-        function toggleMobileMenu(show) {
-            if (show === undefined) {
-                articlesColumn.classList.toggle('active');
-            } else {
-                show ? articlesColumn.classList.add('active') : articlesColumn.classList.remove('active');
-            }
-        }
-
-        mobileMenuToggle.addEventListener('click', () => toggleMobileMenu());
-
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth >= 1024) return;
-            const isClickInsideMenu = articlesColumn.contains(e.target) || mobileMenuToggle.contains(e.target);
-            if (!isClickInsideMenu && articlesColumn.classList.contains('active')) {
-                toggleMobileMenu(false);
-            }
-        });
-
-        // Подсветка меню
-        const menuContainer = document.querySelector('.menu-container');
-        const menuHighlight = document.getElementById('menuHighlight');
-
-        if (menuContainer && menuHighlight) {
-            menuContainer.addEventListener('mouseover', (e) => {
-                const item = e.target.closest('.menu-item');
-                if (!item || item === currentHighlightedItem) return;
-
-                if (currentHighlightedItem) {
-                    currentHighlightedItem.classList.remove('active');
-                }
-
-                item.classList.add('active');
-                currentHighlightedItem = item;
-            });
-
-            menuContainer.addEventListener('mouseout', () => {
-                if (currentHighlightedItem) {
-                    currentHighlightedItem.classList.remove('active');
-                    currentHighlightedItem = null;
-                }
-            });
-        }
-
-        // Telegram меню
-        const telegramButton = document.getElementById('telegramButton');
-        const telegramMenu = document.getElementById('telegramMenu');
-
-        function closeTelegramMenu() {
+    document.addEventListener('click', (e) => {
+        if (!telegramButton.contains(e.target) && !telegramMenu.contains(e.target)) {
             telegramMenu.classList.remove('active');
-            setTimeout(() => {
-                telegramMenu.style.display = 'none';
-            }, 400);
         }
+    });
+}
 
-        telegramButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            telegramMenu.style.display = 'flex';
-            setTimeout(() => {
-                telegramMenu.classList.toggle('active');
-            }, 10);
+// Настройка выделения пунктов меню
+function setupMenuHighlight() {
+    const menuItems = document.querySelectorAll('.menu-item');
+    const menuHighlight = document.getElementById('menuHighlight');
+
+    function updateHighlight(item) {
+        if (currentHighlightedItem === item) return;
+
+        currentHighlightedItem = item;
+        const rect = item.getBoundingClientRect();
+        const parentRect = item.parentElement.parentElement.getBoundingClientRect();
+        const top = rect.top - parentRect.top;
+        const height = rect.height;
+
+        menuHighlight.style.top = `${top}px`;
+        menuHighlight.style.height = `${height}px`;
+        menuHighlight.style.opacity = '1';
+    }
+
+    menuItems.forEach(item => {
+        item.addEventListener('mouseenter', () => updateHighlight(item));
+        item.addEventListener('click', () => {
+            menuItems.forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+            updateHighlight(item);
         });
+    });
 
-        document.addEventListener('click', (e) => {
-            if (!telegramButton.contains(e.target) && !telegramMenu.contains(e.target)) {
-                closeTelegramMenu();
+    document.querySelector('.menu-container').addEventListener('mouseleave', () => {
+        if (currentHighlightedItem && !currentHighlightedItem.classList.contains('active')) {
+            const activeItem = document.querySelector('.menu-item.active');
+            if (activeItem) {
+                updateHighlight(activeItem);
+            } else {
+                menuHighlight.style.opacity = '0';
+                currentHighlightedItem = null;
             }
-        });
-
-        document.addEventListener('contextmenu', (e) => {
-            if (!telegramMenu.contains(e.target)) {
-                closeTelegramMenu();
-            }
-        });
-
-        document.addEventListener('wheel', () => {
-            closeTelegramMenu();
-        });
-
-        document.addEventListener('keydown', () => {
-            closeTelegramMenu();
-        });
-
-        // Support модалка
-        const supportButton = document.getElementById('supportButton');
-        const supportModal = document.getElementById('supportModal');
-        const supportModalOverlay = document.getElementById('supportModalOverlay');
-        const closeSupport = document.getElementById('closeSupport');
-
-        function openSupportModal() {
-            supportModal.classList.add('active');
-            supportModalOverlay.classList.add('active');
         }
+    });
 
-        function closeSupportModal() {
-            supportModal.classList.remove('active');
-            supportModalOverlay.classList.remove('active');
+    const activeItem = document.querySelector('.menu-item.active');
+    if (activeItem) {
+        updateHighlight(activeItem);
+    }
+}
+
+// Пасхалка на иконке
+function setupEasterEgg() {
+    const icon = document.getElementById('easterEggIcon');
+    let clickCount = 0;
+    const sequence = ['ri-book-open-line', 'ri-star-line', 'ri-heart-line', 'ri-rocket-line'];
+
+    icon.addEventListener('click', () => {
+        clickCount = (clickCount + 1) % sequence.length;
+        icon.className = sequence[clickCount];
+    });
+}
+
+// Обработка изменения размера окна
+function handleResize() {
+    const articlesColumn = document.getElementById('articlesColumn');
+    if (window.innerWidth >= 1024) {
+        articlesColumn.classList.remove('active');
+    }
+
+    const headingsBlock = document.querySelector('.headings-block');
+    if (headingsBlock && window.innerWidth >= 1024) {
+        headingsBlock.classList.remove('active');
+    }
+}
+
+// Инициализация
+document.addEventListener('DOMContentLoaded', () => {
+    loadPagesData();
+    setupMobileMenu();
+    setupSupportModal();
+    setupTelegramMenu();
+    setupMenuHighlight();
+    setupScrollTopButton();
+    setupEasterEgg();
+
+    window.addEventListener('resize', handleResize);
+
+    // Обработка изменения состояния истории
+    window.addEventListener('popstate', () => {
+        const slug = window.location.hash.substring(1);
+        const page = pagesData.find(p => p.slug === slug);
+        if (page) {
+            loadPage(page);
+            updateActiveStates(slug);
         }
-
-        supportButton.addEventListener('click', openSupportModal);
-        closeSupport.addEventListener('click', closeSupportModal);
-        supportModalOverlay.addEventListener('click', closeSupportModal);
-
-        // Закрытие модалки по Esc
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && supportModal.classList.contains('active')) {
-                closeSupportModal();
-            }
-        });
-
-        // Пасхалка на иконке книги
-        const easterEggIcon = document.getElementById('easterEggIcon');
-        easterEggIcon.addEventListener('click', () => {
-            window.open('https://www.google.com/maps/@52.5952022,39.5248965,3a,75y,359.07h,82.97t/data=!3m7!1e1!3m5!1sCIHM0ogKEICAgICa5tjvxwE!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgpms-cs-s%2FAIMqDu21lgzR3PQCz7Fcnvug4Wap9dJI4tKQ-gAbaQ8ergN6Xr9J2o8lgXuYKxw7xxq5Pw0QjHqdS4EdMQ3-pUqdblICnUDSthThx2beg0YHHfXLWmSf4jzc8ezfLdbgjGk5iR1QQQrI%3Dw900-h600-k-no-pi7.034647060289103-ya184.0695531759182-ro0-fo100!7i7216!8i3608?entry=ttu&g_ep=EgoyMDI1MDQxMy4wIKXMDSoASAFQAw%3D%3D', '_blank');
-        });
-
-        // Обработка навигации по истории
-        window.addEventListener('popstate', () => {
-            const hash = window.location.hash.substring(1);
-            if (hash) {
-                const page = pagesData.find(p => p.slug === hash);
-                if (page) {
-                    loadPage(page);
-                    localStorage.setItem('lastPageSlug', page.slug);
-                    updateActiveStates(page.slug);
-                }
-            }
-        });
-
-        // Загрузка данных
-        document.addEventListener('DOMContentLoaded', () => {
-            const hash = window.location.hash.substring(1);
-            if (hash) {
-                lastPageSlug = hash;
-                localStorage.setItem('lastPageSlug', hash);
-            }
-
-            loadPagesData();
-        });
-
-        window.loadPageFromSearch = loadPageFromSearch;
-    </script>
+    });
+});
+</script>
 </body>
 </html>
