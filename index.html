@@ -7,11 +7,13 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Энциклопедия Эндера</title>
+    <!-- Иконка сайта: эмодзи 📘 -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text x='0' y='20' font-size='20'>📘</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <!-- Prism.js для подсветки кода -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-one-dark.min.css" rel="stylesheet">
     <style>
         :root {
             --bg-primary: #0d1117;
@@ -27,6 +29,7 @@
             --border-color: rgba(255, 255, 255, 0.1);
             --search-highlight: rgba(75, 107, 159, 0.5);
         }
+
         body {
             font-family: 'Inter', sans-serif;
             background: var(--bg-primary);
@@ -35,6 +38,7 @@
             overflow-x: hidden;
             line-height: 1.6;
         }
+
         #particles-js {
             position: fixed;
             top: 0;
@@ -44,6 +48,7 @@
             z-index: 0;
             pointer-events: none;
         }
+
         .content-wrapper {
             position: relative;
             z-index: 1;
@@ -51,44 +56,7 @@
             display: flex;
             flex-direction: column;
         }
-        .scroll-to-top {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 50px;
-            height: 50px;
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            cursor: pointer;
-            opacity: 0;
-            visibility: hidden;
-            transform: scale(0.8);
-            transition: all 0.3s ease;
-            z-index: 100;
-        }
-        .scroll-to-top.active {
-            opacity: 1;
-            visibility: visible;
-            transform: scale(1);
-        }
-        .scroll-to-top:hover {
-            background: var(--accent-hover);
-            transform: scale(1.1);
-        }
-        @media (max-width: 640px) {
-            .scroll-to-top {
-                bottom: 1.5rem;
-                right: 1.5rem;
-                width: 40px;
-                height: 40px;
-            }
-        }
+
         .articles-column {
             min-height: calc(100vh - 68px);
             overflow-y: auto;
@@ -100,45 +68,55 @@
             display: flex;
             flex-direction: column;
         }
+
         @media (max-width: 1024px) {
             .articles-column {
                 position: fixed;
                 left: -320px;
                 top: 68px;
                 z-index: 100;
-                transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.275);
+                transition: transform 0.3s ease;
             }
+
             .articles-column.active {
                 transform: translateX(320px);
             }
+
             .mobile-menu-toggle {
                 display: block !important;
             }
         }
+
         @media (max-width: 640px) {
             .articles-column {
                 width: 280px;
                 left: -280px;
             }
+            
             .articles-column.active {
                 transform: translateX(280px);
             }
         }
+
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
         }
+
         ::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.2);
             border-radius: 3px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.3);
         }
+
         .menu-container {
             position: relative;
             padding: 1rem;
         }
+
         .menu-item {
             position: relative;
             z-index: 1;
@@ -152,14 +130,17 @@
             margin-bottom: 0.25rem;
             text-decoration: none;
         }
+
         .menu-item:hover {
             color: var(--accent-color);
             background-color: var(--bg-tertiary);
         }
+
         .menu-item.active {
             color: var(--accent-color);
             background-color: var(--bg-tertiary);
         }
+
         .menu-item i {
             margin-right: 0.75rem;
             font-size: 1.1rem;
@@ -167,9 +148,11 @@
             text-align: center;
             transition: transform 0.3s ease;
         }
+
         .menu-item:hover i {
             transform: scale(1.2);
         }
+
         .menu-highlight {
             position: absolute;
             background-color: var(--bg-quaternary);
@@ -177,6 +160,7 @@
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 0;
         }
+
         .category {
             margin-bottom: 1.25rem;
             border-radius: 12px;
@@ -184,10 +168,12 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+
         .category:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
         }
+
         .category h3 {
             font-size: 0.95rem;
             font-weight: 600;
@@ -203,27 +189,33 @@
             align-items: center;
             justify-content: space-between;
         }
+
         .category h3:hover {
             background: var(--bg-quaternary);
         }
+
         .category h3 i.ri-folder-line {
             margin-right: 0.5rem;
             transition: all 0.3s ease;
         }
+
         .category h3:hover .ri-folder-line {
             transform: scale(1.2);
             color: var(--accent-color);
         }
+
         .category-items {
             display: none;
             padding: 0.5rem 0;
             background: var(--bg-tertiary);
             transition: all 0.3s ease;
         }
+
         .category-items.active {
             display: block;
             animation: fadeIn 0.3s ease-out;
         }
+
         .article-item {
             display: flex;
             align-items: center;
@@ -237,6 +229,7 @@
             position: relative;
             overflow: hidden;
         }
+
         .article-item::before {
             content: '';
             position: absolute;
@@ -248,31 +241,45 @@
             transform: translateX(-100%);
             transition: transform 0.3s ease;
         }
+
         .article-item:hover {
             background-color: var(--bg-quaternary);
             color: var(--accent-color);
             padding-left: 1.75rem;
         }
+
         .article-item:hover::before {
             transform: translateX(0);
         }
+
         .article-item.active {
             background-color: rgba(59, 130, 246, 0.2);
             color: var(--accent-color);
             font-weight: 500;
         }
+
         .article-item.active::before {
             transform: translateX(0);
         }
+
         .article-item i {
             margin-right: 0.75rem;
             font-size: 0.9rem;
             min-width: 18px;
             transition: transform 0.3s ease;
         }
+
         .article-item:hover i {
             transform: scale(1.2);
         }
+
+        .article-header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
         .header {
             display: flex;
             justify-content: space-between;
@@ -286,34 +293,41 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(5px);
         }
+
         @media (max-width: 768px) {
             .header {
                 padding: 0.75rem 1rem;
             }
         }
+
         @media (max-width: 640px) {
             .header {
                 flex-direction: column;
                 align-items: flex-start;
                 padding: 0.75rem;
             }
+            
             .blog-title {
                 margin-bottom: 0.5rem;
             }
+            
             .search-container {
                 width: 100%;
                 margin-top: 0.5rem;
                 flex-direction: column;
                 align-items: flex-start;
             }
+            
             .search-input {
                 width: 100%;
                 min-width: auto;
             }
+            
             .telegram-button {
                 display: none;
             }
         }
+
         .blog-title {
             display: flex;
             align-items: center;
@@ -323,24 +337,29 @@
             transition: all 0.3s ease;
             cursor: default;
         }
+
         .blog-title:hover {
             color: var(--accent-color);
         }
+
         .blog-title i {
             margin-right: 0.75rem;
             color: var(--accent-color);
             transition: transform 0.3s ease;
             cursor: default;
         }
+
         .blog-title:hover i {
             transform: scale(1.1);
         }
+
         .search-container {
             position: relative;
             display: flex;
             align-items: center;
             gap: 1rem;
         }
+
         .search-input,
         .search-panel-input {
             padding: 0.6rem 2.5rem 0.6rem 1rem;
@@ -353,6 +372,7 @@
             font-size: 0.9rem;
             position: relative;
         }
+
         .search-input::after,
         .search-panel-input::after {
             content: '\e6b2';
@@ -365,14 +385,17 @@
             opacity: 0.5;
             font-size: 1rem;
         }
+
         .search-input:focus::after,
         .search-panel-input:focus::after {
             opacity: 0.7;
         }
+
         .search-input::placeholder,
         .search-panel-input::placeholder {
             color: var(--text-tertiary);
         }
+
         .search-input:focus,
         .search-panel-input:focus {
             outline: none;
@@ -380,6 +403,7 @@
             background-color: var(--bg-quaternary);
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
+
         .search-panel {
             position: fixed;
             top: 50%;
@@ -397,11 +421,13 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
             border: 1px solid var(--border-color);
         }
+
         .search-panel.active {
             opacity: 1;
             visibility: visible;
             transform: translate(-50%, -50%) scale(1);
         }
+
         .search-overlay {
             position: fixed;
             top: 0;
@@ -415,16 +441,19 @@
             visibility: hidden;
             transition: all 0.3s ease;
         }
+
         .search-overlay.active {
             opacity: 1;
             visibility: visible;
         }
+
         .search-results {
             max-height: 60vh;
             overflow-y: auto;
             padding-right: 0.5rem;
             margin-top: 1rem;
         }
+
         .search-result-item {
             margin-bottom: 1.25rem;
             padding: 1rem;
@@ -434,21 +463,25 @@
             border-radius: 8px;
             transition: all 0.3s ease;
         }
+
         .search-result-item:hover {
             background-color: var(--bg-quaternary);
             transform: translateY(-2px);
         }
+
         .search-result-item:last-child {
             margin-bottom: 0;
             padding-bottom: 0;
             border-bottom: none;
         }
+
         .search-result-title {
             font-size: 1.1rem;
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 0.5rem;
         }
+
         .search-result-meta {
             display: flex;
             justify-content: space-between;
@@ -456,6 +489,7 @@
             color: var(--text-tertiary);
             margin-bottom: 0.5rem;
         }
+
         .search-result-description {
             font-size: 0.9rem;
             color: var(--text-secondary);
@@ -465,9 +499,11 @@
             position: relative;
             -webkit-mask-image: linear-gradient(180deg, #fff 60%, transparent 100%);
         }
+
         .search-result-description p {
             margin: 0;
         }
+
         .close-search {
             position: absolute;
             top: 1rem;
@@ -479,10 +515,12 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
+
         .close-search:hover {
             color: var(--accent-color);
             transform: rotate(90deg);
         }
+
         .action-button {
             display: flex;
             align-items: center;
@@ -493,20 +531,24 @@
             font-weight: 500;
             font-size: 0.9rem;
         }
+
         .telegram-button {
             background: linear-gradient(135deg, #2AABEE, #1A8BCF);
             color: white;
             position: relative;
             transition: all 0.3s ease;
         }
+
         .telegram-button:hover {
             transform: scale(1.05);
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
+
         .telegram-button:active {
             transform: scale(0.95);
             box-shadow: none;
         }
+
         .telegram-menu {
             position: absolute;
             top: 100%;
@@ -522,20 +564,23 @@
             min-width: 200px;
             opacity: 0;
             transform: scale(0.95) translateY(-10px);
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.275);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             transform-origin: top right;
         }
+
         .telegram-menu:not(.active) {
             opacity: 0;
             transform: scale(0.95) translateY(-10px);
             pointer-events: none;
         }
+
         .telegram-menu.active {
             display: flex;
             opacity: 1;
             transform: scale(1) translateY(0);
             animation: slideInMenu 0.3s ease-out;
         }
+
         .telegram-menu a {
             padding: 0.5rem 1rem;
             color: white;
@@ -547,21 +592,26 @@
             opacity: 0;
             transform: translateY(10px);
         }
+
         .telegram-menu.active a {
             opacity: 1;
             transform: translateY(0);
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
+
         .telegram-menu.active a:nth-child(1) {
             transition-delay: 0.1s;
         }
+
         .telegram-menu.active a:nth-child(2) {
             transition-delay: 0.2s;
         }
+
         .telegram-menu a:hover {
             background: linear-gradient(135deg, #3B5998, #4A6EAD);
             transform: translateX(4px);
         }
+
         .md-pdf-button {
             display: flex;
             align-items: center;
@@ -574,17 +624,21 @@
             text-decoration: none;
             font-size: 0.9rem;
         }
+
         .md-pdf-button:hover {
             background: var(--bg-quaternary);
             color: var(--accent-color);
         }
+
         .md-pdf-button i {
             margin-right: 0.5rem;
             transition: transform 0.3s ease;
         }
+
         .md-pdf-button:hover i {
             transform: scale(1.2);
         }
+
         .mobile-menu-toggle {
             display: none;
             background: none;
@@ -596,10 +650,13 @@
             padding: 0.5rem;
             border-radius: 6px;
         }
+
         .mobile-menu-toggle:hover {
             background: var(--bg-tertiary);
             color: var(--accent-color);
+            transform: rotate(90deg);
         }
+
         .article-content {
             display: flex;
             gap: 2rem;
@@ -607,49 +664,43 @@
             margin: 0 auto;
             animation: fadeIn 0.5s ease-in-out;
         }
+
         .article-text {
             flex: 1;
             min-width: 0;
             max-width: 100%;
             overflow-wrap: break-word;
         }
+
         @media (max-width: 1024px) {
             .article-content {
                 flex-direction: column;
             }
+            
             .headings-block {
-                position: fixed;
-                top: 68px;
-                right: 2rem;
-                width: 320px;
-                height: calc(100vh - 78px);
-                overflow-y: auto;
-                border-radius: 12px;
-                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-                transition: all 0.3s ease;
-            }
-            @media (max-width: 768px) {
-                .headings-block {
-                    width: 280px;
-                    right: 1.5rem;
-                }
+                display: none;
             }
         }
+
         @media (max-width: 768px) {
             .article-text {
                 padding: 0 0.5rem;
             }
+            
             .article-text h1 {
                 font-size: 1.5rem;
             }
+            
             .article-text h2 {
                 font-size: 1.3rem;
             }
+            
             .article-text pre {
                 padding: 1rem 0.5rem;
                 font-size: 0.8rem;
             }
         }
+
         .article-text h1 {
             font-size: 2rem;
             font-weight: 700;
@@ -658,6 +709,7 @@
             position: relative;
             line-height: 1.3;
         }
+
         .article-text h1::after {
             content: '';
             position: absolute;
@@ -668,9 +720,11 @@
             background: var(--accent-color);
             transition: width 0.5s ease-in-out;
         }
+
         .article-text h1:hover::after {
             width: 100%;
         }
+
         .article-text h2 {
             font-size: 1.6rem;
             font-weight: 600;
@@ -678,6 +732,7 @@
             color: var(--text-primary);
             position: relative;
         }
+
         .article-text h2::after {
             content: '';
             position: absolute;
@@ -688,43 +743,52 @@
             background: var(--accent-hover);
             transition: width 0.5s ease-in-out;
         }
+
         .article-text h2:hover::after {
             width: 100%;
         }
+
         .article-text h3 {
             font-size: 1.3rem;
             font-weight: 600;
             margin: 1.5rem 0 0.75rem;
             color: var(--text-primary);
         }
+
         .article-text h4 {
             font-size: 1.1rem;
             font-weight: 600;
             margin: 1.25rem 0 0.5rem;
             color: var(--text-primary);
         }
+
         .article-text p {
             font-size: 1rem;
             line-height: 1.8;
             margin-bottom: 1.25rem;
             color: var(--text-secondary);
         }
+
         .article-text ul,
         .article-text ol {
             margin: 1.25rem 0;
             padding-left: 1.75rem;
             color: var(--text-secondary);
         }
+
         .article-text ul {
             list-style-type: disc;
         }
+
         .article-text ol {
             list-style-type: decimal;
         }
+
         .article-text li {
             margin-bottom: 0.5rem;
             line-height: 1.7;
         }
+
         .article-text a {
             color: var(--accent-color);
             text-decoration: none;
@@ -732,10 +796,12 @@
             font-weight: 500;
             border-bottom: 1px dotted rgba(59, 130, 246, 0.3);
         }
+
         .article-text a:hover {
             color: var(--accent-hover);
             border-bottom-color: var(--accent-color);
         }
+
         .article-text code {
             font-family: 'Courier New', Courier, monospace;
             background-color: var(--bg-quaternary);
@@ -745,6 +811,7 @@
             font-size: 0.9em;
             border: 1px solid var(--border-color);
         }
+
         .article-text pre {
             position: relative;
             background-color: var(--bg-quaternary);
@@ -755,6 +822,7 @@
             overflow-x: auto;
             border: 1px solid var(--border-color);
         }
+
         .article-text pre code {
             background: none;
             padding: 0;
@@ -765,6 +833,7 @@
             white-space: pre;
             display: block;
         }
+
         .copy-code-btn {
             position: absolute;
             top: 0.75rem;
@@ -772,26 +841,29 @@
             background: var(--bg-secondary);
             color: var(--text-primary);
             border: 1px solid var(--border-color);
-            border-radius: 20px;
+            border-radius: 4px;
             padding: 0.35rem 0.75rem;
             cursor: pointer;
             font-size: 0.8rem;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+
         .copy-code-btn:hover {
             background: var(--bg-tertiary);
             color: var(--accent-color);
-            transform: scale(1.05);
         }
+
         .copy-code-btn:active {
             transform: scale(0.95);
         }
+
         .copy-code-btn i {
             font-size: 0.9rem;
         }
+
         .article-text table {
             width: 100%;
             border-collapse: collapse;
@@ -801,6 +873,7 @@
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
+
         .article-text th,
         .article-text td {
             padding: 0.75rem 1rem;
@@ -808,26 +881,26 @@
             text-align: left;
             color: var(--text-secondary);
         }
+
         .article-text th {
             background-color: var(--bg-quaternary);
             font-weight: 600;
             color: var(--text-primary);
         }
+
         .article-text tr:nth-child(even) {
             background-color: rgba(255, 255, 255, 0.03);
         }
+
         .article-text img {
             max-width: 100%;
             height: auto;
             border-radius: 8px;
             margin: 1.5rem 0;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
-            transition: transform 0.3s ease;
+            display: block;
         }
-        .article-text img:hover {
-            transform: scale(1.05);
-        }
+
         .article-text blockquote {
             border-left: 4px solid var(--accent-color);
             padding: 1rem 1.5rem;
@@ -837,9 +910,11 @@
             color: var(--text-secondary);
             font-style: italic;
         }
+
         .article-text blockquote p {
             margin-bottom: 0;
         }
+
         .article-text hr {
             border: none;
             height: 3px;
@@ -848,6 +923,7 @@
             border-radius: 4px;
             margin: 1.5rem 0;
         }
+
         .headings-block {
             flex: 0 0 320px;
             background-color: var(--bg-tertiary);
@@ -860,12 +936,14 @@
             max-height: fit-content;
             transition: all 0.3s ease;
         }
+
         .headings-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 1rem;
         }
+
         .toggle-headings {
             background: none;
             border: none;
@@ -874,29 +952,36 @@
             font-size: 1rem;
             transition: all 0.3s ease;
         }
+
         .toggle-headings:hover {
             color: var(--accent-color);
         }
+
         .headings-container.collapsed {
             max-height: 0;
             overflow: hidden;
             animation: slideOut 0.3s ease forwards;
         }
+
         .headings-container:not(.collapsed) {
             max-height: 300px;
             overflow-y: auto;
             animation: slideIn 0.3s ease forwards;
         }
+
         .headings-container::-webkit-scrollbar {
             width: 4px;
         }
+
         .headings-container::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.2);
             border-radius: 2px;
         }
+
         .headings-container::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.3);
         }
+
         .headings-block h4 {
             margin: 0;
             font-size: 1.1rem;
@@ -905,14 +990,17 @@
             display: flex;
             align-items: center;
         }
+
         .headings-block h4 i {
             margin-right: 0.75rem;
         }
+
         .headings-container {
             position: relative;
             padding-left: 0.5rem;
             overflow-x: hidden;
         }
+
         .heading-item {
             position: relative;
             z-index: 1;
@@ -926,11 +1014,13 @@
             transition: all 0.3s ease;
             text-decoration: none;
         }
+
         .heading-item:hover {
             color: var(--accent-color);
             background-color: rgba(59, 130, 246, 0.1);
             transform: translateX(4px);
         }
+
         .heading-item::after {
             content: '';
             position: absolute;
@@ -941,9 +1031,11 @@
             background: var(--accent-color);
             transition: width 0.3s ease;
         }
+
         .heading-item:hover::after {
             width: calc(100% - 2rem);
         }
+
         main {
             flex: 1;
             padding: 2rem;
@@ -951,23 +1043,28 @@
             background-size: 10px 10px;
             background-opacity: 0.05;
         }
+
         @media (max-width: 768px) {
             main {
                 padding: 1.5rem;
             }
+
             .article-content {
                 flex-direction: column;
                 gap: 1.5rem;
             }
+
             .article-text h1 {
                 font-size: 1.8rem;
                 margin: 1.5rem 0 1rem;
             }
+
             .article-text h2 {
                 font-size: 1.4rem;
                 margin: 1.5rem 0 0.75rem;
             }
         }
+
         .loading-spinner {
             display: inline-block;
             width: 20px;
@@ -978,6 +1075,7 @@
             animation: spin 1s ease-in-out infinite;
             margin-right: 0.75rem;
         }
+
         .sidebar-header {
             padding: 0.5rem;
             text-align: center;
@@ -986,9 +1084,11 @@
             background: var(--bg-tertiary);
             border-bottom: 1px solid var(--border-color);
         }
+
         .sidebar-header p {
             margin: 0.25rem 0;
         }
+
         .sidebar-header i,
         .article-header i {
             font-size: 14px;
@@ -996,181 +1096,20 @@
             color: var(--accent-color);
             transition: transform 0.3s ease;
         }
+
         .sidebar-header i:hover,
         .article-header i:hover {
             transform: scale(1.2);
         }
-        /* Стилизация блоков с кодом */
-        .article-text pre {
-            position: relative;
-            background: linear-gradient(135deg, #2a273f, #3e3b5b);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 1.5rem;
-            overflow: hidden;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
-        }
-        .article-text pre code {
-            background: none;
-            padding: 0;
-            border: none;
-            color: #c7c7ff;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            white-space: pre-wrap;
-        }
-        .copy-code-btn {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(0, 0, 0, 0.5);
-            color: #fff;
-            border: none;
-            border-radius: 20px;
-            padding: 0.5rem 1rem;
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            opacity: 0;
-            visibility: hidden;
-        }
-        .article-text pre:hover .copy-code-btn {
-            opacity: 1;
-            visibility: visible;
-        }
-        .copy-code-btn:hover {
-            background: var(--accent-hover);
-            transform: scale(1.05);
-        }
-        .copy-code-btn:active {
-            transform: scale(0.95);
-        }
-        .copy-code-btn i {
-            font-size: 1rem;
-        }
-        /* Стилизация embed блоков */
-        .embed-block {
-            position: relative;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            overflow: hidden;
-            margin: 1.5rem 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .embed-block:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-        }
-        .embed-block iframe {
-            width: 100%;
-            height: 400px;
-            border: none;
-        }
-        @media (max-width: 768px) {
-            .embed-block iframe {
-                height: 300px;
-            }
-        }
-        /* Галерея изображений */
-        .image-gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-        .image-gallery img {
-            width: 100%;
-            height: auto;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            border-radius: 8px;
-        }
-        .image-gallery img:hover {
-            transform: scale(1.05);
-        }
-        /* Модальное окно для изображений */
-        .image-modal {
+
+        .support-button {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease;
-        }
-        .image-modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        .image-modal-content {
-            position: relative;
-            max-width: 90%;
-            max-height: 90%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .image-modal img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            transition: transform 0.3s ease;
-        }
-        .image-controls {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-        .image-controls button {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: #fff;
-            padding: 0.5rem;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-        .image-controls button:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-        .image-zoom {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .image-zoom input {
-            width: 80px;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: #fff;
-            text-align: center;
-            padding: 0.2rem;
-            border-radius: 4px;
-        }
-        /* Кнопка прокрутки вверх */
-        .scroll-to-top {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
+            bottom: 1.5rem;
+            right: 1.5rem;
             width: 50px;
             height: 50px;
-            background: var(--accent-color);
-            color: white;
+            background: var(--bg-tertiary);
+            color: var(--accent-color);
             border: none;
             border-radius: 50%;
             display: flex;
@@ -1178,102 +1117,212 @@
             justify-content: center;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             cursor: pointer;
-            opacity: 0;
-            visibility: hidden;
-            transform: scale(0.8);
             transition: all 0.3s ease;
-            z-index: 100;
+            z-index: 50;
         }
-        .scroll-to-top.active {
-            opacity: 1;
-            visibility: visible;
-            transform: scale(1);
-        }
-        .scroll-to-top:hover {
-            background: var(--accent-hover);
-            transform: scale(1.1);
-        }
+
         @media (max-width: 640px) {
-            .scroll-to-top {
-                bottom: 1.5rem;
-                right: 1.5rem;
+            .support-button {
+                bottom: 1rem;
+                right: 1rem;
                 width: 40px;
                 height: 40px;
             }
         }
-        /* Адаптивное меню */
-        .mobile-menu-toggle {
-            display: none;
+
+        .support-button:hover {
+            background: var(--bg-quaternary);
+            transform: scale(1.1);
+        }
+
+        .support-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            width: min(90%, 500px);
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .support-modal.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .support-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 90;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .support-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .support-modal h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .support-modal h3 i {
+            margin-right: 0.5rem;
+            color: #ff5555;
+        }
+
+        .support-modal p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .support-modal .namemc-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(90deg, #000, #444);
+            color: var(--text-primary);
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .support-modal .namemc-button:hover {
+            background: linear-gradient(90deg, #333, #555);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .support-modal .namemc-button i {
+            margin-right: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .support-modal .namemc-button:hover i {
+            transform: scale(1.2);
+        }
+
+        .support-modal .telegram-support {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .support-modal .telegram-support:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .support-modal .telegram-support i {
+            transition: transform 0.3s ease;
+        }
+
+        .support-modal .telegram-support:hover i {
+            transform: scale(1.2);
+        }
+
+        .support-modal .close-support {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
             background: none;
             border: none;
-            color: var(--text-primary);
+            color: var(--text-tertiary);
             font-size: 1.5rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            padding: 0.5rem;
-            border-radius: 6px;
         }
-        @media (max-width: 1024px) {
-            .mobile-menu-toggle {
-                display: block;
-            }
-        }
-        .mobile-menu-toggle:hover {
-            background: var(--bg-tertiary);
+
+        .support-modal .close-support:hover {
             color: var(--accent-color);
             transform: rotate(90deg);
         }
-        /* Стиль закрепленного содержания */
-        .headings-block {
-            position: sticky;
-            top: 80px;
-            height: calc(100vh - 100px);
-            overflow-y: auto;
-            padding: 1rem;
-            background: var(--bg-tertiary);
-            border-left: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-        @media (max-width: 1024px) {
-            .headings-block {
-                display: none;
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
             }
         }
-        /* Улучшенная адаптивность */
-        @media (max-width: 640px) {
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 0.75rem;
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
             }
-            .blog-title {
-                margin-bottom: 0.5rem;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
-            .search-container {
-                width: 100%;
-                margin-top: 0.5rem;
-                flex-direction: column;
-                align-items: flex-start;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                max-height: 0;
             }
-            .search-input {
-                width: 100%;
-                min-width: auto;
+            to {
+                opacity: 1;
+                max-height: 300px;
             }
-            .telegram-button {
-                display: none;
+        }
+
+        @keyframes slideOut {
+            from {
+                opacity: 1;
+                max-height: 300px;
             }
-            .article-text h1 {
-                font-size: 1.8rem;
-                margin: 1.5rem 0 1rem;
+            to {
+                opacity: 0;
+                max-height: 0;
             }
-            .article-text h2 {
-                font-size: 1.4rem;
-                margin: 1.5rem 0 0.75rem;
+        }
+
+        @keyframes slideInMenu {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-10px);
             }
-            .article-text pre {
-                padding: 1rem 0.5rem;
-                font-size: 0.8rem;
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
             }
         }
     </style>
@@ -1281,161 +1330,859 @@
 <body>
     <div id="particles-js"></div>
     <div class="content-wrapper">
-        <!-- Ваш существующий HTML -->
+        <header class="header">
+            <div class="flex items-center">
+                <button class="mobile-menu-toggle mr-4" id="mobileMenuToggle">
+                    <i class="ri-menu-line"></i>
+                </button>
+                <span class="blog-title">
+                    <i class="ri-book-open-line" id="easterEggIcon"></i>
+                    Энциклопедия Эндера
+                </span>
+                <a href="https://endermanik13.github.io/importer/" class="md-pdf-button">
+                    <i class="ri-file-pdf-line"></i>
+                    MD -> PDF
+                </a>
+            </div>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Поиск..." id="searchInput">
+                <button class="action-button telegram-button" id="telegramButton">
+                    <i class="ri-telegram-fill mr-2"></i>
+                    Telegram
+                </button>
+                <div class="telegram-menu" id="telegramMenu">
+                    <a href="https://t.me/endermanik13" target="_blank">Личный чат автора</a>
+                    <a href="https://t.me/endermanik12" target="_blank">Канал автора</a>
+                </div>
+            </div>
+        </header>
+
+        <div class="search-overlay" id="searchOverlay"></div>
+        <div class="search-panel" id="searchPanel">
+            <button class="close-search" id="closeSearch">
+                <i class="ri-close-line"></i>
+            </button>
+            <input type="text" class="search-panel-input" id="searchPanelInput" placeholder="Введите запрос..." autocomplete="off">
+            <div class="search-results" id="searchResults"></div>
+        </div>
+
+        <div class="flex flex-1">
+            <div class="articles-column" id="articlesColumn">
+                <div class="sidebar-header">
+                    <p><i class="ri-file-text-line"></i> Лекции: <span id="articleCount">0</span></p>
+                    <p><i class="ri-folder-line"></i> Кол-во предметов: <span id="categoryCount">0</span></p>
+                </div>
+                <div class="p-4 flex-1">
+                    <div class="menu-container">
+                        <div class="menu-highlight" id="menuHighlight"></div>
+                        <ul class="mb-8">
+                            <li><a href="https://endermanik13.github.io/top/#readme" class="menu-item" id="homeLink"><i class="ri-home-line"></i> Главная</a></li>
+                            <li><a href="https://endermanik13.github.io/top/news.html" class="menu-item"><i class="ri-newspaper-line"></i> Важная информация</a></li>
+                            <li><a href="https://endermanik13.gitbook.io/info" target="_blank" class="menu-item"><i class="ri-book-line"></i> GitBook</a></li>
+                            <li><a href="#" class="menu-item"><i class="ri-user-line"></i> Обо мне</a></li>
+                        </ul>
+                    </div>
+                    <div id="categoryList" class="space-y-4"></div>
+                </div>
+            </div>
+
+            <main id="mainContent">
+                <div class="text-center py-12">
+                    <div class="inline-flex items-center text-lg">
+                        <div class="loading-spinner"></div>
+                        Загрузка контента...
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <button class="support-button" id="supportButton">
+            <i class="ri-heart-line"></i>
+        </button>
+        <div class="support-modal-overlay" id="supportModalOverlay"></div>
+        <div class="support-modal" id="supportModal">
+            <button class="close-support" id="closeSupport">
+                <i class="ri-close-line"></i>
+            </button>
+            <h3><i class="ri-heart-fill"></i> Спасибо за вашу поддержку!</h3>
+            <p>Автор очень старается впечатлить своих зрителей и коллег по учёбе, и ему очень было бы приятно услышать пару идей или благодарностей в свой адрес.</p>
+            <p>Если же хотите его прям порадовать, можете нарисовать по автору рисунок по его майнкрафт персонажу.</p>
+            <a href="https://namemc.com/skin/51f0ca7a48e29545" target="_blank" class="namemc-button">
+                <i class="ri-gamepad-line"></i> NameMC
+            </a>
+            <p>Ваша обратная связь помогает улучшать инструмент и мотивирует на дальнейшую работу!</p>
+            <a href="https://t.me/endermanik13" target="_blank" class="telegram-support">
+                <i class="ri-telegram-fill mr-2"></i> Telegram
+            </a>
+        </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
     <script>
-        // Добавление функционала кнопки прокрутки вверх
-        const scrollToTopButton = document.createElement('button');
-        scrollToTopButton.classList.add('scroll-to-top');
-        scrollToTopButton.innerHTML = '<i class="ri-arrow-up-line"></i>';
-        document.body.appendChild(scrollToTopButton);
+        // Инициализация переменных
+        let pagesData = [];
+        let currentHighlightedItem = null;
+        let lastPageSlug = null;
 
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                scrollToTopButton.classList.add('active');
-            } else {
-                scrollToTopButton.classList.remove('active');
-            }
+        // Установка настроек для marked.js
+        marked.setOptions({
+            breaks: true,
+            gfm: true,
+            smartypants: true,
         });
 
-        scrollToTopButton.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+        // Инициализация particles.js
+        particlesJS('particles-js', {
+            particles: {
+                number: {
+                    value: 60,
+                    density: {
+                        enable: true,
+                        value_area: 800
+                    }
+                },
+                color: {
+                    value: '#58a6ff'
+                },
+                shape: {
+                    type: 'circle'
+                },
+                opacity: {
+                    value: 0.3,
+                    random: false
+                },
+                size: {
+                    value: 3,
+                    random: true
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#58a6ff',
+                    opacity: 0.2,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1.5,
+                    direction: 'none',
+                    random: false,
+                    straight: false,
+                    out_mode: 'out',
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: 'grab'
+                    },
+                    resize: true
+                },
+                modes: {
+                    grab: {
+                        distance: 140,
+                        line_linked: {
+                            opacity: 0.5
+                        }
+                    }
+                }
+            },
+            retina_detect: true
         });
 
-        // Обработка embed ссылок
-        document.addEventListener('DOMContentLoaded', () => {
-            const processEmbedLinks = () => {
-                document.querySelectorAll('.article-text a').forEach(link => {
-                    if (!link.href.includes('youtube.com') && !link.href.includes('youtu.be')) return;
-
-                    const videoId = link.href.split(/v=|\/$/)[1]?.split(/[?&]/)[0];
-                    if (!videoId) return;
-
-                    const embedBlock = document.createElement('div');
-                    embedBlock.className = 'embed-block';
-                    embedBlock.innerHTML = `
-                        <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
-                    `;
-                    link.parentNode.replaceChild(embedBlock, link);
+        // Загрузка данных страниц
+        async function loadPagesData() {
+            try {
+                const response = await fetch('pages.json', {
+                    cache: 'no-store',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
                 });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                pagesData = await response.json();
+                // Фильтрация страниц - исключаем Excalidraw и "БЕЗ КАТЕГОРИИ"
+                pagesData = pagesData.filter(page => 
+                    page.category && 
+                    page.category.trim() !== '' && 
+                    !page.path?.includes('Excalidraw') &&
+                    page.category?.toUpperCase() !== 'EXCALIDRAW' &&
+                    page.category?.toUpperCase() !== 'БЕЗ КАТЕГОРИИ'
+                );
+
+                // Для страниц без категории или с пустой категорией устанавливаем "Немного о странице"
+                pagesData.forEach(page => {
+                    if (!page.category || page.category.trim() === '') {
+                        page.category = 'Немного о странице';
+                    }
+                });
+
+                // Сортировка по дате (новые сначала)
+                pagesData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+
+                renderCategories();
+                updateSidebarStats();
+
+                // Проверяем, есть ли сохраненная страница в localStorage
+                lastPageSlug = localStorage.getItem('lastPageSlug');
+                let pageToLoad = pagesData.find(page => page.path === 'README.md') || pagesData[0];
+
+                if (lastPageSlug) {
+                    const savedPage = pagesData.find(page => page.slug === lastPageSlug);
+                    if (savedPage) pageToLoad = savedPage;
+                }
+
+                if (pagesData.length > 0) {
+                    loadPage(pageToLoad);
+                } else {
+                    showErrorMessage('Страницы не найдены.');
+                }
+            } catch (error) {
+                console.error('Error loading pages:', error);
+                showErrorMessage(`Ошибка загрузки: ${error.message}`);
+            }
+        }
+
+        // Обновление статистики вверху боковой панели
+        function updateSidebarStats() {
+            const articleCount = pagesData.length;
+            const categoryCount = new Set(
+                pagesData.map(page => page.category)
+                    .filter(cat => cat && cat.toUpperCase() !== 'EXCALIDRAW')
+            ).size;
+            document.getElementById('articleCount').textContent = articleCount;
+            document.getElementById('categoryCount').textContent = categoryCount;
+        }
+
+        // Функция отображения сообщения об ошибке
+        function showErrorMessage(message) {
+            document.getElementById('mainContent').innerHTML = `
+                <div class="text-center py-12">
+                    <div class="inline-flex items-center text-lg text-red-400">
+                        <i class="ri-error-warning-line mr-2"></i>
+                        ${message}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Рендеринг категорий и статей
+        function renderCategories() {
+            const categoryList = document.getElementById('categoryList');
+
+            // Группировка страниц по категориям
+            const categories = {};
+            pagesData.forEach(page => {
+                if (!page.category || page.path === 'README.md') return;
+                if (!categories[page.category]) {
+                    categories[page.category] = [];
+                }
+                categories[page.category].push(page);
+            });
+
+            // Сортировка категорий по алфавиту
+            const sortedCategories = Object.keys(categories).sort();
+
+            // Очистка списка категорий
+            categoryList.innerHTML = '';
+
+            if (sortedCategories.length === 0) {
+                categoryList.innerHTML = `
+                    <div class="text-center text-sm text-gray-400 py-4">
+                        <p>Нет предметов</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Создание элементов категорий
+            sortedCategories.forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category';
+
+                // Заголовок категории
+                const categoryTitle = document.createElement('h3');
+                categoryTitle.innerHTML = `
+                    <i class="ri-folder-line"></i>
+                    <span>${category}</span>
+                    <i class="ri-arrow-down-s-line ml-auto transition-transform duration-300"></i>
+                `;
+                categoryDiv.appendChild(categoryTitle);
+
+                // Список статей в категории
+                const categoryItems = document.createElement('div');
+                categoryItems.className = 'category-items';
+
+                // Сортировка статей в категории по дате (новые сначала)
+                const sortedPages = categories[category].sort((a, b) =>
+                    new Date(b.date || 0) - new Date(a.date || 0)
+                );
+
+                sortedPages.forEach(page => {
+                    const articleItem = document.createElement('a');
+                    articleItem.href = `#${page.slug}`;
+                    articleItem.className = `article-item ${page.slug === lastPageSlug ? 'active' : ''}`;
+                    articleItem.innerHTML = `
+                        <i class="ri-${page.icon || 'file-text-line'}"></i>
+                        <span class="truncate">${page.title || 'Без названия'}</span>
+                    `;
+                    articleItem.dataset.slug = page.slug;
+                    articleItem.title = page.title || 'Без названия';
+
+                    articleItem.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        loadPage(page);
+                        localStorage.setItem('lastPageSlug', page.slug);
+                        updateActiveStates(page.slug);
+                    });
+
+                    categoryItems.appendChild(articleItem);
+                });
+
+                categoryDiv.appendChild(categoryItems);
+                categoryList.appendChild(categoryDiv);
+
+                // Обработчик клика по заголовку категории
+                categoryTitle.addEventListener('click', () => {
+                    // Закрываем все другие категории
+                    document.querySelectorAll('.category-items.active').forEach(item => {
+                        if (item !== categoryItems) {
+                            item.classList.remove('active');
+                            const arrow = item.parentElement.querySelector('.ri-arrow-down-s-line');
+                            arrow.style.transform = 'rotate(0)';
+                        }
+                    });
+
+                    // Переключаем текущую категорию
+                    const isActive = categoryItems.classList.toggle('active');
+                    const arrowIcon = categoryTitle.querySelector('.ri-arrow-down-s-line');
+                    arrowIcon.style.transform = isActive ? 'rotate(180deg)' : 'rotate(0)';
+                });
+
+                // Автоматически раскрываем категорию, если в ней есть активная статья
+                if (sortedPages.some(page => page.slug === lastPageSlug)) {
+                    categoryItems.classList.add('active');
+                    categoryTitle.querySelector('.ri-arrow-down-s-line').style.transform = 'rotate(180deg)';
+                }
+            });
+        }
+
+        // Обновление активных состояний статей
+        function updateActiveStates(slug) {
+            document.querySelectorAll('.article-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.slug === slug);
+            });
+        }
+
+        // Извлечение заголовков из контента
+        function extractHeadings(htmlContent) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlContent, 'text/html');
+            const headings = Array.from(doc.querySelectorAll('h2, h3')).map((heading, index) => {
+                const level = heading.tagName.toLowerCase() === 'h2' ? 0 : 1;
+                const id = heading.id || `heading-${index}`;
+                heading.id = id;
+                return {
+                    text: heading.textContent,
+                    level,
+                    id,
+                    tag: heading.tagName.toLowerCase()
+                };
+            });
+            return {
+                headings,
+                updatedContent: doc.body.innerHTML
             };
+        }
 
-            // Наблюдатель за изменениями контента
-            const observer = new MutationObserver(mutations => {
-                mutations.forEach(() => processEmbedLinks());
-            });
-
-            observer.observe(document.getElementById('mainContent'), {
-                childList: true,
-                subtree: true
-            });
-        });
-
-        // Галерея изображений и модальное окно
-        const imageModal = document.createElement('div');
-        imageModal.className = 'image-modal';
-        const modalContent = document.createElement('div');
-        modalContent.className = 'image-modal-content';
-        const modalImage = document.createElement('img');
-        const controls = document.createElement('div');
-        controls.className = 'image-controls';
-
-        const zoomIn = document.createElement('button');
-        zoomIn.innerHTML = '<i class="ri-add-line"></i>';
-        const zoomOut = document.createElement('button');
-        zoomOut.innerHTML = '<i class="ri-subtract-line"></i>';
-        const reset = document.createElement('button');
-        reset.innerHTML = '<i class="ri-refresh-line"></i>';
-
-        const zoomDisplay = document.createElement('div');
-        zoomDisplay.className = 'image-zoom';
-        const zoomInput = document.createElement('input');
-        zoomInput.type = 'text';
-        zoomInput.value = '100%';
-        zoomInput.readOnly = true;
-
-        zoomDisplay.appendChild(zoomInput);
-        controls.appendChild(zoomIn);
-        controls.appendChild(zoomOut);
-        controls.appendChild(reset);
-        controls.appendChild(zoomDisplay);
-
-        modalContent.appendChild(modalImage);
-        modalContent.appendChild(controls);
-        imageModal.appendChild(modalContent);
-        document.body.appendChild(imageModal);
-
-        let currentScale = 1;
-
-        const openImageModal = (src) => {
-            modalImage.src = src;
-            imageModal.classList.add('active');
-            currentScale = 1;
-            updateZoomDisplay();
-        };
-
-        const closeImageModal = () => {
-            imageModal.classList.remove('active');
-        };
-
-        const updateZoomDisplay = () => {
-            zoomInput.value = `${Math.round(currentScale * 100)}%`;
-        };
-
-        zoomIn.addEventListener('click', () => {
-            currentScale += 0.1;
-            modalImage.style.transform = `scale(${currentScale})`;
-            updateZoomDisplay();
-        });
-
-        zoomOut.addEventListener('click', () => {
-            currentScale = Math.max(0.5, currentScale - 0.1);
-            modalImage.style.transform = `scale(${currentScale})`;
-            updateZoomDisplay();
-        });
-
-        reset.addEventListener('click', () => {
-            currentScale = 1;
-            modalImage.style.transform = `scale(${currentScale})`;
-            updateZoomDisplay();
-        });
-
-        window.addEventListener('wheel', (e) => {
-            if (!imageModal.classList.contains('active')) return;
-
-            e.preventDefault();
-
-            if (e.deltaY < 0) {
-                currentScale = Math.min(3, currentScale + 0.05);
-            } else {
-                currentScale = Math.max(0.5, currentScale - 0.05);
+        // Обработка заголовков с **текстом** и удаление первого h1
+        function processContent(content, title) {
+            let htmlContent = marked.parse(content || '');
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlContent, 'text/html');
+            const firstH1 = doc.querySelector('h1');
+            if (firstH1 && firstH1.textContent.trim() === title?.trim()) {
+                firstH1.remove();
             }
+            return doc.body.innerHTML;
+        }
 
-            modalImage.style.transform = `scale(${currentScale})`;
-            updateZoomDisplay();
-        });
+        // Обработка заголовков с **текстом**
+        function processTitle(title) {
+            if (!title) return 'Без названия';
+            return marked.parseInline(title.replace(/\*\*(.*?)\*\*/g, '**$1**'));
+        }
 
-        imageModal.addEventListener('click', (e) => {
-            if (e.target === imageModal) {
-                closeImageModal();
+        // Загрузка страницы
+        async function loadPage(page) {
+            const mainContent = document.getElementById('mainContent');
+            mainContent.innerHTML = `
+                <div class="text-center py-12">
+                    <div class="inline-flex items-center text-lg">
+                        <div class="loading-spinner"></div>
+                        Загрузка статьи...
+                    </div>
+                </div>
+            `;
+
+            try {
+                const processedContent = processContent(page.content, page.title);
+                const { headings, updatedContent } = extractHeadings(processedContent);
+
+                const dateString = page.date ? new Date(page.date).toLocaleDateString('ru-RU', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                }) : '';
+
+                mainContent.innerHTML = `
+                    <div class="article-header">
+                        <h1 class="text-3xl font-bold mb-2">${processTitle(page.title)}</h1>
+                        ${dateString ? `<p class="text-sm text-gray-400"><i class="ri-calendar-line"></i> ${dateString}</p>` : ''}
+                    </div>
+                    <article class="mb-12">
+                        <div class="article-content">
+                            <div class="article-text">
+                                ${updatedContent}
+                            </div>
+                            ${headings.length > 0 ? `
+                            <div class="headings-block">
+                                <div class="headings-header">
+                                    <h4><i class="ri-list-check"></i> Содержание</h4>
+                                    <button class="toggle-headings" id="toggleHeadings">
+                                        <i class="ri-eye-line"></i>
+                                    </button>
+                                </div>
+                                <div class="headings-container" id="headingsContainer">
+                                    ${headings.map(heading => `
+                                        <a href="#${heading.id}" 
+                                           class="heading-item ${heading.tag}" 
+                                           data-id="${heading.id}"
+                                           style="padding-left: ${heading.level * 12 + 12}px;">
+                                            ${heading.text}
+                                        </a>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </article>
+                `;
+
+                setupCodeBlocks();
+                Prism.highlightAll();
+                if (headings.length > 0) {
+                    setupHeadingsNavigation();
+                    setupHeadingsToggle();
+                }
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                history.pushState(null, '', `#${page.slug}`);
+            } catch (error) {
+                console.error('Error rendering page:', error);
+                showErrorMessage(`Ошибка при загрузке статьи: ${error.message}`);
+            }
+        }
+
+        // Настройка сворачивания/разворачивания содержимого
+        function setupHeadingsToggle() {
+            const toggleButton = document.getElementById('toggleHeadings');
+            const headingsContainer = document.getElementById('headingsContainer');
+
+            if (!toggleButton || !headingsContainer) return;
+
+            toggleButton.addEventListener('click', () => {
+                const isCollapsed = headingsContainer.classList.toggle('collapsed');
+                toggleButton.innerHTML = `<i class="ri-${isCollapsed ? 'eye-off' : 'eye'}-line"></i>`;
+            });
+        }
+
+        // Настройка блоков с кодом
+        function setupCodeBlocks() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const block = entry.target;
+                        if (!block.querySelector('.copy-code-btn')) {
+                            const button = document.createElement('button');
+                            button.className = 'copy-code-btn';
+                            button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
+                            button.addEventListener('click', () => copyCode(block, button));
+                            block.appendChild(button);
+                        }
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.article-text pre').forEach(block => {
+                const code = block.querySelector('code');
+                if (code) {
+                    const langMatch = /language-(\w+)/.exec(code.className);
+                    if (langMatch) {
+                        block.dataset.language = langMatch[1];
+                    }
+                }
+                observer.observe(block);
+            });
+        }
+
+        // Копирование кода
+        async function copyCode(block, button) {
+            const code = block.querySelector('code')?.textContent || '';
+            try {
+                await navigator.clipboard.writeText(code);
+                button.innerHTML = '<i class="ri-check-line"></i> Скопировано!';
+                setTimeout(() => {
+                    button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
+                }, 2000);
+            } catch (err) {
+                console.error('Copy failed:', err);
+                button.innerHTML = '<i class="ri-close-line"></i> Ошибка';
+                setTimeout(() => {
+                    button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
+                }, 2000);
+            }
+        }
+
+        // Настройка навигации по заголовкам
+        function setupHeadingsNavigation() {
+            document.querySelectorAll('.heading-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = item.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 20,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+
+        // Поиск
+        const searchInput = document.getElementById('searchInput');
+        const searchPanel = document.getElementById('searchPanel');
+        const searchOverlay = document.getElementById('searchOverlay');
+        const searchPanelInput = document.getElementById('searchPanelInput');
+        const searchResults = document.getElementById('searchResults');
+        const closeSearch = document.getElementById('closeSearch');
+
+        searchInput.addEventListener('input', () => {
+            if (searchInput.value.trim()) {
+                searchPanel.classList.add('active');
+                searchOverlay.classList.add('active');
+                searchPanelInput.value = searchInput.value;
+                searchPanelInput.focus();
+                searchInput.value = '';
+                performSearch(searchPanelInput.value);
             }
         });
 
+        function closeSearchPanel() {
+            searchPanel.classList.remove('active');
+            searchOverlay.classList.remove('active');
+            searchPanelInput.value = '';
+            searchResults.innerHTML = '';
+        }
+
+        closeSearch.addEventListener('click', closeSearchPanel);
+        searchOverlay.addEventListener('click', closeSearchPanel);
+
+        // Закрытие поиска по Esc
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && imageModal.classList.contains('active')) {
-                closeImageModal();
+            if (e.key === 'Escape' && searchPanel.classList.contains('active')) {
+                closeSearchPanel();
             }
         });
 
-        // Обработка кликов по изображениям
+        searchPanelInput.addEventListener('input', debounce(() => {
+            performSearch(searchPanelInput.value);
+        }, 300));
+
+        function performSearch(query) {
+            query = query.trim().toLowerCase();
+            searchResults.innerHTML = '';
+
+            if (query.length < 1) {
+                searchResults.innerHTML = `
+                    <div class="text-center py-4 text-gray-400">
+                        Введите запрос для поиска
+                    </div>
+                `;
+                return;
+            }
+
+            // Умный поиск с весами
+            const results = pagesData.map(page => {
+                const title = (page.title || '').toLowerCase();
+                const description = (page.description || '').toLowerCase();
+                const content = (page.content || '').toLowerCase();
+                const tags = (page.tags || []).join(' ').toLowerCase();
+
+                let score = 0;
+                const terms = query.split(/\s+/);
+
+                terms.forEach(term => {
+                    if (title.includes(term)) score += 3;
+                    if (description.includes(term)) score += 2;
+                    if (content.includes(term)) score += 1;
+                    if (tags.includes(term)) score += 2;
+                });
+
+                return { page, score };
+            }).filter(result => result.score > 0);
+
+            // Сортировка по релевантности
+            results.sort((a, b) => b.score - a.score);
+
+            if (results.length === 0) {
+                searchResults.innerHTML = `
+                    <div class="text-center py-4 text-gray-400">
+                        Ничего не найдено
+                    </div>
+                `;
+                return;
+            }
+
+            results.forEach(({ page }) => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'search-result-item';
+                resultItem.onclick = () => loadPageFromSearch(null, page.slug);
+
+                const dateString = page.date ? new Date(page.date).toLocaleDateString('ru-RU', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                }) : '';
+
+                let preview = '';
+                const content = page.content || '';
+                const queryIndex = content.toLowerCase().indexOf(query);
+
+                if (queryIndex !== -1) {
+                    const start = Math.max(0, queryIndex - 50);
+                    const end = Math.min(content.length, queryIndex + query.length + 50);
+                    preview = content.substring(start, end);
+                    preview = preview.replace(/\s+/g, ' ');
+                    if (start > 0) preview = '...' + preview;
+                    if (end < content.length) preview = preview + '...';
+                    preview = marked.parse(preview);
+                }
+
+                resultItem.innerHTML = `
+                    <div class="search-result-title">
+                        ${highlightMatches(page.title || 'Без названия', query)}
+                    </div>
+                    <div class="search-result-meta">
+                        <span>${dateString || 'Без даты'}</span>
+                        <span>${page.category || ''}</span>
+                    </div>
+                    <div class="search-result-description">
+                        ${preview || (page.description ? marked.parse(page.description) : '')}
+                    </div>
+                `;
+
+                searchResults.appendChild(resultItem);
+            });
+        }
+
+        function highlightMatches(text, query) {
+            if (!text || !query) return text;
+            // Используем регулярное выражение для поиска целых слов
+            const regex = new RegExp(`(\\b${escapeRegExp(query)}\\b)`, 'gi');
+            return text.replace(regex, '<span style="background-color: var(--search-highlight); border-radius: 4px; padding: 0 2px;">$1</span>');
+        }
+
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function loadPageFromSearch(event, slug) {
+            if (event) event.preventDefault();
+            const page = pagesData.find(p => p.slug === slug);
+            if (page) {
+                loadPage(page);
+                localStorage.setItem('lastPageSlug', slug);
+                updateActiveStates(slug);
+                closeSearchPanel();
+                if (window.innerWidth < 1024) {
+                    toggleMobileMenu(false);
+                }
+            }
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function() {
+                const context = this;
+                const args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    func.apply(context, args);
+                }, wait);
+            };
+        }
+
+        // Мобильное меню
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const articlesColumn = document.getElementById('articlesColumn');
+
+        function toggleMobileMenu(show) {
+            if (show === undefined) {
+                articlesColumn.classList.toggle('active');
+            } else {
+                show ? articlesColumn.classList.add('active') : articlesColumn.classList.remove('active');
+            }
+        }
+
+        mobileMenuToggle.addEventListener('click', () => toggleMobileMenu());
+
         document.addEventListener('click', (e) => {
-            if (e.target.tagName === 'IMG') {
-                openImageModal(e.target.src);
+            if (window.innerWidth >= 1024) return;
+            const isClickInsideMenu = articlesColumn.contains(e.target) || mobileMenuToggle.contains(e.target);
+            if (!isClickInsideMenu && articlesColumn.classList.contains('active')) {
+                toggleMobileMenu(false);
             }
         });
+
+        // Подсветка меню
+        const menuContainer = document.querySelector('.menu-container');
+        const menuHighlight = document.getElementById('menuHighlight');
+
+        if (menuContainer && menuHighlight) {
+            menuContainer.addEventListener('mouseover', (e) => {
+                const item = e.target.closest('.menu-item');
+                if (!item || item === currentHighlightedItem) return;
+
+                if (currentHighlightedItem) {
+                    currentHighlightedItem.classList.remove('active');
+                }
+
+                item.classList.add('active');
+                currentHighlightedItem = item;
+            });
+
+            menuContainer.addEventListener('mouseout', () => {
+                if (currentHighlightedItem) {
+                    currentHighlightedItem.classList.remove('active');
+                    currentHighlightedItem = null;
+                }
+            });
+        }
+
+        // Telegram меню
+        const telegramButton = document.getElementById('telegramButton');
+        const telegramMenu = document.getElementById('telegramMenu');
+
+        function closeTelegramMenu() {
+            telegramMenu.classList.remove('active');
+            setTimeout(() => {
+                telegramMenu.style.display = 'none';
+            }, 400);
+        }
+
+        telegramButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            telegramMenu.style.display = 'flex';
+            setTimeout(() => {
+                telegramMenu.classList.toggle('active');
+            }, 10);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!telegramButton.contains(e.target) && !telegramMenu.contains(e.target)) {
+                closeTelegramMenu();
+            }
+        });
+
+        document.addEventListener('contextmenu', (e) => {
+            if (!telegramMenu.contains(e.target)) {
+                closeTelegramMenu();
+            }
+        });
+
+        document.addEventListener('wheel', () => {
+            closeTelegramMenu();
+        });
+
+        document.addEventListener('keydown', () => {
+            closeTelegramMenu();
+        });
+
+        // Support модалка
+        const supportButton = document.getElementById('supportButton');
+        const supportModal = document.getElementById('supportModal');
+        const supportModalOverlay = document.getElementById('supportModalOverlay');
+        const closeSupport = document.getElementById('closeSupport');
+
+        function openSupportModal() {
+            supportModal.classList.add('active');
+            supportModalOverlay.classList.add('active');
+        }
+
+        function closeSupportModal() {
+            supportModal.classList.remove('active');
+            supportModalOverlay.classList.remove('active');
+        }
+
+        supportButton.addEventListener('click', openSupportModal);
+        closeSupport.addEventListener('click', closeSupportModal);
+        supportModalOverlay.addEventListener('click', closeSupportModal);
+
+        // Закрытие модалки по Esc
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && supportModal.classList.contains('active')) {
+                closeSupportModal();
+            }
+        });
+
+        // Пасхалка на иконке книги
+        const easterEggIcon = document.getElementById('easterEggIcon');
+        easterEggIcon.addEventListener('click', () => {
+            window.open('https://www.google.com/maps/@52.5952022,39.5248965,3a,75y,359.07h,82.97t/data=!3m7!1e1!3m5!1sCIHM0ogKEICAgICa5tjvxwE!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgpms-cs-s%2FAIMqDu21lgzR3PQCz7Fcnvug4Wap9dJI4tKQ-gAbaQ8ergN6Xr9J2o8lgXuYKxw7xxq5Pw0QjHqdS4EdMQ3-pUqdblICnUDSthThx2beg0YHHfXLWmSf4jzc8ezfLdbgjGk5iR1QQQrI%3Dw900-h600-k-no-pi7.034647060289103-ya184.0695531759182-ro0-fo100!7i7216!8i3608?entry=ttu&g_ep=EgoyMDI1MDQxMy4wIKXMDSoASAFQAw%3D%3D', '_blank');
+        });
+
+        // Обработка навигации по истории
+        window.addEventListener('popstate', () => {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                const page = pagesData.find(p => p.slug === hash);
+                if (page) {
+                    loadPage(page);
+                    localStorage.setItem('lastPageSlug', page.slug);
+                    updateActiveStates(page.slug);
+                }
+            }
+        });
+
+        // Загрузка данных
+        document.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                lastPageSlug = hash;
+                localStorage.setItem('lastPageSlug', hash);
+            }
+
+            loadPagesData();
+        });
+
+        window.loadPageFromSearch = loadPageFromSearch;
     </script>
 </body>
 </html>
