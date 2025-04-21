@@ -386,7 +386,7 @@
             transform: translate(-50%, -50%) scale(0.95);
             width: min(90%, 700px);
             max-height: 80vh;
-            background-color: var(--bg-tertiary);
+            background-color-half: var(--bg-tertiary);
             z-index: 100;
             opacity: 0;
             visibility: hidden;
@@ -1069,6 +1069,7 @@
 
             .scroll-top-button {
                 bottom: 5rem;
+                right: 1rem;
                 width: 40px;
                 height: 40px;
             }
@@ -1509,6 +1510,16 @@
                     return `<div class="embed-container"><iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen title="YouTube video"></iframe></div>`;
                 }
             }
+            // Обработка Markdown-изображений
+            const markdownImageRegex = /!\[(.*?)\]\((.*?)\)/g;
+            if (markdownImageRegex.test(text)) {
+                return text.replace(markdownImageRegex, `<img src="$2" alt="$1" class="markdown-image" onerror="this.src='https://via.placeholder.com/400x300?text=Image+Not+Found'; this.alt='Image Not Found';">`);
+            }
+            // Обработка встроенного контента
+            const embedRegex = /<embed\s+src="([^"]+)"\s*\/?>/i;
+            if (embedRegex.test(text)) {
+                return text.replace(embedRegex, `<div class="embed-container"><iframe src="$1" frameborder="0" allowfullscreen></iframe></div>`);
+            }
             return `<p>${text}</p>`;
         };
         renderer.link = function(href, title, text) {
@@ -1785,6 +1796,7 @@
                     setupScrollTopButton();
                 }
                 setupImageViewer();
+                setupEmbedLoaders();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 history.pushState(null, '', `#${page.slug}`);
             } catch (error) {
@@ -1959,6 +1971,18 @@
             });
         }
 
+        function setupEmbedLoaders() {
+            const embeds = document.querySelectorAll('.embed-container iframe');
+            embeds.forEach(iframe => {
+                iframe.addEventListener('load', () => {
+                    iframe.classList.add('loaded');
+                });
+                iframe.addEventListener('error', () => {
+                    iframe.outerHTML = `<div class="text-center text-red-400 py-4">Ошибка загрузки встроенного контента</div>`;
+                });
+            });
+        }
+
         const searchInput = document.getElementById('searchInput');
         const searchPanel = document.getElementById('searchPanel');
         const searchOverlay = document.getElementById('searchOverlay');
@@ -2112,126 +2136,98 @@
             }
         });
 
-        // Настройка модального окна поддержки
-        const supportButton = document.getElementById('supportButton');
-        const supportModal = document.getElementById('supportModal');
-        const supportModalOverlay = document.getElementById('supportModalOverlay');
-        const closeSupport = document.getElementById('closeSupport');
+// Настройка модального окна поддержки
+const supportButton = document.getElementById('supportButton');
+const supportModal = document.getElementById('supportModal');
+const supportModalOverlay = document.getElementById('supportModalOverlay');
+const closeSupport = document.getElementById('closeSupport');
 
-        function openSupportModal() {
-            supportModal.classList.add('active');
-            supportModalOverlay.classList.add('active');
-            console.log('Support modal opened');
+function openSupportModal() {
+    supportModal.classList.add('active');
+    supportModalOverlay.classList.add('active');
+}
+
+function closeSupportModal() {
+    supportModal.classList.remove('active');
+    supportModalOverlay.classList.remove('active');
+}
+
+supportButton.addEventListener('click', openSupportModal);
+closeSupport.addEventListener('click', closeSupportModal);
+supportModalOverlay.addEventListener('click', (e) => {
+    if (e.target === supportModalOverlay) {
+        closeSupportModal();
+    }
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && supportModal.classList.contains('active')) {
+        closeSupportModal();
+    }
+});
+
+// Инициализация
+document.addEventListener('DOMContentLoaded', () => {
+    initParticles();
+    loadPagesData();
+
+    // Проверка hash в URL для загрузки страницы
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+        const page = pagesData.find(p => p.slug === hash);
+        if (page) {
+            loadPage(page);
+            localStorage.setItem('lastPageSlug', hash);
+            updateActiveStates(hash);
         }
+    }
 
-        function closeSupportModal() {
-            supportModal.classList.remove('active');
-            supportModalOverlay.classList.remove('active');
-            console.log('Support modal closed');
-        }
-
-        supportButton.addEventListener('click', openSupportModal);
-        closeSupport.addEventListener('click', closeSupportModal);
-        supportModalOverlay.addEventListener('click', closeSupportModal);
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && supportModal.classList.contains('active')) {
-                closeSupportModal();
+    // Обработка события popstate для навигации назад/вперед
+    window.addEventListener('popstate', (e) => {
+        const slug = window.location.hash.slice(1);
+        if (slug) {
+            const page = pagesData.find(p => p.slug === slug);
+            if (page) {
+                loadPage(page);
+                updateActiveStates(slug);
             }
-        });
-
-        // Пасхалка
-        let clickCount = 0;
-        const easterEggIcon = document.getElementById('easterEggIcon');
-
-        easterEggIcon.addEventListener('click', () => {
-            clickCount++;
-            if (clickCount >= 5) {
-                easterEggIcon.classList.add('animate-blink');
-                setTimeout(() => {
-                    easterEggIcon.classList.remove('animate-blink');
-                    clickCount = 0;
-                }, 3000);
-                console.log('Easter egg activated');
-            }
-        });
-
-        // Обработка изменения состояния истории
-        window.addEventListener('popstate', () => {
-            const slug = window.location.hash.substring(1);
-            if (slug && slug !== lastPageSlug) {
-                const page = pagesData.find(p => p.slug === slug);
-                if (page) {
-                    console.log('Loading page from popstate:', page.title);
-                    loadPage(page);
-                    localStorage.setItem('lastPageSlug', slug);
-                    updateActiveStates(slug);
-                }
-            }
-        });
-
-        // Обработка кликов по пунктам меню
-        function setupMenuInteractions() {
-            console.log('Setting up menu interactions...');
-            const menuItems = document.querySelectorAll('.menu-item');
-            const menuHighlight = document.getElementById('menuHighlight');
-
-            menuItems.forEach(item => {
-                item.addEventListener('mouseenter', () => {
-                    const rect = item.getBoundingClientRect();
-                    const parentRect = item.parentElement.getBoundingClientRect();
-                    menuHighlight.style.width = `${rect.width}px`;
-                    menuHighlight.style.height = `${rect.height}px`;
-                    menuHighlight.style.transform = `translateY(${rect.top - parentRect.top}px)`;
-                    menuHighlight.style.opacity = '1';
-                });
-
-                item.addEventListener('mouseleave', () => {
-                    if (currentHighlightedItem) {
-                        const rect = currentHighlightedItem.getBoundingClientRect();
-                        const parentRect = currentHighlightedItem.parentElement.getBoundingClientRect();
-                        menuHighlight.style.width = `${rect.width}px`;
-                        menuHighlight.style.height = `${rect.height}px`;
-                        menuHighlight.style.transform = `translateY(${rect.top - parentRect.top}px)`;
-                        menuHighlight.style.opacity = '1';
-                    } else {
-                        menuHighlight.style.opacity = '0';
-                    }
-                });
-
-                item.addEventListener('click', () => {
-                    menuItems.forEach(i => i.classList.remove('active'));
-                    item.classList.add('active');
-                    currentHighlightedItem = item;
-                    console.log('Menu item clicked:', item.textContent);
-                });
-            });
-
-            const activeItem = document.querySelector('.menu-item.active') || menuItems[0];
-            if (activeItem) {
-                currentHighlightedItem = activeItem;
-                const rect = activeItem.getBoundingClientRect();
-                const parentRect = activeItem.parentElement.getBoundingClientRect();
-                menuHighlight.style.width = `${rect.width}px`;
-                menuHighlight.style.height = `${rect.height}px`;
-                menuHighlight.style.transform = `translateY(${rect.top - parentRect.top}px)`;
-                menuHighlight.style.opacity = '1';
+        } else {
+            const homePage = pagesData.find(page => page.path === 'README.md') || pagesData[0];
+            if (homePage) {
+                loadPage(homePage);
+                updateActiveStates(homePage.slug);
             }
         }
+    });
 
-        // Инициализация
-        document.addEventListener('DOMContentLoaded', async () => {
-            console.log('DOM content loaded, initializing...');
-            try {
-                initParticles();
-                await loadPagesData();
-                setupMenuInteractions();
-                console.log('Initialization completed');
-            } catch (error) {
-                console.error('Initialization error:', error);
-                showErrorMessage(`Ошибка инициализации: ${error.message}`);
-            }
-        });
+    // Easter Egg
+    const easterEggIcon = document.getElementById('easterEggIcon');
+    let clickCount = 0;
+    easterEggIcon.addEventListener('click', () => {
+        clickCount++;
+        if (clickCount === 5) {
+            easterEggIcon.classList.add('animate-blink');
+            setTimeout(() => {
+                easterEggIcon.classList.remove('animate-blink');
+                clickCount = 0;
+            }, 2000);
+        }
+    });
+});
+
+// Обработка ошибок
+window.addEventListener('error', (event) => {
+    console.error('Global error:', event.message, event.filename, event.lineno);
+    showErrorMessage('Произошла ошибка на странице. Пожалуйста, попробуйте перезагрузить.');
+});
+
+// Обработка событий изменения размера окна
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 1024 && articlesColumn.classList.contains('active')) {
+        articlesColumn.classList.remove('active');
+        mobileMenuToggle.innerHTML = `<i class="ri-menu-line"></i>`;
+    }
+});
     </script>
 </body>
 </html>
