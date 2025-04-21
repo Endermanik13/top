@@ -179,7 +179,6 @@
             background: var(--bg-tertiary);
             padding: 0.75rem 1.25rem;
             margin: 0;
-            text-transform: uppercase;
             cursor: pointer;
             transition: background-color 0.3s ease;
             border-bottom: 1px solid var(--border-color);
@@ -682,7 +681,6 @@
                 max-height: calc(100vh - 100px);
                 overflow-y: auto;
                 z-index: 40;
-                display: block;
                 transform: translateX(100%);
                 transition: transform 0.3s ease;
             }
@@ -904,6 +902,7 @@
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            animation: tableSlideIn 0.5s ease-out;
         }
 
         .article-text th,
@@ -912,6 +911,7 @@
             border: 1px solid var(--border-color);
             text-align: left;
             color: var(--text-secondary);
+            transition: background-color 0.3s ease;
         }
 
         .article-text th {
@@ -920,8 +920,17 @@
             color: var(--text-primary);
         }
 
+        .article-text tr {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
         .article-text tr:nth-child(even) {
             background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .article-text tr:hover {
+            background-color: var(--bg-quaternary);
+            transform: scale(1.01);
         }
 
         .article-text img {
@@ -1002,11 +1011,13 @@
             border-radius: 12px;
             padding: 1rem;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            position: relative;
             border: 1px solid var(--border-color);
-            overflow: hidden;
             max-height: calc(100vh - 100px);
             transition: all 0.3s ease;
+            position: sticky;
+            top: 80px;
+            width: 320px;
+            overflow-y: auto;
         }
 
         .headings-header {
@@ -1512,6 +1523,17 @@
                 transform: scale(1) translateY(0);
             }
         }
+
+        @keyframes tableSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 <body>
@@ -1862,7 +1884,7 @@
                 });
 
                 if (sortedPages.some(page => page.slug === lastPageSlug)) {
-                    categoryFilms.classList.add('active');
+                    categoryItems.classList.add('active');
                     categoryTitle.querySelector('.ri-arrow-down-s-line').style.transform = 'rotate(180deg)';
                 }
             });
@@ -1911,6 +1933,23 @@
                                     <iframe src="https://www.youtube.com/embed/${match[5]}" frameborder="0" allowfullscreen></iframe>
                                 </div>
                             `;
+                        }
+                        // Обработка других ссылок с embed
+                        const embedServices = [
+                            { regex: /(vimeo\.com)\/(\d+)/, embed: id => `https://player.vimeo.com/video/${id}` },
+                            { regex: /(dailymotion\.com|dai\.ly)\/([a-zA-Z0-9]+)/, embed: id => `https://www.dailymotion.com/embed/video/${id}` },
+                            { regex: /(soundcloud\.com)\/([\w-]+\/[\w-]+)/, embed: id => `https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/${id}` },
+                        ];
+                        for (const service of embedServices) {
+                            const match = href.match(service.regex);
+                            if (match && match[2]) {
+                                return `
+                                    <div class="embed-container">
+                                        <div class="embed-title">${text || 'Встроенный контент'}</div>
+                                        <iframe src="${service.embed(match[2])}" frameborder="0" allowfullscreen></iframe>
+                                    </div>
+                                `;
+                            }
                         }
                         return `<a href="${href}" title="${title || ''}" target="_blank">${text}</a>`;
                     },
@@ -2017,7 +2056,13 @@
             toggleButton.addEventListener('click', () => {
                 const isCollapsed = headingsContainer.classList.toggle('collapsed');
                 toggleButton.innerHTML = `<i class="ri-${isCollapsed ? 'eye-off' : 'eye'}-line"></i>`;
-                if (window.innerWidth < 1024) {
+                if (window.innerWidth >= 1024) {
+                    headingsBlock.style.width = isCollapsed ? '60px' : '320px';
+                    headingsBlock.style.overflow = isCollapsed ? 'hidden' : 'auto';
+                    headingsContainer.style.display = isCollapsed ? 'none' : 'block';
+                    const h4 = headingsBlock.querySelector('h4');
+                    h4.style.display = isCollapsed ? 'none' : 'flex';
+                } else {
                     headingsBlock.classList.toggle('active', !isCollapsed);
                 }
             });
@@ -2181,270 +2226,225 @@
         const searchResults = document.getElementById('searchResults');
         const closeSearch = document.getElementById('closeSearch');
 
-        searchInput.addEventListener('input', () => {
+searchInput.addEventListener('input', () => {
             if (searchInput.value.trim()) {
                 searchPanel.classList.add('active');
                 searchOverlay.classList.add('active');
                 searchPanelInput.value = searchInput.value;
-                searchPanelInput.focus();
-                searchInput.value = '';
                 performSearch(searchPanelInput.value);
+            } else {
+                searchPanel.classList.remove('active');
+                searchOverlay.classList.remove('active');
+                searchResults.innerHTML = '';
             }
         });
 
-        function closeSearchPanel() {
+        searchPanelInput.addEventListener('input', () => {
+            searchInput.value = searchPanelInput.value;
+            performSearch(searchPanelInput.value);
+        });
+
+        closeSearch.addEventListener('click', () => {
             searchPanel.classList.remove('active');
             searchOverlay.classList.remove('active');
+            searchInput.value = '';
             searchPanelInput.value = '';
             searchResults.innerHTML = '';
-        }
-
-        closeSearch.addEventListener('click', closeSearchPanel);
-        searchOverlay.addEventListener('click', closeSearchPanel);
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && searchPanel.classList.contains('active')) {
-                closeSearchPanel();
-            }
         });
 
-        searchPanelInput.addEventListener('input', debounce(() => {
-            performSearch(searchPanelInput.value);
-        }, 300));
+        searchOverlay.addEventListener('click', () => {
+            searchPanel.classList.remove('active');
+            searchOverlay.classList.remove('active');
+            searchInput.value = '';
+            searchPanelInput.value = '';
+            searchResults.innerHTML = '';
+        });
 
         function performSearch(query) {
-            query = query.trim().toLowerCase();
-            searchResults.innerHTML = '';
-
-            if (query.length < 1) {
+            if (!query.trim()) {
                 searchResults.innerHTML = `
-                    <div class="text-center py-4 text-gray-400">
+                    <div class="text-center text-sm text-gray-400 py-4">
                         Введите запрос для поиска
                     </div>
                 `;
                 return;
             }
 
-            const results = pagesData.map(page => {
-                const title = (page.title || '').toLowerCase();
-                const description = (page.description || '').toLowerCase();
-                const content = (page.content || '').toLowerCase();
-                const tags = (page.tags || []).join(' ').toLowerCase();
+            const filteredPages = pagesData.filter(page =>
+                page.title?.toLowerCase().includes(query.toLowerCase()) ||
+                page.content?.toLowerCase().includes(query.toLowerCase()) ||
+                page.category?.toLowerCase().includes(query.toLowerCase())
+            );
 
-                let score = 0;
-                const terms = query.split(/\s+/);
-
-                terms.forEach(term => {
-                    if (title.includes(term)) score += 3;
-                    if (description.includes(term)) score += 2;
-                    if (content.includes(term)) score += 1;
-                    if (tags.includes(term)) score += 2;
-                });
-
-                return { page, score };
-            }).filter(result => result.score > 0);
-
-            results.sort((a, b) => b.score - a.score);
-
-            if (results.length === 0) {
+            if (filteredPages.length === 0) {
                 searchResults.innerHTML = `
-                    <div class="text-center py-4 text-gray-400">
+                    <div class="text-center text-sm text-gray-400 py-4">
                         Ничего не найдено
                     </div>
                 `;
                 return;
             }
 
-results.forEach(({ page }) => {
-    const resultItem = document.createElement('div');
-    resultItem.className = 'search-result-item';
-    resultItem.innerHTML = `
-        <div class="search-result-title">${processTitle(page.title)}</div>
-        <div class="search-result-meta">
-            <span><i class="ri-folder-line"></i> ${page.category || 'Без категории'}</span>
-            ${page.date ? `<span><i class="ri-calendar-line"></i> ${new Date(page.date).toLocaleDateString('ru-RU')}</span>` : ''}
-        </div>
-        <div class="search-result-description">
-            <p>${page.description || 'Описание отсутствует'}</p>
-        </div>
-    `;
-    resultItem.addEventListener('click', () => {
-        loadPage(page);
-        localStorage.setItem('lastPageSlug', page.slug);
-        updateActiveStates(page.slug);
-        closeSearchPanel();
-    });
-    searchResults.appendChild(resultItem);
-});
-}
+            searchResults.innerHTML = filteredPages.map(page => `
+                <div class="search-result-item" data-slug="${page.slug}">
+                    <div class="search-result-title">${highlightText(page.title || 'Без названия', query)}</div>
+                    <div class="search-result-meta">
+                        <span><i class="ri-folder-line"></i> ${page.category || 'Без категории'}</span>
+                        ${page.date ? `<span><i class="ri-calendar-line"></i> ${new Date(page.date).toLocaleDateString('ru-RU')}</span>` : ''}
+                    </div>
+                    <div class="search-result-description">
+                        <p>${highlightText(truncateText(page.content || '', 150), query)}</p>
+                    </div>
+                </div>
+            `).join('');
 
-// Функция debounce для оптимизации поиска
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-// Настройка мобильного меню
-function setupMobileMenu() {
-    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-    const articlesColumn = document.getElementById('articlesColumn');
-
-    mobileMenuToggle.addEventListener('click', () => {
-        articlesColumn.classList.toggle('active');
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!articlesColumn.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
-            articlesColumn.classList.remove('active');
+            document.querySelectorAll('.search-result-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const slug = item.dataset.slug;
+                    const page = pagesData.find(p => p.slug === slug);
+                    if (page) {
+                        loadPage(page);
+                        localStorage.setItem('lastPageSlug', page.slug);
+                        updateActiveStates(page.slug);
+                        searchPanel.classList.remove('active');
+                        searchOverlay.classList.remove('active');
+                        searchInput.value = '';
+                        searchPanelInput.value = '';
+                    }
+                });
+            });
         }
-    });
-}
 
-// Настройка модального окна поддержки
-function setupSupportModal() {
-    const supportButton = document.getElementById('supportButton');
-    const supportModal = document.getElementById('supportModal');
-    const supportModalOverlay = document.getElementById('supportModalOverlay');
-    const closeSupport = document.getElementById('closeSupport');
-
-    function openSupportModal() {
-        supportModal.classList.add('active');
-        supportModalOverlay.classList.add('active');
-    }
-
-    function closeSupportModal() {
-        supportModal.classList.remove('active');
-        supportModalOverlay.classList.add('active');
-    }
-
-    supportButton.addEventListener('click', openSupportModal);
-    closeSupport.addEventListener('click', closeSupportModal);
-    supportModalOverlay.addEventListener('click', closeSupportModal);
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && supportModal.classList.contains('active')) {
-            closeSupportModal();
+        function highlightText(text, query) {
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<span style="background: var(--search-highlight);">$1</span>');
         }
-    });
-}
 
-// Настройка меню Telegram
-function setupTelegramMenu() {
-    const telegramButton = document.getElementById('telegramButton');
-    const telegramMenu = document.getElementById('telegramMenu');
-
-    telegramButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        telegramMenu.classList.toggle('active');
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!telegramButton.contains(e.target) && !telegramMenu.contains(e.target)) {
-            telegramMenu.classList.remove('active');
+        function truncateText(text, maxLength) {
+            if (text.length <= maxLength) return text;
+            return text.substring(0, maxLength) + '...';
         }
-    });
-}
 
-// Настройка выделения пунктов меню
-function setupMenuHighlight() {
-    const menuItems = document.querySelectorAll('.menu-item');
-    const menuHighlight = document.getElementById('menuHighlight');
+        // Настройка мобильного меню
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const articlesColumn = document.getElementById('articlesColumn');
 
-    function updateHighlight(item) {
-        if (currentHighlightedItem === item) return;
-
-        currentHighlightedItem = item;
-        const rect = item.getBoundingClientRect();
-        const parentRect = item.parentElement.parentElement.getBoundingClientRect();
-        const top = rect.top - parentRect.top;
-        const height = rect.height;
-
-        menuHighlight.style.top = `${top}px`;
-        menuHighlight.style.height = `${height}px`;
-        menuHighlight.style.opacity = '1';
-    }
-
-    menuItems.forEach(item => {
-        item.addEventListener('mouseenter', () => updateHighlight(item));
-        item.addEventListener('click', () => {
-            menuItems.forEach(i => i.classList.remove('active'));
-            item.classList.add('active');
-            updateHighlight(item);
+        mobileMenuToggle.addEventListener('click', () => {
+            articlesColumn.classList.toggle('active');
         });
-    });
 
-    document.querySelector('.menu-container').addEventListener('mouseleave', () => {
-        if (currentHighlightedItem && !currentHighlightedItem.classList.contains('active')) {
-            const activeItem = document.querySelector('.menu-item.active');
-            if (activeItem) {
-                updateHighlight(activeItem);
-            } else {
-                menuHighlight.style.opacity = '0';
-                currentHighlightedItem = null;
+        // Закрытие мобильного меню при клике вне его
+        document.addEventListener('click', (e) => {
+            if (!articlesColumn.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+                articlesColumn.classList.remove('active');
             }
+        });
+
+        // Настройка выпадающего меню Telegram
+        const telegramButton = document.getElementById('telegramButton');
+        const telegramMenu = document.getElementById('telegramMenu');
+
+        telegramButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            telegramMenu.classList.toggle('active');
+        });
+
+        document.addEventListener('click', () => {
+            telegramMenu.classList.remove('active');
+        });
+
+        telegramMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // Настройка модального окна поддержки
+        const supportButton = document.getElementById('supportButton');
+        const supportModal = document.getElementById('supportModal');
+        const supportModalOverlay = document.getElementById('supportModalOverlay');
+        const closeSupport = document.getElementById('closeSupport');
+
+        supportButton.addEventListener('click', () => {
+            supportModal.classList.add('active');
+            supportModalOverlay.classList.add('active');
+        });
+
+        closeSupport.addEventListener('click', () => {
+            supportModal.classList.remove('active');
+            supportModalOverlay.classList.remove('active');
+        });
+
+        supportModalOverlay.addEventListener('click', () => {
+            supportModal.classList.remove('active');
+            supportModalOverlay.classList.remove('active');
+        });
+
+        // Обработка клавиатурных событий
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                searchPanel.classList.remove('active');
+                searchOverlay.classList.remove('active');
+                supportModal.classList.remove('active');
+                supportModalOverlay.classList.remove('active');
+                telegramMenu.classList.remove('active');
+                articlesColumn.classList.remove('active');
+                document.getElementById('imageViewer').classList.remove('active');
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                e.preventDefault();
+                searchInput.focus();
+                searchPanel.classList.add('active');
+                searchOverlay.classList.add('active');
+                searchPanelInput.focus();
+            }
+        });
+
+        // Пасхалка при клике на иконку заголовка
+        const easterEggIcon = document.getElementById('easterEggIcon');
+        let clickCount = 0;
+
+        easterEggIcon.addEventListener('click', () => {
+            clickCount++;
+            if (clickCount >= 5) {
+                alert('🥚 Пасхалка! Ты нашёл секрет! 🎉');
+                clickCount = 0;
+            }
+        });
+
+        // Обработка изменения размера окна
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) {
+                articlesColumn.classList.remove('active');
+            }
+        });
+
+        // Инициализация
+        loadPagesData();
+        setupScrollTopButton();
+
+        // Обработка popstate для поддержки навигации назад/вперёд
+        window.addEventListener('popstate', () => {
+            const slug = window.location.hash.substring(1);
+            const page = pagesData.find(p => p.slug === slug) || pagesData.find(p => p.path === 'README.md') || pagesData[0];
+            if (page) {
+                loadPage(page);
+                updateActiveStates(page.slug);
+            }
+        });
+
+        // Проверка поддержки WebP
+        function testWebP(callback) {
+            const webP = new Image();
+            webP.src = 'data:image/webp;base64,UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA';
+            webP.onload = webP.onerror = () => callback(webP.height === 1);
         }
-    });
 
-    const activeItem = document.querySelector('.menu-item.active');
-    if (activeItem) {
-        updateHighlight(activeItem);
-    }
-}
-
-// Пасхалка на иконке
-function setupEasterEgg() {
-    const icon = document.getElementById('easterEggIcon');
-    let clickCount = 0;
-    const sequence = ['ri-book-open-line', 'ri-star-line', 'ri-heart-line', 'ri-rocket-line'];
-
-    icon.addEventListener('click', () => {
-        clickCount = (clickCount + 1) % sequence.length;
-        icon.className = sequence[clickCount];
-    });
-}
-
-// Обработка изменения размера окна
-function handleResize() {
-    const articlesColumn = document.getElementById('articlesColumn');
-    if (window.innerWidth >= 1024) {
-        articlesColumn.classList.remove('active');
-    }
-
-    const headingsBlock = document.querySelector('.headings-block');
-    if (headingsBlock && window.innerWidth >= 1024) {
-        headingsBlock.classList.remove('active');
-    }
-}
-
-// Инициализация
-document.addEventListener('DOMContentLoaded', () => {
-    loadPagesData();
-    setupMobileMenu();
-    setupSupportModal();
-    setupTelegramMenu();
-    setupMenuHighlight();
-    setupScrollTopButton();
-    setupEasterEgg();
-
-    window.addEventListener('resize', handleResize);
-
-    // Обработка изменения состояния истории
-    window.addEventListener('popstate', () => {
-        const slug = window.location.hash.substring(1);
-        const page = pagesData.find(p => p.slug === slug);
-        if (page) {
-            loadPage(page);
-            updateActiveStates(slug);
-        }
-    });
-});
-</script>
+        testWebP((support) => {
+            if (!support) {
+                document.querySelectorAll('img[src$=".webp"]').forEach(img => {
+                    img.src = img.src.replace('.webp', '.png');
+                });
+            }
+        });
+    </script>
 </body>
 </html>
