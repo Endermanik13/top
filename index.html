@@ -692,10 +692,6 @@
                 transform: none;
                 transition: none;
             }
-
-            .headings-block.active {
-                transform: none;
-            }
         }
 
         @media (max-width: 768px) {
@@ -913,7 +909,7 @@
 
         .article-text th,
         .article-text td {
-            padding: 0.75rem 1rem;
+            padding: 31px;
             border: 1px solid var(--border-color);
             text-align: left;
             color: var(--text-secondary);
@@ -1022,22 +1018,28 @@
             padding: 1rem;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
             max-height: calc(100vh - 100px);
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
         }
 
-        .headings-block.collapsed {
-            width: 60px;
-            padding: 0.5rem;
-            overflow: hidden;
+        .headings-block::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .headings-block::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+        }
+
+        .headings-block::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .headings-header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
             margin-bottom: 0.75rem;
         }
 
@@ -1048,11 +1050,6 @@
             color: var(--text-primary);
             display: flex;
             align-items: center;
-            transition: opacity 0.3s ease;
-        }
-
-        .headings-block.collapsed h4 {
-            opacity: 0;
         }
 
         .headings-block h4 i {
@@ -1060,43 +1057,9 @@
             color: var(--accent-color);
         }
 
-        .toggle-headings {
-            background: none;
-            border: none;
-            color: var(--text-tertiary);
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-
-        .toggle-headings:hover {
-            color: var(--accent-color);
-        }
-
         .headings-container {
             flex: 1;
-            overflow-y: auto;
             padding-right: 0.5rem;
-            transition: max-height 0.3s ease, opacity 0.3s ease;
-        }
-
-        .headings-container.collapsed {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-        }
-
-        .headings-container::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .headings-container::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 2px;
-        }
-
-        .headings-container::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.3);
         }
 
         .heading-item {
@@ -1850,6 +1813,8 @@
                     page.slug = page.slug || page.path?.replace(/[^a-zA-Z0-9]/g, '-') || 'unnamed';
                     page.date = page.date || '';
                     page.tags = page.tags || [];
+                    page.description = page.description || '';
+                    page.icon = page.icon || 'file-text-line';
                 });
 
                 pagesData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
@@ -1866,6 +1831,7 @@
                 }
 
                 if (pagesData.length > 0 && pageToLoad) {
+                    console.log('Загружаем начальную страницу:', pageToLoad.slug);
                     loadPage(pageToLoad);
                 } else {
                     showErrorMessage('Страницы не найдены.');
@@ -1901,13 +1867,18 @@
                         </div>
                     </div>
                 `;
+            } else {
+                console.error('mainContent не найден для отображения ошибки.');
             }
         }
 
         // Рендеринг категорий и статей
         function renderCategories() {
             const categoryList = document.getElementById('categoryList');
-            if (!categoryList) return;
+            if (!categoryList) {
+                console.error('categoryList не найден.');
+                return;
+            }
 
             const categories = {};
             pagesData.forEach(page => {
@@ -1964,9 +1935,14 @@
 
                     articleItem.addEventListener('click', (e) => {
                         e.preventDefault();
-                        loadPage(page);
-                        localStorage.setItem('lastPageSlug', page.slug);
-                        updateActiveStates(page.slug);
+                        console.log('Клик по статье:', page.slug);
+                        if (page) {
+                            loadPage(page);
+                            localStorage.setItem('lastPageSlug', page.slug);
+                            updateActiveStates(page.slug);
+                        } else {
+                            console.error('Страница не найдена для slug:', page.slug);
+                        }
                     });
 
                     categoryItems.appendChild(articleItem);
@@ -2096,7 +2072,7 @@
             return marked.parseInline(title.replace(/\*\*(.*?)\*\*/g, '**$1**'));
         }
 
-// Загрузка страницы
+        // Загрузка страницы
         async function loadPage(page) {
             const mainContent = document.getElementById('mainContent');
             const breadcrumbs = document.getElementById('breadcrumbs');
@@ -2120,6 +2096,8 @@
                     throw new Error('Страница не определена.');
                 }
 
+                console.log('Загрузка страницы:', page.slug, page.title);
+
                 // Заполнение отсутствующих полей
                 page.title = page.title || 'Без названия';
                 page.content = page.content || '';
@@ -2128,6 +2106,7 @@
                 page.date = page.date || '';
                 page.tags = page.tags || [];
                 page.description = page.description || '';
+                page.icon = page.icon || 'file-text-line';
 
                 // Обработка контента
                 let processedContent = processContent(page.content, page.title);
@@ -2158,9 +2137,6 @@
                         <div class="headings-block" id="headingsBlock">
                             <div class="headings-header">
                                 <h4><i class="ri-list-check"></i> Содержание</h4>
-                                <button class="toggle-headings" id="toggleHeadings" aria-label="Свернуть содержание">
-                                    <i class="ri-eye-line"></i>
-                                </button>
                             </div>
                             <div class="headings-container" id="headingsContainer">
                                 ${headings.length > 0 ? headings.map(h => `
@@ -2255,48 +2231,45 @@
         // Инициализация кнопки "Поделиться"
         function initializeShareButton() {
             const shareButton = document.getElementById('shareButton');
-            if (shareButton) {
-                shareButton.addEventListener('click', async () => {
-                    const shareData = {
-                        title: document.title,
-                        text: document.querySelector('meta[name="description"]')?.content || '',
-                        url: window.location.href
-                    };
-                    try {
-                        await navigator.share(shareData);
-                    } catch (err) {
-                        console.warn('API поделиться не поддерживается или ошибка:', err);
-                        await navigator.clipboard.writeText(shareData.url);
-                        alert('Ссылка скопирована в буфер обмена!');
-                    }
-                });
+            if (!shareButton) {
+                console.error('shareButton не найден.');
+                return;
             }
+            shareButton.addEventListener('click', async () => {
+                const shareData = {
+                    title: document.title,
+                    text: document.querySelector('meta[name="description"]')?.content || '',
+                    url: window.location.href
+                };
+                try {
+                    await navigator.share(shareData);
+                } catch (err) {
+                    console.warn('API поделиться не поддерживается или ошибка:', err);
+                    await navigator.clipboard.writeText(shareData.url);
+                    alert('Ссылка скопирована в буфер обмена!');
+                }
+            });
         }
 
         // Инициализация навигации по заголовкам
         function initializeHeadingsNavigation() {
-            const toggleHeadings = document.getElementById('toggleHeadings');
             const headingsContainer = document.getElementById('headingsContainer');
             const headingsBlock = document.getElementById('headingsBlock');
 
-            if (!toggleHeadings || !headingsContainer || !headingsBlock) {
+            if (!headingsContainer || !headingsBlock) {
                 console.error('Элементы навигации по заголовкам не найдены.');
                 return;
             }
 
-            toggleHeadings.addEventListener('click', () => {
-                const isCollapsed = !headingsContainer.classList.contains('collapsed');
-                headingsContainer.classList.toggle('collapsed', isCollapsed);
-                headingsBlock.classList.toggle('collapsed', isCollapsed);
-                toggleHeadings.querySelector('i').className = isCollapsed ? 'ri-eye-off-line' : 'ri-eye-line';
-                toggleHeadings.setAttribute('aria-label', isCollapsed ? 'Развернуть содержание' : 'Свернуть содержание');
-                
-                // Принудительное обновление стилей
-                headingsBlock.style.transition = 'all 0.3s ease';
-                headingsBlock.style.width = isCollapsed ? '60px' : '280px';
-                headingsContainer.style.maxHeight = isCollapsed ? '0' : 'calc(100vh - 100px)';
-                headingsContainer.style.opacity = isCollapsed ? '0' : '1';
-            });
+            // Динамическая высота на основе содержимого
+            const updateHeight = () => {
+                headingsContainer.style.height = 'auto';
+                headingsContainer.style.maxHeight = 'calc(100vh - 100px)';
+                headingsContainer.style.overflowY = headingsContainer.scrollHeight > window.innerHeight - 100 ? 'auto' : 'visible';
+            };
+
+            updateHeight();
+            window.addEventListener('resize', updateHeight);
 
             document.querySelectorAll('.heading-item').forEach(item => {
                 item.addEventListener('click', (e) => {
@@ -2306,6 +2279,8 @@
                     if (targetElement) {
                         targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
                         window.history.pushState(null, '', `#${targetId}`);
+                    } else {
+                        console.error('Целевой элемент не найден:', targetId);
                     }
                 });
             });
@@ -2415,12 +2390,15 @@
                         const slug = item.dataset.slug;
                         const page = pagesData.find(p => p.slug === slug);
                         if (page) {
+                            console.log('Поиск: загрузка страницы:', slug);
                             loadPage(page);
                             localStorage.setItem('lastPageSlug', page.slug);
                             updateActiveStates(slug);
                             searchPanel.classList.remove('active');
                             searchOverlay.classList.remove('active');
                             searchPanelInput.value = '';
+                        } else {
+                            console.error('Страница не найдена для slug:', slug);
                         }
                     });
                 });
@@ -2573,9 +2551,11 @@
         // Обработка хэша в URL
         function handleHashChange() {
             const hash = window.location.hash.replace('#', '');
+            console.log('Обработка хэша:', hash);
             if (hash) {
                 const page = pagesData.find(p => p.slug === hash);
                 if (page) {
+                    console.log('Найдена страница:', page.slug, page.title);
                     loadPage(page);
                     localStorage.setItem('lastPageSlug', page.slug);
                     updateActiveStates(hash);
@@ -2585,15 +2565,23 @@
                         element.scrollIntoView({ behavior: 'smooth' });
                     } else {
                         console.warn(`Страница с slug "${hash}" не найдена.`);
+                        const defaultPage = pagesData.find(p => p.path === 'README.md') || pagesData[0];
+                        if (defaultPage) {
+                            loadPage(defaultPage);
+                            localStorage.setItem('lastPageSlug', defaultPage.slug);
+                            updateActiveStates(defaultPage.slug);
+                        }
                     }
                 }
             } else {
-                // Загрузка главной страницы, если хэш пустой
                 const defaultPage = pagesData.find(p => p.path === 'README.md') || pagesData[0];
                 if (defaultPage) {
+                    console.log('Загрузка страницы по умолчанию:', defaultPage.slug);
                     loadPage(defaultPage);
                     localStorage.setItem('lastPageSlug', defaultPage.slug);
                     updateActiveStates(defaultPage.slug);
+                } else {
+                    console.warn('Страница по умолчанию не найдена.');
                 }
             }
         }
@@ -2618,6 +2606,7 @@
 
         // Инициализация приложения
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('Инициализация приложения...');
             loadPagesData();
             initializeSearch();
             initializeMobileMenu();
