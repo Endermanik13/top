@@ -3,119 +3,65 @@ name: Update Pages
 on:
   push:
     paths:
-      - '**/*.md'
-      - 'src/input.css'
-  pull_request:
-    branches: [main]
-  workflow_dispatch:
+      - '**/*.md'  # Учитываем файлы .md в любых папках
 
 jobs:
   update-pages:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
 
       - name: Install dependencies
         run: |
-          npm install @octokit/rest@18.12.0 gray-matter@4.0.3 p-retry@4.6.2
-          npm install -D tailwindcss
-          npm install -g markdown-link-check
-          npm list p-retry
+          npm install -g @actions/github
+          npm install @octokit/rest@18.12.0
+          npm install marked
 
-      - name: Build Tailwind CSS
-        run: |
-          npx tailwindcss -i ./src/input.css -o ./assets/tailwind.css --minify
-
-      - name: Check Markdown links
-        continue-on-error: true
-        run: |
-          find . -name "*.md" -not -path "./node_modules/*" -exec markdown-link-check {} \;
-
-      - name: Generate pages.json and sitemap.xml
+      - name: Generate pages.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITBOOK_API_TOKEN: ${{ secrets.GITBOOK_API_TOKEN }}
-          GITBOOK_SPACE_ID: ${{ secrets.GITBOOK_SPACE_ID }}
         run: |
-          node -e '
-            const fs = require("fs").promises;
-            const path = require("path");
-            const { Octokit } = require("@octokit/rest");
-            const pRetry = require("p-retry");
-            const matter = require("gray-matter");
-
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const { Octokit } = require('@octokit/rest');
             const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
-            async function getFileCreationDate(owner, repo, filePath, cache) {
-              return pRetry(
-                async () => {
-                  if (cache[filePath]) return cache[filePath];
-                  const commits = await octokit.repos.listCommits({
-                    owner,
-                    repo,
-                    path: filePath,
-                    per_page: 1,
-                  });
-                  const date = commits.data.length > 0 ? commits.data[0].commit.committer.date : new Date().toISOString();
-                  cache[filePath] = date;
-                  return date;
-                },
-                { retries: 3, minTimeout: 1000 }
-              );
-            }
-
-            async function fetchGitBookPages() {
+            async function getFileCreationDate(owner, repo, filePath) {
               try {
-                const spaceId = process.env.GITBOOK_SPACE_ID || "default-space-id";
-                const response = await fetch("https://api.gitbook.com/v1/spaces/" + spaceId + "/content", {
-                  headers: { Authorization: "Bearer " + process.env.GITBOOK_API_TOKEN },
+                const commits = await octokit.repos.listCommits({
+                  owner,
+                  repo,
+                  path: filePath,
+                  per_page: 1,
                 });
-                if (!response.ok) throw new Error("GitBook API request failed: " + response.statusText);
-                const data = await response.json();
-                return data.items.map(item => ({
-                  title: item.title,
-                  slug: item.slug,
-                  description: item.description || item.content.substring(0, 100) + "...",
-                  link: "https://endermanik13.github.io/top/#" + item.slug,
-                  category: item.path.split("/")[1] || "Разное",
-                  content: item.content,
-                  date: item.updatedAt,
-                  icon: item.icon || "ri-file-text-line",
-                  tags: item.tags || [],
-                }));
+                return commits.data.length > 0 ? commits.data[0].commit.committer.date : new Date().toISOString();
               } catch (error) {
-                console.error("Error fetching GitBook pages:", error.message);
-                return [];
+                console.error('Error fetching commit date for', filePath, error.message);
+                return new Date().toISOString();
               }
             }
 
-            async function findMarkdownFiles(dir) {
+            function findMarkdownFiles(dir) {
               let results = [];
-              let ignorePatterns = [];
-              try {
-                if (await fs.access(".pagesignore").then(() => true).catch(() => false)) {
-                  ignorePatterns = (await fs.readFile(".pagesignore", "utf8")).split("\n").filter(Boolean);
-                }
-              } catch (err) {
-                console.warn("Error reading .pagesignore:", err.message);
-              }
-
-              const files = await fs.readdir(dir, { withFileTypes: true });
+              const files = fs.readdirSync(dir, { withFileTypes: true });
               for (const file of files) {
                 const fullPath = path.join(dir, file.name);
-                if (ignorePatterns.some(pattern => fullPath.includes(pattern))) continue;
+                // Игнорируем папки node_modules и другие системные папки
                 if (file.isDirectory()) {
-                  if (file.name === "node_modules" || file.name.startsWith(".")) continue;
-                  results = results.concat(await findMarkdownFiles(fullPath));
-                } else if (file.name.endsWith(".md")) {
+                  if (file.name === 'node_modules' || file.name.startsWith('.')) {
+                    continue; // Пропускаем системные папки
+                  }
+                  results = results.concat(findMarkdownFiles(fullPath));
+                } else if (file.name.endsWith('.md')) {
                   results.push(fullPath);
                 }
               }
@@ -124,102 +70,53 @@ jobs:
 
             (async () => {
               try {
-                let cache = {};
-                try {
-                  if (await fs.access("file-dates.json").then(() => true).catch(() => false)) {
-                    cache = JSON.parse(await fs.readFile("file-dates.json"));
-                  }
-                } catch (err) {
-                  console.warn("Error reading file-dates.json:", err.message);
-                }
+                const files = findMarkdownFiles('.').map(filePath => ({
+                  name: path.basename(filePath),
+                  path: filePath
+                }));
 
-                const files = (await findMarkdownFiles("."))
-                  .filter(filePath => !filePath.includes("Excalidraw") && !/безкатегории/i.test(path.basename(path.dirname(filePath))))
-                  .map(filePath => ({
-                    name: path.basename(filePath),
-                    path: filePath,
-                  }));
+                console.log('Found files:', files.map(f => f.path));
 
                 const pages = [];
                 for (const file of files) {
-                  let fileContent;
-                  try {
-                    fileContent = await fs.readFile(file.path, "utf8");
-                  } catch (err) {
-                    console.warn("Skipping " + file.path + ": " + err.message);
-                    continue;
-                  }
-                  const { data: frontmatter, content } = matter(fileContent);
-                  const slug = file.name.replace(".md", "").toLowerCase().replace(/\s+/g, "-");
-                  const date = await getFileCreationDate("Endermanik13", "top", file.path, cache);
-                  const dirName = path.dirname(file.path) === "." ? "Разное" : path.basename(path.dirname(file.path));
+                  const content = fs.readFileSync(file.path, 'utf8');
+                  const slug = file.name.replace('.md', '').toLowerCase().replace(/\s+/g, '-');
+                  const date = await getFileCreationDate('Endermanik13', 'obsidian', file.path);
+
+                  // Определяем категорию по имени папки
+                  const relativePath = file.path.replace(/\\\\/g, '/'); // Для совместимости с Windows
+                  const dirName = path.dirname(relativePath) === '.' ? 'безкатегории' : path.basename(path.dirname(relativePath));
+
+                  // Извлекаем заголовок и описание
                   const titleMatch = content.match(/^# (.+)/m);
+                  const title = titleMatch ? titleMatch[1] : file.name.replace('.md', '');
+                  const description = content.split('\n').slice(1).join(' ').substring(0, 100) + '...';
 
                   pages.push({
-                    title: frontmatter.title || titleMatch?.[1] || file.name.replace(".md", ""),
-                    slug,
-                    description: frontmatter.description || content.split("\n").slice(1).join(" ").substring(0, 100) + "...",
-                    link: "https://endermanik13.github.io/top/#" + slug,
-                    category: frontmatter.category || dirName,
-                    content,
-                    date,
-                    icon: frontmatter.icon || "ri-file-text-line",
-                    tags: frontmatter.tags || [],
+                    title: title,
+                    slug: slug,
+                    description: description,
+                    link: 'https://Endermanik13.github.io/obsidian/page/' + slug,
+                    category: dirName,
+                    content: content,
+                    date: date
                   });
                 }
 
-                const gitbookPages = await fetchGitBookPages();
-                const allPages = [...pages, ...gitbookPages];
-                allPages.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-                await fs.writeFile("pages.json", JSON.stringify(allPages, null, 2));
-                await fs.writeFile("file-dates.json", JSON.stringify(cache, null, 2));
-
-                const sitemap = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                  "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n" +
-                  allPages.map(page => (
-                    "  <url>\n" +
-                    "    <loc>https://endermanik13.github.io/top/#" + page.slug + "</loc>\n" +
-                    "    <lastmod>" + page.date + "</lastmod>\n" +
-                    "  </url>\n"
-                  )).join("") +
-                  "</urlset>";
-                await fs.writeFile("sitemap.xml", sitemap);
-
-                console.log("Generated pages.json with " + allPages.length + " pages");
+                pages.sort((a, b) => new Date(b.date) - new Date(a.date));
+                fs.writeFileSync('pages.json', JSON.stringify(pages, null, 2));
+                console.log('Generated pages.json with', pages.length, 'pages');
               } catch (error) {
-                console.error("Error in script:", error.message);
+                console.error('Error in script:', error.message);
                 process.exit(1);
               }
             })();
-          '
+          "
 
       - name: Commit and push changes
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          git add pages.json file-dates.json sitemap.xml assets/tailwind.css
-          git commit -m "Update pages.json, file-dates.json, sitemap.xml, and Tailwind CSS" || echo "No changes to commit"
+          git add pages.json
+          git commit -m "Update pages.json with new pages" || echo "No changes to commit"
           git push
-
-      - name: Clear GitHub Pages cache
-        if: github.event_name == 'push'
-        run: |
-          curl -X POST \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/Endermanik13/top/pages/builds
-
-      - name: Notify Telegram on Success
-        if: success()
-        run: |
-          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
-            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-            -d text="✅ Pages.json and Tailwind CSS updated successfully! Commit: ${{ github.sha }}"
-
-      - name: Notify Telegram on Failure
-        if: failure()
-        run: |
-          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
-            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-            -d text="❌ Failed to update pages.json or Tailwind CSS: ${{ github.sha }}"
