@@ -18,7 +18,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <link rel="sitemap" href="/top/sitemap.xml">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text x='0' y='20' font-size='20'>📘</text></svg>">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="/top/assets/tailwind.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-one-dark.min.css" rel="stylesheet">
@@ -909,7 +909,7 @@
 
         .article-text th,
         .article-text td {
-            padding: 31px;
+            padding: 1rem;
             border: 1px solid var(--border-color);
             text-align: left;
             color: var(--text-secondary);
@@ -1172,7 +1172,7 @@
             .support-button {
                 bottom: 1rem;
                 right: 1rem;
-                width: 40px;
+                washers: 40px;
                 height: 40px;
             }
         }
@@ -1643,7 +1643,12 @@
                             <li><a href="#" class="menu-item"><i class="ri-user-line"></i> Обо мне</a></li>
                         </ul>
                     </div>
-                    <div id="categoryList" class="space-y-4"></div>
+                    <div id="categoryList" class="space-y-4">
+                        <div class="text-center py-4">
+                            <div class="loading-spinner"></div>
+                            Загрузка категорий...
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1687,7 +1692,10 @@
             <button class="close-viewer" id="closeViewer" aria-label="Закрыть просмотр изображения">
                 <i class="ri-close-line"></i>
             </button>
-            <img id="viewerImage" src="" alt="Увеличенное изображение" loading="lazy">
+            <div class="image-viewer-content">
+                <div class="loading-spinner" id="imageLoadingSpinner"></div>
+                <img id="viewerImage" src="" alt="Увеличенное изображение" loading="lazy">
+            </div>
             <div class="controls">
                 <button id="zoomIn" aria-label="Увеличить изображение"><i class="ri-zoom-in-line"></i></button>
                 <span id="zoomLevel">100%</span>
@@ -1708,6 +1716,20 @@
         let pagesData = [];
         let currentHighlightedItem = null;
         let lastPageSlug = null;
+        let isLoadingPage = false;
+
+        // Утилита для дебounce
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
 
         // Установка настроек для marked.js
         marked.setOptions({
@@ -1758,866 +1780,633 @@
                     bounce: false
                 }
             },
-            interactivity: {
-                detect_on: 'canvas',
-                events: {
-                    onhover: {
-                        enable: true,
-                        mode: 'grab'
-                    },
-                    resize: true
-                },
-                modes: {
-                    grab: {
-                        distance: 140,
-                        line_linked: {
-                            opacity: 0.5
-                        }
-                    }
-                }
-            },
-            retina_detect: true
-        });
-
-        // Загрузка данных страниц
-        async function loadPagesData() {
-            try {
-                const response = await fetch('/top/pages.json', {
-                    cache: 'no-store',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                pagesData = await response.json();
-                pagesData = pagesData.filter(page => 
-                    page.category && 
-                    page.category.trim() !== '' && 
-                    !page.path?.includes('Excalidraw') &&
-                    page.category?.toUpperCase() !== 'EXCALIDRAW' &&
-                    page.category?.toUpperCase() !== 'БЕЗ КАТЕГОРИИ'
-                );
-
-                pagesData.forEach(page => {
-                    if (!page.category || page.category.trim() === '') {
-                        page.category = 'Разное';
-                    }
-                    // Заполнение отсутствующих полей
-                    page.title = page.title || 'Без названия';
-                    page.content = page.content || '';
-                    page.slug = page.slug || page.path?.replace(/[^a-zA-Z0-9]/g, '-') || 'unnamed';
-                    page.date = page.date || '';
-                    page.tags = page.tags || [];
-                    page.description = page.description || '';
-                    page.icon = page.icon || 'file-text-line';
-                });
-
-                pagesData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
-
-                renderCategories();
-                updateSidebarStats();
-
-                lastPageSlug = localStorage.getItem('lastPageSlug');
-                let pageToLoad = pagesData.find(page => page.path === 'README.md') || pagesData[0];
-
-                if (lastPageSlug) {
-                    const savedPage = pagesData.find(page => page.slug === lastPageSlug);
-                    if (savedPage) pageToLoad = savedPage;
-                }
-
-                if (pagesData.length > 0 && pageToLoad) {
-                    console.log('Загружаем начальную страницу:', pageToLoad.slug);
-                    loadPage(pageToLoad);
-                } else {
-                    showErrorMessage('Страницы не найдены.');
-                }
-            } catch (error) {
-                console.error('Ошибка загрузки страниц:', error);
-                showErrorMessage(`Ошибка загрузки: ${error.message}`);
+interactivity: {
+    detect_on: 'canvas',
+    events: {
+        onhover: {
+            enable: true,
+            mode: 'grab'
+        },
+        resize: true
+    },
+    modes: {
+        grab: {
+            distance: 200,
+            line_linked: {
+                opacity: 0.5
             }
         }
+    }
+},
+retina_detect: true
+});
 
-        // Обновление статистики вверху боковой панели
-        function updateSidebarStats() {
-            const articleCount = pagesData.length;
-            const categoryCount = new Set(
-                pagesData.map(page => page.category)
-                    .filter(cat => cat && cat.toUpperCase() !== 'EXCALIDRAW')
-            ).size;
-            const articleCountEl = document.getElementById('articleCount');
-            const categoryCountEl = document.getElementById('categoryCount');
-            if (articleCountEl) articleCountEl.textContent = articleCount;
-            if (categoryCountEl) categoryCountEl.textContent = categoryCount;
-        }
+// Функция загрузки данных страниц
+async function loadPagesData() {
+    try {
+        const response = await fetch('/top/pages.json', { cache: 'no-store' });
+        if (!response.ok) throw new Error('Не удалось загрузить pages.json');
+        pagesData = await response.json();
+        renderCategories();
+        updateSidebarStats();
+    } catch (error) {
+        console.error('Ошибка загрузки pages.json:', error);
+        document.getElementById('categoryList').innerHTML = '<p class="text-center text-red-500">Ошибка загрузки категорий. Попробуйте позже.</p>';
+    }
+}
 
-        // Функция отображения сообщения об ошибке
-        function showErrorMessage(message) {
-            const mainContent = document.getElementById('mainContent');
-            if (mainContent) {
-                mainContent.innerHTML = `
-                    <div class="text-center py-12">
-                        <div class="inline-flex items-center text-lg text-red-400">
-                            <i class="ri-error-warning-line mr-2"></i>
-                            ${message}
-                        </div>
-                    </div>
-                `;
-            } else {
-                console.error('mainContent не найден для отображения ошибки.');
-            }
-        }
-
-        // Рендеринг категорий и статей
-        function renderCategories() {
-            const categoryList = document.getElementById('categoryList');
-            if (!categoryList) {
-                console.error('categoryList не найден.');
-                return;
-            }
-
-            const categories = {};
-            pagesData.forEach(page => {
-                if (!page.category || page.path === 'README.md') return;
-                if (!categories[page.category]) {
-                    categories[page.category] = [];
-                }
-                categories[page.category].push(page);
-            });
-
-            const sortedCategories = Object.keys(categories).sort();
-
-            categoryList.innerHTML = '';
-
-            if (sortedCategories.length === 0) {
-                categoryList.innerHTML = `
-                    <div class="text-center text-sm text-gray-400 py-4">
-                        <p>Нет предметов</p>
-                    </div>
-                `;
-                return;
-            }
-
-            sortedCategories.forEach(category => {
-                const categoryDiv = document.createElement('div');
-                categoryDiv.className = 'category';
-
-                const categoryTitle = document.createElement('h3');
-                categoryTitle.innerHTML = `
+// Рендеринг категорий и статей
+function renderCategories() {
+    const categoryList = document.getElementById('categoryList');
+    if (!categoryList) return console.error('categoryList не найден');
+    
+    const categories = [...new Set(pagesData.map(page => page.category || 'Разное'))];
+    
+    categoryList.innerHTML = categories.map(category => {
+        const articles = pagesData
+            .filter(page => (page.category || 'Разное') === category)
+            .sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        return `
+            <div class="category">
+                <h3 data-category="${category}">
                     <i class="ri-folder-line"></i>
-                    <span>${category}</span>
-                    <i class="ri-arrow-down-s-line ml-auto transition-transform duration-300"></i>
-                `;
-                categoryDiv.appendChild(categoryTitle);
-
-                const categoryItems = document.createElement('div');
-                categoryItems.className = 'category-items';
-
-                const sortedPages = categories[category].sort((a, b) =>
-                    new Date(b.date || 0) - new Date(a.date || 0)
-                );
-
-                sortedPages.forEach(page => {
-                    const articleItem = document.createElement('a');
-                    articleItem.href = `#${page.slug}`;
-                    articleItem.className = `article-item ${page.slug === lastPageSlug ? 'active' : ''}`;
-                    articleItem.innerHTML = `
-                        <i class="ri-${page.icon || 'file-text-line'}"></i>
-                        <span class="truncate">${page.title}</span>
-                    `;
-                    articleItem.dataset.slug = page.slug;
-                    articleItem.title = page.title;
-                    articleItem.setAttribute('aria-label', `Открыть статью ${page.title}`);
-
-                    articleItem.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        console.log('Клик по статье:', page.slug);
-                        if (page) {
-                            loadPage(page);
-                            localStorage.setItem('lastPageSlug', page.slug);
-                            updateActiveStates(page.slug);
-                        } else {
-                            console.error('Страница не найдена для slug:', page.slug);
-                        }
-                    });
-
-                    categoryItems.appendChild(articleItem);
-                });
-
-                categoryDiv.appendChild(categoryItems);
-                categoryList.appendChild(categoryDiv);
-
-                categoryTitle.addEventListener('click', () => {
-                    document.querySelectorAll('.category-items.active').forEach(item => {
-                        if (item !== categoryItems) {
-                            item.classList.remove('active');
-                            const arrow = item.parentElement.querySelector('.ri-arrow-down-s-line');
-                            if (arrow) arrow.style.transform = 'rotate(0)';
-                        }
-                    });
-
-                    const isActive = categoryItems.classList.toggle('active');
-                    const arrowIcon = categoryTitle.querySelector('.ri-arrow-down-s-line');
-                    if (arrowIcon) arrowIcon.style.transform = isActive ? 'rotate(180deg)' : 'rotate(0)';
-                });
-
-                if (sortedPages.some(page => page.slug === lastPageSlug)) {
-                    categoryItems.classList.add('active');
-                    const arrow = categoryTitle.querySelector('.ri-arrow-down-s-line');
-                    if (arrow) arrow.style.transform = 'rotate(180deg)';
-                }
-            });
-        }
-
-        // Обновление активных состояний статей
-        function updateActiveStates(slug) {
-            document.querySelectorAll('.article-item').forEach(item => {
-                item.classList.toggle('active', item.dataset.slug === slug);
-            });
-        }
-
-        // Извлечение заголовков из контента
-        function extractHeadings(htmlContent) {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlContent, 'text/html');
-            const headings = Array.from(doc.querySelectorAll('h2, h3')).map((heading, index) => {
-                const level = heading.tagName.toLowerCase() === 'h2' ? 0 : 1;
-                const id = heading.id || `heading-${index}`;
-                heading.id = id;
-                return {
-                    text: heading.textContent,
-                    level,
-                    id,
-                    tag: heading.tagName.toLowerCase()
-                };
-            });
-            return {
-                headings,
-                updatedContent: doc.body.innerHTML
-            };
-        }
-
-        // Обработка контента
-        function processContent(content, title) {
-            let htmlContent = marked.parse(content || '', {
-                renderer: new marked.Renderer({
-                    link(href, title, text) {
-                        const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|v\/)?([A-Za-z0-9_-]{11})(\S*)?$/;
-                        const match = href.match(youtubeRegex);
-                        if (match && match[5]) {
-                            return `
-                                <div class="embed-container">
-                                    <div class="embed-title">${text || 'YouTube видео'}</div>
-                                    <iframe src="https://www.youtube.com/embed/${match[5]}" frameborder="0" allowfullscreen></iframe>
-                                </div>
-                            `;
-                        }
-                        const embedServices = [
-                            { regex: /(vimeo\.com)\/(\d+)/, embed: id => `https://player.vimeo.com/video/${id}` },
-                            { regex: /(dailymotion\.com|dai\.ly)\/([a-zA-Z0-9]+)/, embed: id => `https://www.dailymotion.com/embed/video/${id}` },
-                            { regex: /(soundcloud\.com)\/([\w-]+\/[\w-]+)/, embed: id => `https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/${id}` },
-                        ];
-                        for (const service of embedServices) {
-                            const match = href.match(service.regex);
-                            if (match && match[2]) {
-                                return `
-                                    <div class="embed-container">
-                                        <div class="embed-title">${text || 'Встроенный контент'}</div>
-                                        <iframe src="${service.embed(match[2])}" frameborder="0" allowfullscreen></iframe>
-                                    </div>
-                                `;
-                            }
-                        }
-                        return `<a href="${href}" title="${title || ''}" target="_blank">${text}</a>`;
-                    },
-                    image(href, title, text) {
-                        return `<img src="${href}" alt="${text || 'Изображение'}" title="${title || ''}" class="markdown-image" loading="lazy">`;
-                    }
-                })
-            });
-
-            if (typeof sanitizeHtml !== 'undefined') {
-                try {
-                    htmlContent = sanitizeHtml(htmlContent, {
-                        allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'iframe']),
-                        allowedAttributes: {
-                            img: ['src', 'alt', 'title', 'loading'],
-                            iframe: ['src', 'frameborder', 'allowfullscreen'],
-                            a: ['href', 'title', 'target']
-                        }
-                    });
-                } catch (err) {
-                    console.warn('Ошибка санитизации:', err);
-                }
-            } else {
-                console.warn('sanitizeHtml не определен. Используется несанированный контент.');
-            }
-
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlContent, 'text/html');
-            const firstH1 = doc.querySelector('h1');
-            if (firstH1 && firstH1.textContent.trim() === title?.trim()) {
-                firstH1.remove();
-            }
-            return doc.body.innerHTML;
-        }
-
-        // Обработка заголовков с **текстом**
-        function processTitle(title) {
-            if (!title) return 'Без названия';
-            return marked.parseInline(title.replace(/\*\*(.*?)\*\*/g, '**$1**'));
-        }
-
-        // Загрузка страницы
-        async function loadPage(page) {
-            const mainContent = document.getElementById('mainContent');
-            const breadcrumbs = document.getElementById('breadcrumbs');
-            if (!mainContent || !breadcrumbs) {
-                console.error('Элементы mainContent или breadcrumbs не найдены.');
-                return;
-            }
-
-            mainContent.innerHTML = `
-                <div class="text-center py-12">
-                    <div class="inline-flex items-center text-lg">
-                        <div class="loading-spinner"></div>
-                        Загрузка статьи...
-                    </div>
+                    ${category}
+                    <i class="ri-arrow-down-s-line toggle-icon"></i>
+                </h3>
+                <div class="category-items">
+                    ${articles.map(article => `
+                        <a href="/top/#${article.slug}" class="article-item" data-slug="${article.slug}">
+                            <i class="${article.icon || 'ri-file-text-line'}"></i>
+                            ${article.title}
+                        </a>
+                    `).join('')}
                 </div>
-            `;
+            </div>
+        `;
+    }).join('');
 
-            try {
-                // Проверка данных страницы
-                if (!page) {
-                    throw new Error('Страница не определена.');
-                }
+    // Добавляем обработчики событий для категорий
+    document.querySelectorAll('.category h3').forEach(header => {
+        header.addEventListener('click', toggleCategory);
+    });
 
-                console.log('Загрузка страницы:', page.slug, page.title);
+    // Добавляем обработчики для статей
+    document.querySelectorAll('.article-item').forEach(item => {
+        item.addEventListener('click', debounce(handleArticleClick, 300));
+    });
 
-                // Заполнение отсутствующих полей
-                page.title = page.title || 'Без названия';
-                page.content = page.content || '';
-                page.category = page.category || 'Разное';
-                page.slug = page.slug || 'unnamed';
-                page.date = page.date || '';
-                page.tags = page.tags || [];
-                page.description = page.description || '';
-                page.icon = page.icon || 'file-text-line';
+    // Восстанавливаем активную категорию
+    restoreCategoryState();
+}
 
-                // Обработка контента
-                let processedContent = processContent(page.content, page.title);
-                const { headings, updatedContent } = extractHeadings(processedContent);
-                processedContent = updatedContent;
+// Обновление статистики боковой панели
+function updateSidebarStats() {
+    const articleCount = document.getElementById('articleCount');
+    const categoryCount = document.getElementById('categoryCount');
+    if (articleCount && categoryCount) {
+        articleCount.textContent = pagesData.length;
+        categoryCount.textContent = [...new Set(pagesData.map(page => page.category || 'Разное'))].length;
+    }
+}
 
-                // Формирование HTML контента
-                const processedTitle = processTitle(page.title);
-                const dateStr = page.date ? new Date(page.date).toLocaleDateString('ru-RU') : '';
-                const tagsHtml = page.tags.length > 0 ? page.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : '';
-                
-                mainContent.innerHTML = `
-                    <div class="article-content">
-                        <div class="article-text">
-                            <div class="article-header">
-                                <h1>${processedTitle}</h1>
-                                <div class="text-sm text-gray-400 mb-4 flex flex-wrap items-center gap-2">
-                                    ${dateStr ? `<span><i class="ri-calendar-line"></i> ${dateStr}</span>` : ''}
-                                    <span><i class="ri-folder-line"></i> ${page.category}</span>
-                                </div>
-                                ${tagsHtml}
-                            </div>
-                            ${processedContent}
-                            <button class="share-button" id="shareButton">
-                                <i class="ri-share-line"></i> Поделиться
-                            </button>
-                        </div>
-                        <div class="headings-block" id="headingsBlock">
-                            <div class="headings-header">
-                                <h4><i class="ri-list-check"></i> Содержание</h4>
-                            </div>
-                            <div class="headings-container" id="headingsContainer">
-                                ${headings.length > 0 ? headings.map(h => `
-                                    <a href="#${h.id}" class="heading-item ${h.tag}" data-id="${h.id}">
-                                        ${h.level === 1 ? '<i class="ri-arrow-right-s-line"></i>' : ''}${h.text}
-                                    </a>
-                                `).join('') : '<p class="text-sm text-gray-400">Нет заголовков</p>'}
-                            </div>
-                        </div>
-                    </div>
-                `;
+// Переключение категории
+function toggleCategory(event) {
+    const header = event.currentTarget;
+    const categoryItems = header.nextElementSibling;
+    const icon = header.querySelector('.toggle-icon');
+    
+    const isActive = categoryItems.classList.contains('active');
+    
+    categoryItems.classList.toggle('active');
+    icon.classList.toggle('ri-arrow-down-s-line');
+    icon.classList.toggle('ri-arrow-up-s-line');
+    
+    if (!isActive) {
+        categoryItems.style.display = 'block';
+        localStorage.setItem(`category-${header.dataset.category}`, 'open');
+    } else {
+        categoryItems.style.display = 'none';
+        localStorage.setItem(`category-${header.dataset.category}`, 'closed');
+    }
+}
 
-                // Обновление мета-тегов
-                document.title = `${page.title} | Энциклопедия Эндера`;
-                const metaDesc = document.querySelector('meta[name="description"]') || document.createElement('meta');
-                metaDesc.name = "description";
-                metaDesc.content = page.description || page.content.substring(0, 160) + '...';
-                if (!document.head.contains(metaDesc)) document.head.appendChild(metaDesc);
+// Восстановление состояния категорий
+function restoreCategoryState() {
+    document.querySelectorAll('.category').forEach(category => {
+        const header = category.querySelector('h3');
+        const categoryItems = category.querySelector('.category-items');
+        const icon = header.querySelector('.toggle-icon');
+        const state = localStorage.getItem(`category-${header.dataset.category}`);
+        
+        if (state === 'open') {
+            categoryItems.classList.add('active');
+            categoryItems.style.display = 'block';
+            icon.classList.remove('ri-arrow-down-s-line');
+            icon.classList.add('ri-arrow-up-s-line');
+        }
+    });
+}
 
-                const ogTitle = document.querySelector('meta[property="og:title"]') || document.createElement('meta');
-                ogTitle.setAttribute('property', 'og:title');
-                ogTitle.content = `${page.title} | Энциклопедия Эндера`;
-                if (!document.head.contains(ogTitle)) document.head.appendChild(ogTitle);
+// Обработка клика по статье
+function handleArticleClick(event) {
+    event.preventDefault();
+    const slug = event.currentTarget.dataset.slug;
+    if (slug && !isLoadingPage) {
+        window.location.hash = slug;
+        loadPage(slug);
+    }
+}
 
-                const ogDesc = document.querySelector('meta[property="og:description"]') || document.createElement('meta');
-                ogDesc.setAttribute('property', 'og:description');
-                ogDesc.content = page.description || page.content.substring(0, 160) + '...';
-                if (!document.head.contains(ogDesc)) document.head.appendChild(ogDesc);
+// Загрузка страницы
+async function loadPage(slug) {
+    if (isLoadingPage) return;
+    isLoadingPage = true;
 
-                const ogUrl = document.querySelector('meta[property="og:url"]') || document.createElement('meta');
-                ogUrl.setAttribute('property', 'og:url');
-                ogUrl.content = window.location.href;
-                if (!document.head.contains(ogUrl)) document.head.appendChild(ogUrl);
+    const mainContent = document.getElementById('mainContent');
+    const breadcrumbs = document.getElementById('breadcrumbs');
+    
+    if (!mainContent || !breadcrumbs) {
+        console.error('Элементы mainContent или breadcrumbs не найдены');
+        isLoadingPage = false;
+        return;
+    }
 
-                // Обновление хлебных крошек
-                breadcrumbs.innerHTML = `
-                    <a href="/top/#readme">Главная</a> / 
-                    <a href="#${page.category}">${page.category}</a> / 
-                    <span>${page.title}</span>
-                `;
-
-                // Обновление URL
-                window.history.pushState(null, '', `#${page.slug}`);
-
-                // Инициализация компонентов
-                Prism.highlightAll();
-                initializeCopyCodeButtons();
-                initializeShareButton();
-                initializeHeadingsNavigation();
-                initializeImageViewer();
-
-                // Прокрутка наверх
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                updateActiveStates(page.slug);
-            } catch (error) {
-                console.error('Ошибка загрузки страницы:', error);
-                showErrorMessage(`Ошибка загрузки статьи: ${error.message}`);
-            }
+    try {
+        mainContent.innerHTML = '<div class="text-center py-12"><div class="loading-spinner"></div> Загрузка контента...</div>';
+        
+        let page = pagesData.find(p => p.slug === slug);
+        if (!page && slug !== 'readme') {
+            page = pagesData.find(p => p.slug === 'readme');
+            window.location.hash = 'readme';
+        }
+        
+        if (!page) {
+            mainContent.innerHTML = '<p class="text-center text-red-500">Страница не найдена</p>';
+            breadcrumbs.innerHTML = '<a href="/top/#readme">Главная</a> / Ошибка';
+            updateActiveStates(null);
+            isLoadingPage = false;
+            return;
         }
 
-        // Инициализация кнопок копирования кода
-        function initializeCopyCodeButtons() {
-            document.querySelectorAll('pre').forEach(pre => {
-                if (!pre.querySelector('.copy-code-btn')) {
-                    const button = document.createElement('button');
-                    button.className = 'copy-code-btn';
-                    button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
-                    button.setAttribute('aria-label', 'Копировать код');
-                    button.addEventListener('click', async () => {
-                        const code = pre.querySelector('code')?.textContent || '';
-                        try {
-                            await navigator.clipboard.writeText(code);
-                            button.innerHTML = '<i class="ri-check-line"></i> Скопировано!';
-                            button.style.background = 'linear-gradient(135deg, #34d399, #059669)';
-                            setTimeout(() => {
-                                button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
-                                button.style.background = 'linear-gradient(135deg, #2AABEE, #1A8BCF)';
-                            }, 2000);
-                        } catch (err) {
-                            console.error('Ошибка копирования:', err);
-                            button.innerHTML = '<i class="ri-error-warning-line"></i> Ошибка';
-                            setTimeout(() => {
-                                button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
-                            }, 2000);
-                        }
-                    });
-                    pre.appendChild(button);
-                }
-            });
-        }
-
-        // Инициализация кнопки "Поделиться"
-        function initializeShareButton() {
-            const shareButton = document.getElementById('shareButton');
-            if (!shareButton) {
-                console.error('shareButton не найден.');
-                return;
-            }
-            shareButton.addEventListener('click', async () => {
-                const shareData = {
-                    title: document.title,
-                    text: document.querySelector('meta[name="description"]')?.content || '',
-                    url: window.location.href
-                };
-                try {
-                    await navigator.share(shareData);
-                } catch (err) {
-                    console.warn('API поделиться не поддерживается или ошибка:', err);
-                    await navigator.clipboard.writeText(shareData.url);
-                    alert('Ссылка скопирована в буфер обмена!');
-                }
-            });
-        }
-
-        // Инициализация навигации по заголовкам
-        function initializeHeadingsNavigation() {
-            const headingsContainer = document.getElementById('headingsContainer');
-            const headingsBlock = document.getElementById('headingsBlock');
-
-            if (!headingsContainer || !headingsBlock) {
-                console.error('Элементы навигации по заголовкам не найдены.');
-                return;
-            }
-
-            // Динамическая высота на основе содержимого
-            const updateHeight = () => {
-                headingsContainer.style.height = 'auto';
-                headingsContainer.style.maxHeight = 'calc(100vh - 100px)';
-                headingsContainer.style.overflowY = headingsContainer.scrollHeight > window.innerHeight - 100 ? 'auto' : 'visible';
-            };
-
-            updateHeight();
-            window.addEventListener('resize', updateHeight);
-
-            document.querySelectorAll('.heading-item').forEach(item => {
-                item.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetId = item.getAttribute('data-id');
-                    const targetElement = document.getElementById(targetId);
-                    if (targetElement) {
-                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        window.history.pushState(null, '', `#${targetId}`);
-                    } else {
-                        console.error('Целевой элемент не найден:', targetId);
-                    }
-                });
-            });
-        }
-
-        // Инициализация просмотрщика изображений
-        function initializeImageViewer() {
-            const imageViewer = document.getElementById('imageViewer');
-            const viewerImage = document.getElementById('viewerImage');
-            const zoomIn = document.getElementById('zoomIn');
-            const zoomOut = document.getElementById('zoomOut');
-            const zoomLevel = document.getElementById('zoomLevel');
-            const closeViewer = document.getElementById('closeViewer');
-            let currentScale = 1;
-
-            if (!imageViewer || !viewerImage || !zoomIn || !zoomOut || !zoomLevel || !closeViewer) {
-                console.error('Элементы просмотрщика изображений не найдены.');
-                return;
-            }
-
-            document.querySelectorAll('.article-text img').forEach(img => {
-                img.addEventListener('click', () => {
-                    viewerImage.src = img.src;
-                    viewerImage.alt = img.alt || 'Изображение';
-                    imageViewer.classList.add('active');
-                    currentScale = 1;
-                    zoomLevel.textContent = '100%';
-                    viewerImage.style.transform = `scale(${currentScale})`;
-                });
-            });
-
-            zoomIn.addEventListener('click', () => {
-                currentScale = Math.min(currentScale + 0.2, 3);
-                viewerImage.style.transform = `scale(${currentScale})`;
-                zoomLevel.textContent = `${Math.round(currentScale * 100)}%`;
-            });
-
-            zoomOut.addEventListener('click', () => {
-                currentScale = Math.max(currentScale - 0.2, 0.5);
-                viewerImage.style.transform = `scale(${currentScale})`;
-                zoomLevel.textContent = `${Math.round(currentScale * 100)}%`;
-            });
-
-            closeViewer.addEventListener('click', () => {
-                imageViewer.classList.remove('active');
-                viewerImage.src = '';
-                viewerImage.alt = '';
-                currentScale = 1;
-                zoomLevel.textContent = '100%';
-            });
-
-            imageViewer.addEventListener('click', (e) => {
-                if (e.target === imageViewer) {
-                    imageViewer.classList.remove('active');
-                    viewerImage.src = '';
-                    viewerImage.alt = '';
-                    currentScale = 1;
-                    zoomLevel.textContent = '100%';
-                }
-            });
-        }
-
-        // Поиск
-        function initializeSearch() {
-            const searchInput = document.getElementById('searchInput');
-            const searchPanelInput = document.getElementById('searchPanelInput');
-            const searchPanel = document.getElementById('searchPanel');
-            const searchOverlay = document.getElementById('searchOverlay');
-            const closeSearch = document.getElementById('closeSearch');
-            const searchResults = document.getElementById('searchResults');
-
-            if (!searchInput || !searchPanelInput || !searchPanel || !searchOverlay || !closeSearch || !searchResults) {
-                console.error('Элементы поиска не найдены.');
-                return;
-            }
-
-            function performSearch(query) {
-                query = query.toLowerCase().trim();
-                const results = pagesData.filter(page => {
-                    const titleMatch = page.title?.toLowerCase().includes(query);
-                    const contentMatch = page.content?.toLowerCase().includes(query);
-                    const tagsMatch = page.tags?.some(tag => tag.toLowerCase().includes(query));
-                    const categoryMatch = page.category?.toLowerCase().includes(query);
-                    return titleMatch || contentMatch || tagsMatch || categoryMatch;
-                }).slice(0, 10);
-
-                searchResults.innerHTML = results.length > 0 ? results.map(page => `
-                    <div class="search-result-item" data-slug="${page.slug}">
-                        <div class="search-result-title">${page.title || 'Без названия'}</div>
-                        <div class="search-result-meta">
-                            <span><i class="ri-folder-line"></i> ${page.category || 'Разное'}</span>
-                            ${page.date ? `<span><i class="ri-calendar-line"></i> ${new Date(page.date).toLocaleDateString('ru-RU')}</span>` : ''}
-                        </div>
-                        <div class="search-result-description">
-                            <p>${page.description || page.content.substring(0, 150) + '...'}</p>
+        const content = await processContent(page.content, page);
+        
+        mainContent.innerHTML = `
+            <div class="article-content">
+                <div class="article-text">
+                    <div class="article-header">
+                        <h1>${page.title}</h1>
+                        <div class="flex justify-between items-center text-sm text-gray-400">
+                            <span><i class="ri-calendar-line"></i> ${new Date(page.date).toLocaleDateString('ru-RU')}</span>
+                            ${page.tags && page.tags.length ? `<span>${page.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</span>` : ''}
                         </div>
                     </div>
-                `).join('') : `
-                    <div class="text-center text-gray-400 py-4">
-                        <i class="ri-search-line text-2xl mb-2"></i>
-                        <p>Ничего не найдено</p>
+                    ${content}
+                    <button class="share-button" data-slug="${page.slug}">
+                        <i class="ri-share-line"></i> Поделиться
+                    </button>
+                </div>
+                <div class="headings-block">
+                    <div class="headings-header">
+                        <h4><i class="ri-list-ordered"></i> Содержание</h4>
                     </div>
-                `;
+                    <div class="headings-container" id="headingsContainer"></div>
+                </div>
+            </div>
+        `;
+        
+        breadcrumbs.innerHTML = `
+            <a href="/top/#readme">Главная</a> / 
+            <a href="/top/#${page.slug}">${page.category || 'Разное'}</a> / 
+            ${page.title}
+        `;
+        
+        updateActiveStates(page.slug);
+        renderHeadings();
+        initializeCopyButtons();
+        initializeShareButton();
+        Prism.highlightAll();
+        
+        lastPageSlug = page.slug;
+    } catch (error) {
+        console.error('Ошибка загрузки страницы:', error);
+        mainContent.innerHTML = '<p class="text-center text-red-500">Ошибка загрузки страницы</p>';
+        breadcrumbs.innerHTML = '<a href="/top/#readme">Главная</a> / Ошибка';
+    } finally {
+        isLoadingPage = false;
+    }
+}
 
-                document.querySelectorAll('.search-result-item').forEach(item => {
-                    item.addEventListener('click', () => {
-                        const slug = item.dataset.slug;
-                        const page = pagesData.find(p => p.slug === slug);
-                        if (page) {
-                            console.log('Поиск: загрузка страницы:', slug);
-                            loadPage(page);
-                            localStorage.setItem('lastPageSlug', page.slug);
-                            updateActiveStates(slug);
-                            searchPanel.classList.remove('active');
-                            searchOverlay.classList.remove('active');
-                            searchPanelInput.value = '';
-                        } else {
-                            console.error('Страница не найдена для slug:', slug);
-                        }
-                    });
-                });
-            }
-
-            searchInput.addEventListener('focus', () => {
-                searchPanel.classList.add('active');
-                searchOverlay.classList.add('active');
-                searchPanelInput.focus();
-                performSearch(searchInput.value);
-            });
-
-            searchPanelInput.addEventListener('input', () => {
-                performSearch(searchPanelInput.value);
-            });
-
-            closeSearch.addEventListener('click', () => {
-                searchPanel.classList.remove('active');
-                searchOverlay.classList.remove('active');
-                searchInput.value = '';
-                searchPanelInput.value = '';
-            });
-
-            searchOverlay.addEventListener('click', () => {
-                searchPanel.classList.remove('active');
-                searchOverlay.classList.remove('active');
-                searchInput.value = '';
-                searchPanelInput.value = '';
-            });
-
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    searchPanel.classList.remove('active');
-                    searchOverlay.classList.remove('active');
-                    searchInput.value = '';
-                    searchPanelInput.value = '';
-                }
-                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                    e.preventDefault();
-                    searchPanel.classList.add('active');
-                    searchOverlay.classList.add('active');
-                    searchPanelInput.focus();
+// Обработка контента страницы
+async function processContent(content, page) {
+    try {
+        // Обработка Markdown
+        let html = marked.parse(content);
+        
+        // Санитизация HTML
+        if (typeof sanitizeHtml !== 'undefined') {
+            html = sanitizeHtml(html, {
+                allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'iframe']),
+                allowedAttributes: {
+                    ...sanitizeHtml.defaults.allowedAttributes,
+                    img: ['src', 'alt', 'title'],
+                    iframe: ['src', 'width', 'height', 'frameborder', 'allow', 'allowfullscreen']
                 }
             });
+        } else {
+            console.warn('sanitizeHtml не определен. Используется несанированный контент');
         }
-
-        // Инициализация мобильного меню
-        function initializeMobileMenu() {
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const articlesColumn = document.getElementById('articlesColumn');
-
-            if (!mobileMenuToggle || !articlesColumn) {
-                console.error('Элементы мобильного меню не найдены.');
-                return;
-            }
-
-            mobileMenuToggle.addEventListener('click', () => {
-                articlesColumn.classList.toggle('active');
-                mobileMenuToggle.querySelector('i').className = articlesColumn.classList.contains('active') ? 'ri-close-line' : 'ri-menu-line';
-                mobileMenuToggle.setAttribute('aria-label', articlesColumn.classList.contains('active') ? 'Закрыть боковое меню' : 'Открыть боковое меню');
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!articlesColumn.contains(e.target) && !mobileMenuToggle.contains(e.target) && articlesColumn.classList.contains('active')) {
-                    articlesColumn.classList.remove('active');
-                    mobileMenuToggle.querySelector('i').className = 'ri-menu-line';
-                    mobileMenuToggle.setAttribute('aria-label', 'Открыть боковое меню');
-                }
-            });
-        }
-
-        // Инициализация Telegram-меню
-        function initializeTelegramMenu() {
-            const telegramButton = document.getElementById('telegramButton');
-            const telegramMenu = document.getElementById('telegramMenu');
-
-            if (!telegramButton || !telegramMenu) {
-                console.error('Элементы Telegram-меню не найдены.');
-                return;
-            }
-
-            telegramButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                telegramMenu.classList.toggle('active');
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!telegramMenu.contains(e.target) && !telegramButton.contains(e.target)) {
-                    telegramMenu.classList.remove('active');
-                }
-            });
-        }
-
-        // Инициализация модального окна поддержки
-        function initializeSupportModal() {
-            const supportButton = document.getElementById('supportButton');
-            const supportModal = document.getElementById('supportModal');
-            const supportModalOverlay = document.getElementById('supportModalOverlay');
-            const closeSupport = document.getElementById('closeSupport');
-
-            if (!supportButton || !supportModal || !supportModalOverlay || !closeSupport) {
-                console.error('Элементы модального окна поддержки не найдены.');
-                return;
-            }
-
-            supportButton.addEventListener('click', () => {
-                supportModal.classList.add('active');
-                supportModalOverlay.classList.add('active');
-            });
-
-            closeSupport.addEventListener('click', () => {
-                supportModal.classList.remove('active');
-                supportModalOverlay.classList.remove('active');
-            });
-
-            supportModalOverlay.addEventListener('click', () => {
-                supportModal.classList.remove('active');
-                supportModalOverlay.classList.remove('active');
-            });
-
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && supportModal.classList.contains('active')) {
-                    supportModal.classList.remove('active');
-                    supportModalOverlay.classList.remove('active');
-                }
-            });
-        }
-
-        // Инициализация кнопки прокрутки наверх
-        function initializeScrollTopButton() {
-            const scrollTopButton = document.getElementById('scrollTopButton');
-            if (!scrollTopButton) {
-                console.error('Кнопка прокрутки наверх не найдена.');
-                return;
-            }
-
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 300) {
-                    scrollTopButton.classList.add('visible');
-                } else {
-                    scrollTopButton.classList.remove('visible');
-                }
-            });
-
-            scrollTopButton.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-        }
-
-        // Обработка хэша в URL
-        function handleHashChange() {
-            const hash = window.location.hash.replace('#', '');
-            console.log('Обработка хэша:', hash);
-            if (hash) {
-                const page = pagesData.find(p => p.slug === hash);
-                if (page) {
-                    console.log('Найдена страница:', page.slug, page.title);
-                    loadPage(page);
-                    localStorage.setItem('lastPageSlug', page.slug);
-                    updateActiveStates(hash);
-                } else {
-                    const element = document.getElementById(hash);
-                    if (element) {
-                        element.scrollIntoView({ behavior: 'smooth' });
-                    } else {
-                        console.warn(`Страница с slug "${hash}" не найдена.`);
-                        const defaultPage = pagesData.find(p => p.path === 'README.md') || pagesData[0];
-                        if (defaultPage) {
-                            loadPage(defaultPage);
-                            localStorage.setItem('lastPageSlug', defaultPage.slug);
-                            updateActiveStates(defaultPage.slug);
-                        }
-                    }
-                }
-            } else {
-                const defaultPage = pagesData.find(p => p.path === 'README.md') || pagesData[0];
-                if (defaultPage) {
-                    console.log('Загрузка страницы по умолчанию:', defaultPage.slug);
-                    loadPage(defaultPage);
-                    localStorage.setItem('lastPageSlug', defaultPage.slug);
-                    updateActiveStates(defaultPage.slug);
-                } else {
-                    console.warn('Страница по умолчанию не найдена.');
-                }
-            }
-        }
-
-        // Пасхалка
-        function initializeEasterEgg() {
-            const easterEggIcon = document.getElementById('easterEggIcon');
-            if (!easterEggIcon) {
-                console.error('Элемент пасхалки не найден.');
-                return;
-            }
-
-            let clickCount = 0;
-            easterEggIcon.addEventListener('click', () => {
-                clickCount++;
-                if (clickCount >= 5) {
-                    alert('🎉 Пасхалка! Ты нашёл секрет! 🐱‍👤');
-                    clickCount = 0;
-                }
-            });
-        }
-
-        // Инициализация приложения
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('Инициализация приложения...');
-            loadPagesData();
-            initializeSearch();
-            initializeMobileMenu();
-            initializeTelegramMenu();
-            initializeSupportModal();
-            initializeScrollTopButton();
-            initializeEasterEgg();
-
-            window.addEventListener('hashchange', handleHashChange);
-            handleHashChange();
+        
+        // Корректировка путей для изображений
+        const basePath = page.path ? page.path.split('/').slice(0, -1).join('/') : '';
+        html = html.replace(/<img src="([^"]+)"/g, (match, src) => {
+            if (src.startsWith('http') || src.startsWith('/')) return match;
+            return `<img src="/top/${basePath}/${src}"`;
         });
-    </script>
+        
+        return html;
+    } catch (error) {
+        console.error('Ошибка обработки контента:', error);
+        return '<p class="text-red-500">Ошибка обработки контента</p>';
+    }
+}
+
+// Обновление активных состояний
+function updateActiveStates(slug) {
+    document.querySelectorAll('.menu-item, .article-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.slug === slug || (item.href.includes(`#${slug}`))) {
+            item.classList.add('active');
+            const category = item.closest('.category');
+            if (category) {
+                const items = category.querySelector('.category-items');
+                const header = category.querySelector('h3');
+                const icon = header.querySelector('.toggle-icon');
+                items.classList.add('active');
+                items.style.display = 'block';
+                icon.classList.remove('ri-arrow-down-s-line');
+                icon.classList.add('ri-arrow-up-s-line');
+            }
+        }
+    });
+}
+
+// Рендеринг заголовков
+function renderHeadings() {
+    const headingsContainer = document.getElementById('headingsContainer');
+    if (!headingsContainer) return;
+    
+    const headings = document.querySelectorAll('.article-text h2, .article-text h3');
+    headingsContainer.innerHTML = Array.from(headings).map((heading, index) => {
+        const level = heading.tagName.toLowerCase();
+        const id = `heading-${index}`;
+        heading.id = id;
+        return `
+            <a href="#${id}" class="heading-item ${level}">
+                ${heading.textContent}
+            </a>
+        `;
+    }).join('');
+}
+
+// Инициализация кнопок копирования кода
+function initializeCopyButtons() {
+    document.querySelectorAll('pre').forEach(pre => {
+        const button = document.createElement('button');
+        button.className = 'copy-code-btn';
+        button.innerHTML = '<i class="ri-clipboard-line"></i> Копировать';
+        button.addEventListener('click', async () => {
+            const code = pre.querySelector('code').textContent;
+            try {
+                await navigator.clipboard.writeText(code);
+                button.innerHTML = '<i class="ri-check-line"></i> Скопировано';
+                setTimeout(() => {
+                    button.innerHTML = '<i class="ri-clipboard-line"></i> Копировать';
+                }, 2000);
+            } catch (error) {
+                console.error('Ошибка копирования:', error);
+            }
+        });
+        pre.appendChild(button);
+    });
+}
+
+// Инициализация кнопки поделиться
+function initializeShareButton() {
+    const shareButton = document.querySelector('.share-button');
+    if (shareButton) {
+        shareButton.addEventListener('click', async () => {
+            const slug = shareButton.dataset.slug;
+            const page = pagesData.find(p => p.slug === slug);
+            if (!page) return;
+            
+            const shareData = {
+                title: page.title,
+                text: page.description,
+                url: `https://endermanik13.github.io/top/#${slug}`
+            };
+            
+            try {
+                await navigator.share(shareData);
+            } catch (error) {
+                console.warn('Ошибка шаринга:', error);
+                // Fallback: копирование ссылки
+                await navigator.clipboard.writeText(shareData.url);
+                alert('Ссылка скопирована в буфер обмена!');
+            }
+        });
+    }
+}
+
+// Обработка изменения хэша
+function handleHashChange() {
+    const slug = window.location.hash.replace('#', '') || 'readme';
+    if (slug !== lastPageSlug && !isLoadingPage) {
+        loadPage(slug);
+    }
+}
+
+// Инициализация поисковой панели
+function initializeSearch() {
+    const searchInput = document.getElementById('searchInput');
+    const searchPanelInput = document.getElementById('searchPanelInput');
+    const searchPanel = document.getElementById('searchPanel');
+    const searchOverlay = document.getElementById('searchOverlay');
+    const closeSearch = document.getElementById('closeSearch');
+    const searchResults = document.getElementById('searchResults');
+
+    const debouncedSearch = debounce(performSearch, 300);
+
+    searchInput.addEventListener('focus', () => {
+        searchPanel.classList.add('active');
+        searchOverlay.classList.add('active');
+        searchPanelInput.focus();
+    });
+
+    searchPanelInput.addEventListener('input', debouncedSearch);
+    
+    closeSearch.addEventListener('click', () => {
+        searchPanel.classList.remove('active');
+        searchOverlay.classList.remove('active');
+        searchPanelInput.value = '';
+        searchResults.innerHTML = '';
+    });
+
+    searchOverlay.addEventListener('click', () => {
+        searchPanel.classList.remove('active');
+        searchOverlay.classList.remove('active');
+        searchPanelInput.value = '';
+        searchResults.innerHTML = '';
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && searchPanel.classList.contains('active')) {
+            searchPanel.classList.remove('active');
+            searchOverlay.classList.remove('active');
+            searchPanelInput.value = '';
+            searchResults.innerHTML = '';
+        }
+    });
+
+    function performSearch() {
+        const query = searchPanelInput.value.trim().toLowerCase();
+        if (!query) {
+            searchResults.innerHTML = '<p class="text-center text-gray-400">Введите запрос для поиска</p>';
+            return;
+        }
+
+        const results = pagesData.filter(page => 
+            page.title.toLowerCase().includes(query) ||
+            page.description.toLowerCase().includes(query) ||
+            (page.tags && page.tags.some(tag => tag.toLowerCase().includes(query))) ||
+            page.content.toLowerCase().includes(query)
+        );
+
+        if (results.length === 0) {
+            searchResults.innerHTML = '<p class="text-center text-gray-400">Ничего не найдено</p>';
+            return;
+        }
+
+        searchResults.innerHTML = results.map(page => `
+            <div class="search-result-item" data-slug="${page.slug}">
+                <div class="search-result-title">${page.title}</div>
+                <div class="search-result-meta">
+                    <span>${page.category || 'Разное'}</span>
+                    <span>${new Date(page.date).toLocaleDateString('ru-RU')}</span>
+                </div>
+                <div class="search-result-description">${page.description}</div>
+            </div>
+        `).join('');
+
+        document.querySelectorAll('.search-result-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const slug = item.dataset.slug;
+                window.location.hash = slug;
+                searchPanel.classList.remove('active');
+                searchOverlay.classList.remove('active');
+                searchPanelInput.value = '';
+                searchResults.innerHTML = '';
+            });
+        });
+    }
+}
+
+// Инициализация мобильного меню
+function initializeMobileMenu() {
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const articlesColumn = document.getElementById('articlesColumn');
+
+    mobileMenuToggle.addEventListener('click', () => {
+        articlesColumn.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!articlesColumn.contains(event.target) && !mobileMenuToggle.contains(event.target) && articlesColumn.classList.contains('active')) {
+            articlesColumn.classList.remove('active');
+        }
+    });
+}
+
+// Инициализация Telegram-меню
+function initializeTelegramMenu() {
+    const telegramButton = document.getElementById('telegramButton');
+    const telegramMenu = document.getElementById('telegramMenu');
+
+    telegramButton.addEventListener('click', (event) => {
+        event.stopPropagation();
+        telegramMenu.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!telegramMenu.contains(event.target) && !telegramButton.contains(event.target)) {
+            telegramMenu.classList.remove('active');
+        }
+    });
+}
+
+// Инициализация модального окна поддержки
+function initializeSupportModal() {
+    const supportButton = document.getElementById('supportButton');
+    const supportModal = document.getElementById('supportModal');
+    const supportModalOverlay = document.getElementById('supportModalOverlay');
+    const closeSupport = document.getElementById('closeSupport');
+
+    supportButton.addEventListener('click', () => {
+        supportModal.classList.add('active');
+        supportModalOverlay.classList.add('active');
+    });
+
+    closeSupport.addEventListener('click', () => {
+        supportModal.classList.remove('active');
+        supportModalOverlay.classList.remove('active');
+    });
+
+    supportModalOverlay.addEventListener('click', () => {
+        supportModal.classList.remove('active');
+        supportModalOverlay.classList.remove('active');
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && supportModal.classList.contains('active')) {
+            supportModal.classList.remove('active');
+            supportModalOverlay.classList.remove('active');
+        }
+    });
+}
+
+// Инициализация кнопки прокрутки наверх
+function initializeScrollTopButton() {
+    const scrollTopButton = document.getElementById('scrollTopButton');
+    
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            scrollTopButton.classList.add('visible');
+        } else {
+            scrollTopButton.classList.remove('visible');
+        }
+    });
+
+    scrollTopButton.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+// Инициализация просмотрщика изображений
+function initializeImageViewer() {
+    const imageViewer = document.getElementById('imageViewer');
+    const viewerImage = document.getElementById('viewerImage');
+    const closeViewer = document.getElementById('closeViewer');
+    const zoomIn = document.getElementById('zoomIn');
+    const zoomOut = document.getElementById('zoomOut');
+    const zoomLevel = document.getElementById('zoomLevel');
+    const imageLoadingSpinner = document.getElementById('imageLoadingSpinner');
+
+    let currentZoom = 1;
+    let isLoading = false;
+
+    function resetViewer() {
+        currentZoom = 1;
+        viewerImage.style.transform = `scale(${currentZoom})`;
+        zoomLevel.textContent = '100%';
+        viewerImage.src = '';
+        imageLoadingSpinner.style.display = 'block';
+        viewerImage.style.display = 'none';
+    }
+
+    function openViewer(src) {
+        if (isLoading) return;
+        isLoading = true;
+        resetViewer();
+        
+        imageViewer.classList.add('active');
+        viewerImage.src = src;
+        
+        viewerImage.onload = () => {
+            imageLoadingSpinner.style.display = 'none';
+            viewerImage.style.display = 'block';
+            isLoading = false;
+        };
+        
+        viewerImage.onerror = () => {
+            imageLoadingSpinner.style.display = 'none';
+            viewerImage.style.display = 'none';
+            console.error('Ошибка загрузки изображения:', src);
+            isLoading = false;
+        };
+    }
+
+    function closeViewerHandler() {
+        imageViewer.classList.remove('active');
+        resetViewer();
+    }
+
+    document.querySelectorAll('.article-text img').forEach(img => {
+        img.addEventListener('click', () => {
+            openViewer(img.src);
+        });
+    });
+
+    closeViewer.addEventListener('click', closeViewerHandler);
+
+    imageViewer.addEventListener('click', (event) => {
+        if (event.target === imageViewer) {
+            closeViewerHandler();
+        }
+    });
+
+    zoomIn.addEventListener('click', () => {
+        if (currentZoom < 3) {
+            currentZoom += 0.2;
+            viewerImage.style.transform = `scale(${currentZoom})`;
+            zoomLevel.textContent = `${Math.round(currentZoom * 100)}%`;
+        }
+    });
+
+    zoomOut.addEventListener('click', () => {
+        if (currentZoom > 0.2) {
+            currentZoom -= 0.2;
+            viewerImage.style.transform = `scale(${currentZoom})`;
+            zoomLevel.textContent = `${Math.round(currentZoom * 100)}%`;
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && imageViewer.classList.contains('active')) {
+            closeViewerHandler();
+        }
+    });
+}
+
+// Инициализация пасхального яйца
+function initializeEasterEgg() {
+    const icon = document.getElementById('easterEggIcon');
+    let clickCount = 0;
+    
+    icon.addEventListener('click', () => {
+        clickCount++;
+        if (clickCount === 5) {
+            alert('Ты нашел пасхалку! 🥚 Вот тебе секрет: сайт сделан с ❤️ и кофе!');
+            clickCount = 0;
+        }
+    });
+}
+
+// Инициализация при загрузке страницы
+document.addEventListener('DOMContentLoaded', () => {
+    loadPagesData();
+    initializeSearch();
+    initializeMobileMenu();
+    initializeTelegramMenu();
+    initializeSupportModal();
+    initializeScrollTopButton();
+    initializeImageViewer();
+    initializeEasterEgg();
+    
+    window.addEventListener('hashchange', handleHashChange);
+    
+    // Загружаем начальную страницу
+    handleHashChange();
+});
+</script>
 </body>
 </html>
