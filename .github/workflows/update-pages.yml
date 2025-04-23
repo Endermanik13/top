@@ -20,12 +20,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '16' # Возвращаем Node.js 16, как в старой рабочей версии
+          node-version: '16'
 
       - name: Install dependencies
         run: |
           npm install @octokit/rest@18.12.0 gray-matter@4.0.3 p-retry@4.6.2
           npm install -g markdown-link-check
+          npm list p-retry # Для отладки
 
       - name: Check Markdown links
         continue-on-error: true
@@ -42,7 +43,7 @@ jobs:
             const fs = require("fs").promises;
             const path = require("path");
             const { Octokit } = require("@octokit/rest");
-            const pRetry = require("p-retry"); // Совместимо с p-retry@4.6.2
+            const pRetry = require("p-retry");
             const matter = require("gray-matter");
 
             const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
