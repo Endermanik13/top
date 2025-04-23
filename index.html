@@ -2096,7 +2096,7 @@
             return marked.parseInline(title.replace(/\*\*(.*?)\*\*/g, '**$1**'));
         }
 
-        // Загрузка страницы
+// Загрузка страницы
         async function loadPage(page) {
             const mainContent = document.getElementById('mainContent');
             const breadcrumbs = document.getElementById('breadcrumbs');
@@ -2202,6 +2202,9 @@
                     <span>${page.title}</span>
                 `;
 
+                // Обновление URL
+                window.history.pushState(null, '', `#${page.slug}`);
+
                 // Инициализация компонентов
                 Prism.highlightAll();
                 initializeCopyCodeButtons();
@@ -2275,21 +2278,25 @@
             const toggleHeadings = document.getElementById('toggleHeadings');
             const headingsContainer = document.getElementById('headingsContainer');
             const headingsBlock = document.getElementById('headingsBlock');
-            if (toggleHeadings && headingsContainer && headingsBlock) {
-                toggleHeadings.addEventListener('click', () => {
-                    const isCollapsed = headingsContainer.classList.toggle('collapsed');
-                    headingsBlock.classList.toggle('collapsed', isCollapsed);
-                    toggleHeadings.querySelector('i').className = isCollapsed ? 'ri-eye-off-line' : 'ri-eye-line';
-                    toggleHeadings.setAttribute('aria-label', isCollapsed ? 'Развернуть содержание' : 'Свернуть содержание');
-                });
 
-                // Проверка начального состояния
-                if (headingsContainer.classList.contains('collapsed')) {
-                    headingsBlock.classList.add('collapsed');
-                    toggleHeadings.querySelector('i').className = 'ri-eye-off-line';
-                    toggleHeadings.setAttribute('aria-label', 'Развернуть содержание');
-                }
+            if (!toggleHeadings || !headingsContainer || !headingsBlock) {
+                console.error('Элементы навигации по заголовкам не найдены.');
+                return;
             }
+
+            toggleHeadings.addEventListener('click', () => {
+                const isCollapsed = !headingsContainer.classList.contains('collapsed');
+                headingsContainer.classList.toggle('collapsed', isCollapsed);
+                headingsBlock.classList.toggle('collapsed', isCollapsed);
+                toggleHeadings.querySelector('i').className = isCollapsed ? 'ri-eye-off-line' : 'ri-eye-line';
+                toggleHeadings.setAttribute('aria-label', isCollapsed ? 'Развернуть содержание' : 'Свернуть содержание');
+                
+                // Принудительное обновление стилей
+                headingsBlock.style.transition = 'all 0.3s ease';
+                headingsBlock.style.width = isCollapsed ? '60px' : '280px';
+                headingsContainer.style.maxHeight = isCollapsed ? '0' : 'calc(100vh - 100px)';
+                headingsContainer.style.opacity = isCollapsed ? '0' : '1';
+            });
 
             document.querySelectorAll('.heading-item').forEach(item => {
                 item.addEventListener('click', (e) => {
@@ -2314,50 +2321,51 @@
             const closeViewer = document.getElementById('closeViewer');
             let currentScale = 1;
 
+            if (!imageViewer || !viewerImage || !zoomIn || !zoomOut || !zoomLevel || !closeViewer) {
+                console.error('Элементы просмотрщика изображений не найдены.');
+                return;
+            }
+
             document.querySelectorAll('.article-text img').forEach(img => {
                 img.addEventListener('click', () => {
-                    if (imageViewer && viewerImage) {
-                        viewerImage.src = img.src;
-                        viewerImage.alt = img.alt || 'Изображение';
-                        imageViewer.classList.add('active');
-                        currentScale = 1;
-                        zoomLevel.textContent = '100%';
-                        viewerImage.style.transform = `scale(${currentScale})`;
-                    }
+                    viewerImage.src = img.src;
+                    viewerImage.alt = img.alt || 'Изображение';
+                    imageViewer.classList.add('active');
+                    currentScale = 1;
+                    zoomLevel.textContent = '100%';
+                    viewerImage.style.transform = `scale(${currentScale})`;
                 });
             });
 
-            if (zoomIn && zoomOut && closeViewer && viewerImage && zoomLevel) {
-                zoomIn.addEventListener('click', () => {
-                    currentScale = Math.min(currentScale + 0.2, 3);
-                    viewerImage.style.transform = `scale(${currentScale})`;
-                    zoomLevel.textContent = `${Math.round(currentScale * 100)}%`;
-                });
+            zoomIn.addEventListener('click', () => {
+                currentScale = Math.min(currentScale + 0.2, 3);
+                viewerImage.style.transform = `scale(${currentScale})`;
+                zoomLevel.textContent = `${Math.round(currentScale * 100)}%`;
+            });
 
-                zoomOut.addEventListener('click', () => {
-                    currentScale = Math.max(currentScale - 0.2, 0.5);
-                    viewerImage.style.transform = `scale(${currentScale})`;
-                    zoomLevel.textContent = `${Math.round(currentScale * 100)}%`;
-                });
+            zoomOut.addEventListener('click', () => {
+                currentScale = Math.max(currentScale - 0.2, 0.5);
+                viewerImage.style.transform = `scale(${currentScale})`;
+                zoomLevel.textContent = `${Math.round(currentScale * 100)}%`;
+            });
 
-                closeViewer.addEventListener('click', () => {
+            closeViewer.addEventListener('click', () => {
+                imageViewer.classList.remove('active');
+                viewerImage.src = '';
+                viewerImage.alt = '';
+                currentScale = 1;
+                zoomLevel.textContent = '100%';
+            });
+
+            imageViewer.addEventListener('click', (e) => {
+                if (e.target === imageViewer) {
                     imageViewer.classList.remove('active');
                     viewerImage.src = '';
                     viewerImage.alt = '';
                     currentScale = 1;
                     zoomLevel.textContent = '100%';
-                });
-
-                imageViewer.addEventListener('click', (e) => {
-                    if (e.target === imageViewer) {
-                        imageViewer.classList.remove('active');
-                        viewerImage.src = '';
-                        viewerImage.alt = '';
-                        currentScale = 1;
-                        zoomLevel.textContent = '100%';
-                    }
-                });
-            }
+                }
+            });
         }
 
         // Поиск
@@ -2575,7 +2583,17 @@
                     const element = document.getElementById(hash);
                     if (element) {
                         element.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        console.warn(`Страница с slug "${hash}" не найдена.`);
                     }
+                }
+            } else {
+                // Загрузка главной страницы, если хэш пустой
+                const defaultPage = pagesData.find(p => p.path === 'README.md') || pagesData[0];
+                if (defaultPage) {
+                    loadPage(defaultPage);
+                    localStorage.setItem('lastPageSlug', defaultPage.slug);
+                    updateActiveStates(defaultPage.slug);
                 }
             }
         }
