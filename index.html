@@ -684,19 +684,17 @@
             }
             
             .headings-block {
-                position: fixed;
-                right: 1rem;
-                top: 80px;
-                width: 280px;
-                max-height: calc(100vh - 100px);
-                overflow-y: auto;
-                z-index: 40;
-                transform: translateX(100%);
-                transition: transform 0.3s ease;
+                position: relative;
+                width: 100%;
+                max-height: none;
+                top: 0;
+                right: 0;
+                transform: none;
+                transition: none;
             }
 
             .headings-block.active {
-                transform: translateX(0);
+                transform: none;
             }
         }
 
@@ -719,17 +717,13 @@
             }
 
             .headings-block {
-                width: 250px;
-                right: 0.5rem;
+                width: 100%;
             }
         }
 
         @media (max-width: 640px) {
             .headings-block {
                 width: 100%;
-                right: 0;
-                top: 68px;
-                max-height: calc(100vh - 80px);
             }
         }
 
@@ -1029,9 +1023,6 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             border: 1px solid var(--border-color);
             transition: all 0.3s ease;
-            position: sticky;
-            top: 80px;
-            width: 280px;
             max-height: calc(100vh - 100px);
             display: flex;
             flex-direction: column;
@@ -1039,6 +1030,7 @@
 
         .headings-block.collapsed {
             width: 60px;
+            padding: 0.5rem;
             overflow: hidden;
         }
 
@@ -1056,6 +1048,11 @@
             color: var(--text-primary);
             display: flex;
             align-items: center;
+            transition: opacity 0.3s ease;
+        }
+
+        .headings-block.collapsed h4 {
+            opacity: 0;
         }
 
         .headings-block h4 i {
@@ -1847,6 +1844,12 @@
                     if (!page.category || page.category.trim() === '') {
                         page.category = 'Разное';
                     }
+                    // Заполнение отсутствующих полей
+                    page.title = page.title || 'Без названия';
+                    page.content = page.content || '';
+                    page.slug = page.slug || page.path?.replace(/[^a-zA-Z0-9]/g, '-') || 'unnamed';
+                    page.date = page.date || '';
+                    page.tags = page.tags || [];
                 });
 
                 pagesData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
@@ -1862,13 +1865,13 @@
                     if (savedPage) pageToLoad = savedPage;
                 }
 
-                if (pagesData.length > 0) {
+                if (pagesData.length > 0 && pageToLoad) {
                     loadPage(pageToLoad);
                 } else {
                     showErrorMessage('Страницы не найдены.');
                 }
             } catch (error) {
-                console.error('Error loading pages:', error);
+                console.error('Ошибка загрузки страниц:', error);
                 showErrorMessage(`Ошибка загрузки: ${error.message}`);
             }
         }
@@ -1880,25 +1883,31 @@
                 pagesData.map(page => page.category)
                     .filter(cat => cat && cat.toUpperCase() !== 'EXCALIDRAW')
             ).size;
-            document.getElementById('articleCount').textContent = articleCount;
-            document.getElementById('categoryCount').textContent = categoryCount;
+            const articleCountEl = document.getElementById('articleCount');
+            const categoryCountEl = document.getElementById('categoryCount');
+            if (articleCountEl) articleCountEl.textContent = articleCount;
+            if (categoryCountEl) categoryCountEl.textContent = categoryCount;
         }
 
         // Функция отображения сообщения об ошибке
         function showErrorMessage(message) {
-            document.getElementById('mainContent').innerHTML = `
-                <div class="text-center py-12">
-                    <div class="inline-flex items-center text-lg text-red-400">
-                        <i class="ri-error-warning-line mr-2"></i>
-                        ${message}
+            const mainContent = document.getElementById('mainContent');
+            if (mainContent) {
+                mainContent.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="inline-flex items-center text-lg text-red-400">
+                            <i class="ri-error-warning-line mr-2"></i>
+                            ${message}
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+            }
         }
 
         // Рендеринг категорий и статей
         function renderCategories() {
             const categoryList = document.getElementById('categoryList');
+            if (!categoryList) return;
 
             const categories = {};
             pagesData.forEach(page => {
@@ -1947,11 +1956,11 @@
                     articleItem.className = `article-item ${page.slug === lastPageSlug ? 'active' : ''}`;
                     articleItem.innerHTML = `
                         <i class="ri-${page.icon || 'file-text-line'}"></i>
-                        <span class="truncate">${page.title || 'Без названия'}</span>
+                        <span class="truncate">${page.title}</span>
                     `;
                     articleItem.dataset.slug = page.slug;
-                    articleItem.title = page.title || 'Без названия';
-                    articleItem.setAttribute('aria-label', `Открыть статью ${page.title || 'Без названия'}`);
+                    articleItem.title = page.title;
+                    articleItem.setAttribute('aria-label', `Открыть статью ${page.title}`);
 
                     articleItem.addEventListener('click', (e) => {
                         e.preventDefault();
@@ -1971,18 +1980,19 @@
                         if (item !== categoryItems) {
                             item.classList.remove('active');
                             const arrow = item.parentElement.querySelector('.ri-arrow-down-s-line');
-                            arrow.style.transform = 'rotate(0)';
+                            if (arrow) arrow.style.transform = 'rotate(0)';
                         }
                     });
 
                     const isActive = categoryItems.classList.toggle('active');
                     const arrowIcon = categoryTitle.querySelector('.ri-arrow-down-s-line');
-                    arrowIcon.style.transform = isActive ? 'rotate(180deg)' : 'rotate(0)';
+                    if (arrowIcon) arrowIcon.style.transform = isActive ? 'rotate(180deg)' : 'rotate(0)';
                 });
 
                 if (sortedPages.some(page => page.slug === lastPageSlug)) {
                     categoryItems.classList.add('active');
-                    categoryTitle.querySelector('.ri-arrow-down-s-line').style.transform = 'rotate(180deg)';
+                    const arrow = categoryTitle.querySelector('.ri-arrow-down-s-line');
+                    if (arrow) arrow.style.transform = 'rotate(180deg)';
                 }
             });
         }
@@ -2015,7 +2025,7 @@
             };
         }
 
-        // Обработка заголовков с **текстом** и удаление первого h1
+        // Обработка контента
         function processContent(content, title) {
             let htmlContent = marked.parse(content || '', {
                 renderer: new marked.Renderer({
@@ -2054,7 +2064,6 @@
                 })
             });
 
-            // Проверка доступности sanitizeHtml
             if (typeof sanitizeHtml !== 'undefined') {
                 try {
                     htmlContent = sanitizeHtml(htmlContent, {
@@ -2066,11 +2075,10 @@
                         }
                     });
                 } catch (err) {
-                    console.warn('Sanitization failed:', err);
-                    // Продолжаем с несанированным контентом
+                    console.warn('Ошибка санитизации:', err);
                 }
             } else {
-                console.warn('sanitizeHtml is not defined. Proceeding with unsanitized content.');
+                console.warn('sanitizeHtml не определен. Используется несанированный контент.');
             }
 
             const parser = new DOMParser();
@@ -2092,6 +2100,11 @@
         async function loadPage(page) {
             const mainContent = document.getElementById('mainContent');
             const breadcrumbs = document.getElementById('breadcrumbs');
+            if (!mainContent || !breadcrumbs) {
+                console.error('Элементы mainContent или breadcrumbs не найдены.');
+                return;
+            }
+
             mainContent.innerHTML = `
                 <div class="text-center py-12">
                     <div class="inline-flex items-center text-lg">
@@ -2102,454 +2115,502 @@
             `;
 
             try {
-                const processedContent = processContent(page.content, page.title);
+                // Проверка данных страницы
+                if (!page) {
+                    throw new Error('Страница не определена.');
+                }
+
+                // Заполнение отсутствующих полей
+                page.title = page.title || 'Без названия';
+                page.content = page.content || '';
+                page.category = page.category || 'Разное';
+                page.slug = page.slug || 'unnamed';
+                page.date = page.date || '';
+                page.tags = page.tags || [];
+                page.description = page.description || '';
+
+                // Обработка контента
+                let processedContent = processContent(page.content, page.title);
                 const { headings, updatedContent } = extractHeadings(processedContent);
+                processedContent = updatedContent;
 
-                const dateString = page.date ? new Date(page.date).toLocaleDateString('ru-RU', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric'
-                }) : '';
-
+                // Формирование HTML контента
+                const processedTitle = processTitle(page.title);
+                const dateStr = page.date ? new Date(page.date).toLocaleDateString('ru-RU') : '';
+                const tagsHtml = page.tags.length > 0 ? page.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : '';
+                
                 mainContent.innerHTML = `
-                    <div class="article-header">
-                        <h1 class="text-3xl font-bold mb-2">${processTitle(page.title)}</h1>
-                        ${dateString ? `<p class="text-sm text-gray-400"><i class="ri-calendar-line"></i> ${dateString}</p>` : ''}
-                        ${page.tags?.length ? `
-                            <div class="tags mt-2">
-                                ${page.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                            </div>
-                        ` : ''}
-                    </div>
-                    <article class="mb-12">
-                        <div class="article-content">
-                            <div class="article-text">
-                                ${updatedContent}
-                            </div>
-                            ${headings.length > 0 ? `
-                            <div class="headings-block">
-                                <div class="headings-header">
-                                    <h4><i class="ri-list-check"></i> Содержание</h4>
-                                    <button class="toggle-headings" id="toggleHeadings" aria-label="Свернуть/развернуть содержание">
-                                        <i class="ri-eye-line"></i>
-                                    </button>
+                    <div class="article-content">
+                        <div class="article-text">
+                            <div class="article-header">
+                                <h1>${processedTitle}</h1>
+                                <div class="text-sm text-gray-400 mb-4 flex flex-wrap items-center gap-2">
+                                    ${dateStr ? `<span><i class="ri-calendar-line"></i> ${dateStr}</span>` : ''}
+                                    <span><i class="ri-folder-line"></i> ${page.category}</span>
                                 </div>
-                                <div class="headings-container" id="headingsContainer">
-                                    ${headings.map(heading => `
-                                        <a href="#${heading.id}" 
-                                           class="heading-item ${heading.tag}" 
-                                           data-id="${heading.id}"
-                                           style="padding-left: ${heading.level * 12 + 12}px;"
-                                           aria-label="Перейти к разделу ${heading.text}">
-                                            ${heading.text}
-                                        </a>
-                                    `).join('')}
-                                </div>
+                                ${tagsHtml}
                             </div>
-                            ` : ''}
+                            ${processedContent}
+                            <button class="share-button" id="shareButton">
+                                <i class="ri-share-line"></i> Поделиться
+                            </button>
                         </div>
-                    </article>
-                    <button class="share-button" id="shareButton" aria-label="Поделиться страницей">
-                        <i class="ri-share-line"></i> Поделиться
-                    </button>
+                        <div class="headings-block" id="headingsBlock">
+                            <div class="headings-header">
+                                <h4><i class="ri-list-check"></i> Содержание</h4>
+                                <button class="toggle-headings" id="toggleHeadings" aria-label="Свернуть содержание">
+                                    <i class="ri-eye-line"></i>
+                                </button>
+                            </div>
+                            <div class="headings-container" id="headingsContainer">
+                                ${headings.length > 0 ? headings.map(h => `
+                                    <a href="#${h.id}" class="heading-item ${h.tag}" data-id="${h.id}">
+                                        ${h.level === 1 ? '<i class="ri-arrow-right-s-line"></i>' : ''}${h.text}
+                                    </a>
+                                `).join('') : '<p class="text-sm text-gray-400">Нет заголовков</p>'}
+                            </div>
+                        </div>
+                    </div>
                 `;
 
-                // Update meta tags
-    document.title = `${page.title} | Энциклопедия Эндера`;
-    const metaDesc = document.querySelector('meta[name="description"]') || document.createElement('meta');
-    metaDesc.name = "description";
-    metaDesc.content = page.description || page.content.substring(0, 160) + '...';
-    document.head.appendChild(metaDesc);
+                // Обновление мета-тегов
+                document.title = `${page.title} | Энциклопедия Эндера`;
+                const metaDesc = document.querySelector('meta[name="description"]') || document.createElement('meta');
+                metaDesc.name = "description";
+                metaDesc.content = page.description || page.content.substring(0, 160) + '...';
+                if (!document.head.contains(metaDesc)) document.head.appendChild(metaDesc);
 
-    const ogTitle = document.querySelector('meta[property="og:title"]') || document.createElement('meta');
-    ogTitle.setAttribute('property', 'og:title');
-    ogTitle.content = `${page.title} | Энциклопедия Эндера`;
-    document.head.appendChild(ogTitle);
+                const ogTitle = document.querySelector('meta[property="og:title"]') || document.createElement('meta');
+                ogTitle.setAttribute('property', 'og:title');
+                ogTitle.content = `${page.title} | Энциклопедия Эндера`;
+                if (!document.head.contains(ogTitle)) document.head.appendChild(ogTitle);
 
-    const ogDesc = document.querySelector('meta[property="og:description"]') || document.createElement('meta');
-    ogDesc.setAttribute('property', 'og:description');
-    ogDesc.content = page.description || page.content.substring(0, 160) + '...';
-    document.head.appendChild(ogDesc);
+                const ogDesc = document.querySelector('meta[property="og:description"]') || document.createElement('meta');
+                ogDesc.setAttribute('property', 'og:description');
+                ogDesc.content = page.description || page.content.substring(0, 160) + '...';
+                if (!document.head.contains(ogDesc)) document.head.appendChild(ogDesc);
 
-    const ogUrl = document.querySelector('meta[property="og:url"]') || document.createElement('meta');
-    ogUrl.setAttribute('property', 'og:url');
-    ogUrl.content = window.location.href;
-    document.head.appendChild(ogUrl);
+                const ogUrl = document.querySelector('meta[property="og:url"]') || document.createElement('meta');
+                ogUrl.setAttribute('property', 'og:url');
+                ogUrl.content = window.location.href;
+                if (!document.head.contains(ogUrl)) document.head.appendChild(ogUrl);
 
-    breadcrumbs.innerHTML = `
-        <a href="/top/#readme">Главная</a> / 
-        <a href="#${page.category}">${page.category}</a> / 
-        <span>${page.title}</span>
-    `;
+                // Обновление хлебных крошек
+                breadcrumbs.innerHTML = `
+                    <a href="/top/#readme">Главная</a> / 
+                    <a href="#${page.category}">${page.category}</a> / 
+                    <span>${page.title}</span>
+                `;
 
-    Prism.highlightAll();
-    initializeCopyCodeButtons();
-    initializeShareButton();
-    initializeHeadingsNavigation();
-    initializeImageViewer();
+                // Инициализация компонентов
+                Prism.highlightAll();
+                initializeCopyCodeButtons();
+                initializeShareButton();
+                initializeHeadingsNavigation();
+                initializeImageViewer();
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    updateActiveStates(page.slug);
-} catch (error) {
-    console.error('Ошибка загрузки страницы:', error);
-    showErrorMessage(`Ошибка загрузки статьи: ${error.message}`);
-}
-}
+                // Прокрутка наверх
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                updateActiveStates(page.slug);
+            } catch (error) {
+                console.error('Ошибка загрузки страницы:', error);
+                showErrorMessage(`Ошибка загрузки статьи: ${error.message}`);
+            }
+        }
 
-// Инициализация кнопок копирования кода
-function initializeCopyCodeButtons() {
-    document.querySelectorAll('pre').forEach(pre => {
-        if (!pre.querySelector('.copy-code-btn')) {
-            const button = document.createElement('button');
-            button.className = 'copy-code-btn';
-            button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
-            button.setAttribute('aria-label', 'Копировать код');
-            button.addEventListener('click', async () => {
-                const code = pre.querySelector('code').textContent;
-                try {
-                    await navigator.clipboard.writeText(code);
-                    button.innerHTML = '<i class="ri-check-line"></i> Скопировано!';
-                    button.style.background = 'linear-gradient(135deg, #34d399, #059669)';
-                    setTimeout(() => {
-                        button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
-                        button.style.background = 'linear-gradient(135deg, #2AABEE, #1A8BCF)';
-                    }, 2000);
-                } catch (err) {
-                    console.error('Ошибка копирования:', err);
-                    button.innerHTML = '<i class="ri-error-warning-line"></i> Ошибка';
-                    setTimeout(() => {
-                        button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
-                    }, 2000);
+        // Инициализация кнопок копирования кода
+        function initializeCopyCodeButtons() {
+            document.querySelectorAll('pre').forEach(pre => {
+                if (!pre.querySelector('.copy-code-btn')) {
+                    const button = document.createElement('button');
+                    button.className = 'copy-code-btn';
+                    button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
+                    button.setAttribute('aria-label', 'Копировать код');
+                    button.addEventListener('click', async () => {
+                        const code = pre.querySelector('code')?.textContent || '';
+                        try {
+                            await navigator.clipboard.writeText(code);
+                            button.innerHTML = '<i class="ri-check-line"></i> Скопировано!';
+                            button.style.background = 'linear-gradient(135deg, #34d399, #059669)';
+                            setTimeout(() => {
+                                button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
+                                button.style.background = 'linear-gradient(135deg, #2AABEE, #1A8BCF)';
+                            }, 2000);
+                        } catch (err) {
+                            console.error('Ошибка копирования:', err);
+                            button.innerHTML = '<i class="ri-error-warning-line"></i> Ошибка';
+                            setTimeout(() => {
+                                button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
+                            }, 2000);
+                        }
+                    });
+                    pre.appendChild(button);
                 }
             });
-            pre.appendChild(button);
         }
-    });
-}
 
-// Инициализация кнопки "Поделиться"
-function initializeShareButton() {
-    const shareButton = document.getElementById('shareButton');
-    if (shareButton) {
-        shareButton.addEventListener('click', async () => {
-            const shareData = {
-                title: document.title,
-                text: document.querySelector('meta[name="description"]').content,
-                url: window.location.href
-            };
-            try {
-                await navigator.share(shareData);
-            } catch (err) {
-                console.warn('API поделиться не поддерживается или ошибка:', err);
-                await navigator.clipboard.writeText(shareData.url);
-                alert('Ссылка скопирована в буфер обмена!');
+        // Инициализация кнопки "Поделиться"
+        function initializeShareButton() {
+            const shareButton = document.getElementById('shareButton');
+            if (shareButton) {
+                shareButton.addEventListener('click', async () => {
+                    const shareData = {
+                        title: document.title,
+                        text: document.querySelector('meta[name="description"]')?.content || '',
+                        url: window.location.href
+                    };
+                    try {
+                        await navigator.share(shareData);
+                    } catch (err) {
+                        console.warn('API поделиться не поддерживается или ошибка:', err);
+                        await navigator.clipboard.writeText(shareData.url);
+                        alert('Ссылка скопирована в буфер обмена!');
+                    }
+                });
             }
-        });
-    }
-}
+        }
 
-// Инициализация навигации по заголовкам
-function initializeHeadingsNavigation() {
-    const toggleHeadings = document.getElementById('toggleHeadings');
-    const headingsContainer = document.getElementById('headingsContainer');
-    const headingsBlock = document.querySelector('.headings-block');
-    if (toggleHeadings && headingsContainer) {
-        toggleHeadings.addEventListener('click', () => {
-            const isCollapsed = headingsContainer.classList.toggle('collapsed');
-            headingsBlock.classList.toggle('collapsed', isCollapsed);
-            toggleHeadings.querySelector('i').className = isCollapsed ? 'ri-eye-off-line' : 'ri-eye-line';
-            toggleHeadings.setAttribute('aria-label', isCollapsed ? 'Развернуть содержание' : 'Свернуть содержание');
-        });
-    }
+        // Инициализация навигации по заголовкам
+        function initializeHeadingsNavigation() {
+            const toggleHeadings = document.getElementById('toggleHeadings');
+            const headingsContainer = document.getElementById('headingsContainer');
+            const headingsBlock = document.getElementById('headingsBlock');
+            if (toggleHeadings && headingsContainer && headingsBlock) {
+                toggleHeadings.addEventListener('click', () => {
+                    const isCollapsed = headingsContainer.classList.toggle('collapsed');
+                    headingsBlock.classList.toggle('collapsed', isCollapsed);
+                    toggleHeadings.querySelector('i').className = isCollapsed ? 'ri-eye-off-line' : 'ri-eye-line';
+                    toggleHeadings.setAttribute('aria-label', isCollapsed ? 'Развернуть содержание' : 'Свернуть содержание');
+                });
 
-    document.querySelectorAll('.heading-item').forEach(item => {
-        item.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetId = item.getAttribute('data-id');
-            const targetElement = document.getElementById(targetId);
-            if (targetElement) {
-                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                window.history.pushState(null, '', `#${targetId}`);
+                // Проверка начального состояния
+                if (headingsContainer.classList.contains('collapsed')) {
+                    headingsBlock.classList.add('collapsed');
+                    toggleHeadings.querySelector('i').className = 'ri-eye-off-line';
+                    toggleHeadings.setAttribute('aria-label', 'Развернуть содержание');
+                }
             }
-        });
-    });
-}
 
-// Инициализация просмотрщика изображений
-function initializeImageViewer() {
-    const imageViewer = document.getElementById('imageViewer');
-    const viewerImage = document.getElementById('viewerImage');
-    const zoomIn = document.getElementById('zoomIn');
-    const zoomOut = document.getElementById('zoomOut');
-    const zoomLevel = document.getElementById('zoomLevel');
-    const closeViewer = document.getElementById('closeViewer');
-    let currentScale = 1;
+            document.querySelectorAll('.heading-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = item.getAttribute('data-id');
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        window.history.pushState(null, '', `#${targetId}`);
+                    }
+                });
+            });
+        }
 
-    document.querySelectorAll('.article-text img').forEach(img => {
-        img.addEventListener('click', () => {
-            viewerImage.src = img.src;
-            viewerImage.alt = img.alt;
-            imageViewer.classList.add('active');
-            currentScale = 1;
-            zoomLevel.textContent = '100%';
-            viewerImage.style.transform = `scale(${currentScale})`;
-        });
-    });
+        // Инициализация просмотрщика изображений
+        function initializeImageViewer() {
+            const imageViewer = document.getElementById('imageViewer');
+            const viewerImage = document.getElementById('viewerImage');
+            const zoomIn = document.getElementById('zoomIn');
+            const zoomOut = document.getElementById('zoomOut');
+            const zoomLevel = document.getElementById('zoomLevel');
+            const closeViewer = document.getElementById('closeViewer');
+            let currentScale = 1;
 
-    if (zoomIn && zoomOut && closeViewer) {
-        zoomIn.addEventListener('click', () => {
-            currentScale = Math.min(currentScale + 0.2, 3);
-            viewerImage.style.transform = `scale(${currentScale})`;
-            zoomLevel.textContent = `${Math.round(currentScale * 100)}%`;
-        });
+            document.querySelectorAll('.article-text img').forEach(img => {
+                img.addEventListener('click', () => {
+                    if (imageViewer && viewerImage) {
+                        viewerImage.src = img.src;
+                        viewerImage.alt = img.alt || 'Изображение';
+                        imageViewer.classList.add('active');
+                        currentScale = 1;
+                        zoomLevel.textContent = '100%';
+                        viewerImage.style.transform = `scale(${currentScale})`;
+                    }
+                });
+            });
 
-        zoomOut.addEventListener('click', () => {
-            currentScale = Math.max(currentScale - 0.2, 0.5);
-            viewerImage.style.transform = `scale(${currentScale})`;
-            zoomLevel.textContent = `${Math.round(currentScale * 100)}%`;
-        });
+            if (zoomIn && zoomOut && closeViewer && viewerImage && zoomLevel) {
+                zoomIn.addEventListener('click', () => {
+                    currentScale = Math.min(currentScale + 0.2, 3);
+                    viewerImage.style.transform = `scale(${currentScale})`;
+                    zoomLevel.textContent = `${Math.round(currentScale * 100)}%`;
+                });
 
-        closeViewer.addEventListener('click', () => {
-            imageViewer.classList.remove('active');
-            viewerImage.src = '';
-            currentScale = 1;
-            zoomLevel.textContent = '100%';
-        });
+                zoomOut.addEventListener('click', () => {
+                    currentScale = Math.max(currentScale - 0.2, 0.5);
+                    viewerImage.style.transform = `scale(${currentScale})`;
+                    zoomLevel.textContent = `${Math.round(currentScale * 100)}%`;
+                });
 
-        imageViewer.addEventListener('click', (e) => {
-            if (e.target === imageViewer) {
-                imageViewer.classList.remove('active');
-                viewerImage.src = '';
-                currentScale = 1;
-                zoomLevel.textContent = '100%';
+                closeViewer.addEventListener('click', () => {
+                    imageViewer.classList.remove('active');
+                    viewerImage.src = '';
+                    viewerImage.alt = '';
+                    currentScale = 1;
+                    zoomLevel.textContent = '100%';
+                });
+
+                imageViewer.addEventListener('click', (e) => {
+                    if (e.target === imageViewer) {
+                        imageViewer.classList.remove('active');
+                        viewerImage.src = '';
+                        viewerImage.alt = '';
+                        currentScale = 1;
+                        zoomLevel.textContent = '100%';
+                    }
+                });
             }
-        });
-    }
-}
+        }
 
-// Поиск
-function initializeSearch() {
-    const searchInput = document.getElementById('searchInput');
-    const searchPanelInput = document.getElementById('searchPanelInput');
-    const searchPanel = document.getElementById('searchPanel');
-    const searchOverlay = document.getElementById('searchOverlay');
-    const closeSearch = document.getElementById('closeSearch');
-    const searchResults = document.getElementById('searchResults');
+        // Поиск
+        function initializeSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchPanelInput = document.getElementById('searchPanelInput');
+            const searchPanel = document.getElementById('searchPanel');
+            const searchOverlay = document.getElementById('searchOverlay');
+            const closeSearch = document.getElementById('closeSearch');
+            const searchResults = document.getElementById('searchResults');
 
-    function performSearch(query) {
-        query = query.toLowerCase().trim();
-        const results = pagesData.filter(page => {
-            const titleMatch = page.title?.toLowerCase().includes(query);
-            const contentMatch = page.content?.toLowerCase().includes(query);
-            const tagsMatch = page.tags?.some(tag => tag.toLowerCase().includes(query));
-            const categoryMatch = page.category?.toLowerCase().includes(query);
-            return titleMatch || contentMatch || tagsMatch || categoryMatch;
-        }).slice(0, 10);
+            if (!searchInput || !searchPanelInput || !searchPanel || !searchOverlay || !closeSearch || !searchResults) {
+                console.error('Элементы поиска не найдены.');
+                return;
+            }
 
-        searchResults.innerHTML = results.length > 0 ? results.map(page => `
-            <div class="search-result-item" data-slug="${page.slug}">
-                <div class="search-result-title">${page.title || 'Без названия'}</div>
-                <div class="search-result-meta">
-                    <span><i class="ri-folder-line"></i> ${page.category || 'Разное'}</span>
-                    ${page.date ? `<span><i class="ri-calendar-line"></i> ${new Date(page.date).toLocaleDateString('ru-RU')}</span>` : ''}
-                </div>
-                <div class="search-result-description">
-                    <p>${page.description || page.content.substring(0, 150) + '...'}</p>
-                </div>
-            </div>
-        `).join('') : `
-            <div class="text-center text-gray-400 py-4">
-                <i class="ri-search-line text-2xl mb-2"></i>
-                <p>Ничего не найдено</p>
-            </div>
-        `;
+            function performSearch(query) {
+                query = query.toLowerCase().trim();
+                const results = pagesData.filter(page => {
+                    const titleMatch = page.title?.toLowerCase().includes(query);
+                    const contentMatch = page.content?.toLowerCase().includes(query);
+                    const tagsMatch = page.tags?.some(tag => tag.toLowerCase().includes(query));
+                    const categoryMatch = page.category?.toLowerCase().includes(query);
+                    return titleMatch || contentMatch || tagsMatch || categoryMatch;
+                }).slice(0, 10);
 
-        document.querySelectorAll('.search-result-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const slug = item.dataset.slug;
-                const page = pagesData.find(p => p.slug === slug);
+                searchResults.innerHTML = results.length > 0 ? results.map(page => `
+                    <div class="search-result-item" data-slug="${page.slug}">
+                        <div class="search-result-title">${page.title || 'Без названия'}</div>
+                        <div class="search-result-meta">
+                            <span><i class="ri-folder-line"></i> ${page.category || 'Разное'}</span>
+                            ${page.date ? `<span><i class="ri-calendar-line"></i> ${new Date(page.date).toLocaleDateString('ru-RU')}</span>` : ''}
+                        </div>
+                        <div class="search-result-description">
+                            <p>${page.description || page.content.substring(0, 150) + '...'}</p>
+                        </div>
+                    </div>
+                `).join('') : `
+                    <div class="text-center text-gray-400 py-4">
+                        <i class="ri-search-line text-2xl mb-2"></i>
+                        <p>Ничего не найдено</p>
+                    </div>
+                `;
+
+                document.querySelectorAll('.search-result-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const slug = item.dataset.slug;
+                        const page = pagesData.find(p => p.slug === slug);
+                        if (page) {
+                            loadPage(page);
+                            localStorage.setItem('lastPageSlug', page.slug);
+                            updateActiveStates(slug);
+                            searchPanel.classList.remove('active');
+                            searchOverlay.classList.remove('active');
+                            searchPanelInput.value = '';
+                        }
+                    });
+                });
+            }
+
+            searchInput.addEventListener('focus', () => {
+                searchPanel.classList.add('active');
+                searchOverlay.classList.add('active');
+                searchPanelInput.focus();
+                performSearch(searchInput.value);
+            });
+
+            searchPanelInput.addEventListener('input', () => {
+                performSearch(searchPanelInput.value);
+            });
+
+            closeSearch.addEventListener('click', () => {
+                searchPanel.classList.remove('active');
+                searchOverlay.classList.remove('active');
+                searchInput.value = '';
+                searchPanelInput.value = '';
+            });
+
+            searchOverlay.addEventListener('click', () => {
+                searchPanel.classList.remove('active');
+                searchOverlay.classList.remove('active');
+                searchInput.value = '';
+                searchPanelInput.value = '';
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    searchPanel.classList.remove('active');
+                    searchOverlay.classList.remove('active');
+                    searchInput.value = '';
+                    searchPanelInput.value = '';
+                }
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    searchPanel.classList.add('active');
+                    searchOverlay.classList.add('active');
+                    searchPanelInput.focus();
+                }
+            });
+        }
+
+        // Инициализация мобильного меню
+        function initializeMobileMenu() {
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const articlesColumn = document.getElementById('articlesColumn');
+
+            if (!mobileMenuToggle || !articlesColumn) {
+                console.error('Элементы мобильного меню не найдены.');
+                return;
+            }
+
+            mobileMenuToggle.addEventListener('click', () => {
+                articlesColumn.classList.toggle('active');
+                mobileMenuToggle.querySelector('i').className = articlesColumn.classList.contains('active') ? 'ri-close-line' : 'ri-menu-line';
+                mobileMenuToggle.setAttribute('aria-label', articlesColumn.classList.contains('active') ? 'Закрыть боковое меню' : 'Открыть боковое меню');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!articlesColumn.contains(e.target) && !mobileMenuToggle.contains(e.target) && articlesColumn.classList.contains('active')) {
+                    articlesColumn.classList.remove('active');
+                    mobileMenuToggle.querySelector('i').className = 'ri-menu-line';
+                    mobileMenuToggle.setAttribute('aria-label', 'Открыть боковое меню');
+                }
+            });
+        }
+
+        // Инициализация Telegram-меню
+        function initializeTelegramMenu() {
+            const telegramButton = document.getElementById('telegramButton');
+            const telegramMenu = document.getElementById('telegramMenu');
+
+            if (!telegramButton || !telegramMenu) {
+                console.error('Элементы Telegram-меню не найдены.');
+                return;
+            }
+
+            telegramButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                telegramMenu.classList.toggle('active');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!telegramMenu.contains(e.target) && !telegramButton.contains(e.target)) {
+                    telegramMenu.classList.remove('active');
+                }
+            });
+        }
+
+        // Инициализация модального окна поддержки
+        function initializeSupportModal() {
+            const supportButton = document.getElementById('supportButton');
+            const supportModal = document.getElementById('supportModal');
+            const supportModalOverlay = document.getElementById('supportModalOverlay');
+            const closeSupport = document.getElementById('closeSupport');
+
+            if (!supportButton || !supportModal || !supportModalOverlay || !closeSupport) {
+                console.error('Элементы модального окна поддержки не найдены.');
+                return;
+            }
+
+            supportButton.addEventListener('click', () => {
+                supportModal.classList.add('active');
+                supportModalOverlay.classList.add('active');
+            });
+
+            closeSupport.addEventListener('click', () => {
+                supportModal.classList.remove('active');
+                supportModalOverlay.classList.remove('active');
+            });
+
+            supportModalOverlay.addEventListener('click', () => {
+                supportModal.classList.remove('active');
+                supportModalOverlay.classList.remove('active');
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && supportModal.classList.contains('active')) {
+                    supportModal.classList.remove('active');
+                    supportModalOverlay.classList.remove('active');
+                }
+            });
+        }
+
+        // Инициализация кнопки прокрутки наверх
+        function initializeScrollTopButton() {
+            const scrollTopButton = document.getElementById('scrollTopButton');
+            if (!scrollTopButton) {
+                console.error('Кнопка прокрутки наверх не найдена.');
+                return;
+            }
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopButton.classList.add('visible');
+                } else {
+                    scrollTopButton.classList.remove('visible');
+                }
+            });
+
+            scrollTopButton.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+
+        // Обработка хэша в URL
+        function handleHashChange() {
+            const hash = window.location.hash.replace('#', '');
+            if (hash) {
+                const page = pagesData.find(p => p.slug === hash);
                 if (page) {
                     loadPage(page);
                     localStorage.setItem('lastPageSlug', page.slug);
-                    updateActiveStates(slug);
-                    searchPanel.classList.remove('active');
-                    searchOverlay.classList.remove('active');
-                    searchPanelInput.value = '';
+                    updateActiveStates(hash);
+                } else {
+                    const element = document.getElementById(hash);
+                    if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                    }
                 }
-            });
-        });
-    }
-
-    searchInput.addEventListener('focus', () => {
-        searchPanel.classList.add('active');
-        searchOverlay.classList.add('active');
-        searchPanelInput.focus();
-        performSearch(searchInput.value);
-    });
-
-    searchPanelInput.addEventListener('input', () => {
-        performSearch(searchPanelInput.value);
-    });
-
-    closeSearch.addEventListener('click', () => {
-        searchPanel.classList.remove('active');
-        searchOverlay.classList.remove('active');
-        searchInput.value = '';
-        searchPanelInput.value = '';
-    });
-
-    searchOverlay.addEventListener('click', () => {
-        searchPanel.classList.remove('active');
-        searchOverlay.classList.remove('active');
-        searchInput.value = '';
-        searchPanelInput.value = '';
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            searchPanel.classList.remove('active');
-            searchOverlay.classList.remove('active');
-            searchInput.value = '';
-            searchPanelInput.value = '';
-        }
-        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-            e.preventDefault();
-            searchPanel.classList.add('active');
-            searchOverlay.classList.add('active');
-            searchPanelInput.focus();
-        }
-    });
-}
-
-// Инициализация мобильного меню
-function initializeMobileMenu() {
-    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-    const articlesColumn = document.getElementById('articlesColumn');
-
-    mobileMenuToggle.addEventListener('click', () => {
-        articlesColumn.classList.toggle('active');
-        mobileMenuToggle.querySelector('i').className = articlesColumn.classList.contains('active') ? 'ri-close-line' : 'ri-menu-line';
-        mobileMenuToggle.setAttribute('aria-label', articlesColumn.classList.contains('active') ? 'Закрыть боковое меню' : 'Открыть боковое меню');
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!articlesColumn.contains(e.target) && !mobileMenuToggle.contains(e.target) && articlesColumn.classList.contains('active')) {
-            articlesColumn.classList.remove('active');
-            mobileMenuToggle.querySelector('i').className = 'ri-menu-line';
-            mobileMenuToggle.setAttribute('aria-label', 'Открыть боковое меню');
-        }
-    });
-}
-
-// Инициализация Telegram-меню
-function initializeTelegramMenu() {
-    const telegramButton = document.getElementById('telegramButton');
-    const telegramMenu = document.getElementById('telegramMenu');
-
-    telegramButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        telegramMenu.classList.toggle('active');
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!telegramMenu.contains(e.target) && !telegramButton.contains(e.target)) {
-            telegramMenu.classList.remove('active');
-        }
-    });
-}
-
-// Инициализация модального окна поддержки
-function initializeSupportModal() {
-    const supportButton = document.getElementById('supportButton');
-    const supportModal = document.getElementById('supportModal');
-    const supportModalOverlay = document.getElementById('supportModalOverlay');
-    const closeSupport = document.getElementById('closeSupport');
-
-    supportButton.addEventListener('click', () => {
-        supportModal.classList.add('active');
-        supportModalOverlay.classList.add('active');
-    });
-
-    closeSupport.addEventListener('click', () => {
-        supportModal.classList.remove('active');
-        supportModalOverlay.classList.remove('active');
-    });
-
-    supportModalOverlay.addEventListener('click', () => {
-        supportModal.classList.remove('active');
-        supportModalOverlay.classList.remove('active');
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && supportModal.classList.contains('active')) {
-            supportModal.classList.remove('active');
-            supportModalOverlay.classList.remove('active');
-        }
-    });
-}
-
-// Инициализация кнопки прокрутки наверх
-function initializeScrollTopButton() {
-    const scrollTopButton = document.getElementById('scrollTopButton');
-
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 300) {
-            scrollTopButton.classList.add('visible');
-        } else {
-            scrollTopButton.classList.remove('visible');
-        }
-    });
-
-    scrollTopButton.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-}
-
-// Обработка хэша в URL
-function handleHashChange() {
-    const hash = window.location.hash.replace('#', '');
-    if (hash) {
-        const page = pagesData.find(p => p.slug === hash);
-        if (page) {
-            loadPage(page);
-            localStorage.setItem('lastPageSlug', page.slug);
-            updateActiveStates(hash);
-        } else {
-            const element = document.getElementById(hash);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
             }
         }
-    }
-}
 
-// Пасхалка
-function initializeEasterEgg() {
-    const easterEggIcon = document.getElementById('easterEggIcon');
-    let clickCount = 0;
+        // Пасхалка
+        function initializeEasterEgg() {
+            const easterEggIcon = document.getElementById('easterEggIcon');
+            if (!easterEggIcon) {
+                console.error('Элемент пасхалки не найден.');
+                return;
+            }
 
-    easterEggIcon.addEventListener('click', () => {
-        clickCount++;
-        if (clickCount >= 5) {
-            alert('🎉 Пасхалка! Ты нашёл секрет! 🐱‍👤');
-            clickCount = 0;
+            let clickCount = 0;
+            easterEggIcon.addEventListener('click', () => {
+                clickCount++;
+                if (clickCount >= 5) {
+                    alert('🎉 Пасхалка! Ты нашёл секрет! 🐱‍👤');
+                    clickCount = 0;
+                }
+            });
         }
-    });
-}
 
-// Инициализация приложения
-document.addEventListener('DOMContentLoaded', () => {
-    loadPagesData();
-    initializeSearch();
-    initializeMobileMenu();
-    initializeTelegramMenu();
-    initializeSupportModal();
-    initializeScrollTopButton();
-    initializeEasterEgg();
+        // Инициализация приложения
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPagesData();
+            initializeSearch();
+            initializeMobileMenu();
+            initializeTelegramMenu();
+            initializeSupportModal();
+            initializeScrollTopButton();
+            initializeEasterEgg();
 
-    window.addEventListener('hashchange', handleHashChange);
-    handleHashChange();
-});
-</script>
+            window.addEventListener('hashchange', handleHashChange);
+            handleHashChange();
+        });
+    </script>
 </body>
 </html>
