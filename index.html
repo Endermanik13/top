@@ -8,6 +8,8 @@
     <meta http-equiv="Expires" content="0">
     <title>Энциклопедия Эндера</title>
     <meta name="description" content="Энциклопедия знаний и заметок от Endermanik. Исследуйте статьи, руководства и идеи по различным темам.">
+    <meta name="keywords" content="энциклопедия, знания, заметки, Endermanik, статьи, руководства">
+    <meta name="author" content="Endermanik">
     <meta property="og:title" content="Энциклопедия Эндера">
     <meta property="og:description" content="Энциклопедия знаний и заметок от Endermanik. Исследуйте статьи, руководства и идеи по различным темам.">
     <meta property="og:type" content="website">
@@ -1569,7 +1571,7 @@
             }
         }
 
-        @keyframes fadeIn {
+        @_keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(10px);
@@ -1637,7 +1639,7 @@
                     <i class="ri-book-open-line" id="easterEggIcon" aria-hidden="true"></i>
                     Энциклопедия Эндера
                 </span>
-                <a href="https://endermanik13.github.io/importer/" class="md-pdf-button" aria-label="Конвертировать Markdown в PDF">
+                <a href="/top/importer/" class="md-pdf-button" aria-label="Конвертировать Markdown в PDF">
                     <i class="ri-file-pdf-line"></i>
                     MD -> PDF
                 </a>
@@ -1675,8 +1677,8 @@
                     <div class="menu-container">
                         <div class="menu-highlight" id="menuHighlight"></div>
                         <ul class="mb-8">
-                            <li><a href="https://endermanik13.github.io/top/#readme" class="menu-item" id="homeLink"><i class="ri-home-line"></i> Главная</a></li>
-                            <li><a href="https://endermanik13.github.io/top/news.html" class="menu-item"><i class="ri-newspaper-line"></i> Важная информация</a></li>
+                            <li><a href="/top/#readme" class="menu-item" id="homeLink"><i class="ri-home-line"></i> Главная</a></li>
+                            <li><a href="/top/news.html" class="menu-item"><i class="ri-newspaper-line"></i> Важная информация</a></li>
                             <li><a href="https://endermanik13.gitbook.io/info" target="_blank" class="menu-item"><i class="ri-book-line"></i> GitBook</a></li>
                             <li><a href="#" class="menu-item"><i class="ri-user-line"></i> Обо мне</a></li>
                         </ul>
@@ -2148,7 +2150,7 @@
 
                 const ogTitle = document.querySelector('meta[property="og:title"]') || document.createElement('meta');
                 ogTitle.setAttribute('property', 'og:title');
-                ogTitle.content = page.title;
+                ogTitle.content = `${page.title} | Энциклопедия Эндера`;
                 document.head.appendChild(ogTitle);
 
                 const ogDesc = document.querySelector('meta[property="og:description"]') || document.createElement('meta');
@@ -2156,380 +2158,384 @@
                 ogDesc.content = page.description || page.content.substring(0, 160) + '...';
                 document.head.appendChild(ogDesc);
 
-                // Structured data
-                const existingSchema = document.querySelector('script[type="application/ld+json"]');
-                if (existingSchema) existingSchema.remove();
-                const script = document.createElement('script');
-                script.type = 'application/ld+json';
-                script.textContent = JSON.stringify({
-                    '@context': 'https://schema.org',
-                    '@type': 'Article',
-                    headline: page.title,
-                    datePublished: page.date,
-                    description: page.description,
-                    author: { '@type': 'Person', name: 'Endermanik' }
-                });
-                document.head.appendChild(script);
+                const ogUrl = document.querySelector('meta[property="og:url"]') || document.createElement('meta');
+                ogUrl.setAttribute('property', 'og:url');
+                ogUrl.content = window.location.href;
+                document.head.appendChild(ogUrl);
 
-                // Breadcrumbs
                 breadcrumbs.innerHTML = `
-                    <a href="#readme">Главная</a> > 
-                    <span>${page.category || 'Разное'}</span> > 
+                    <a href="/top/#readme">Главная</a> / 
+                    <a href="#${page.category}">${page.category}</a> / 
                     <span>${page.title}</span>
                 `;
 
-                // Highlight code blocks
                 Prism.highlightAll();
-
-                // Initialize copy code buttons
-                initializeCopyButtons();
-
-                // Initialize image viewer
+                initializeCopyCodeButtons();
+                initializeShareButton();
+                initializeHeadingsNavigation();
                 initializeImageViewer();
 
-                // Initialize heading navigation
-                initializeHeadingNavigation();
-
-                // Update history and local storage
-                history.pushState(null, '', `#${page.slug}`);
-                localStorage.setItem('lastPageSlug', page.slug);
-                lastPageSlug = page.slug;
-
-                // Update active states
-                updateActiveStates(page.slug);
-
-                // Scroll to top
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+                updateActiveStates(page.slug);
             } catch (error) {
                 console.error('Error loading page:', error);
-                mainContent.innerHTML = `
-                    <div class="text-center py-12">
-                        <div class="inline-flex items-center text-lg text-red-400">
-                            <i class="ri-error-warning-line mr-2"></i>
-                            Ошибка загрузки статьи: ${error.message}
-                        </div>
-                    </div>
-                `;
+                showErrorMessage(`Ошибка загрузки статьи: ${error.message}`);
             }
         }
 
         // Инициализация кнопок копирования кода
-        function initializeCopyButtons() {
+        function initializeCopyCodeButtons() {
             document.querySelectorAll('pre').forEach(pre => {
                 if (!pre.querySelector('.copy-code-btn')) {
-                    const code = pre.querySelector('code');
-                    if (code) {
-                        const copyButton = document.createElement('button');
-                        copyButton.className = 'copy-code-btn';
-                        copyButton.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
-                        copyButton.setAttribute('aria-label', 'Копировать код');
-                        pre.appendChild(copyButton);
-
-                        copyButton.addEventListener('click', () => {
-                            const text = code.textContent;
-                            navigator.clipboard.writeText(text).then(() => {
-                                copyButton.innerHTML = '<i class="ri-check-line"></i> Скопировано!';
-                                copyButton.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
-                                setTimeout(() => {
-                                    copyButton.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
-                                    copyButton.style.background = 'linear-gradient(135deg, #2AABEE, #1A8BCF)';
-                                }, 2000);
-                            }).catch(err => {
-                                console.error('Ошибка копирования:', err);
-                            });
-                        });
-                    }
+                    const button = document.createElement('button');
+                    button.className = 'copy-code-btn';
+                    button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
+                    button.setAttribute('aria-label', 'Копировать код');
+                    button.addEventListener('click', async () => {
+                        const code = pre.querySelector('code').textContent;
+                        try {
+                            await navigator.clipboard.writeText(code);
+                            button.innerHTML = '<i class="ri-check-line"></i> Скопировано!';
+                            button.style.background = 'linear-gradient(135deg, #34d399, #059669)';
+                            setTimeout(() => {
+                                button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
+                                button.style.background = 'linear-gradient(135deg, #2AABEE, #1A8BCF)';
+                            }, 2000);
+                        } catch (err) {
+                            console.error('Failed to copy:', err);
+                            button.innerHTML = '<i class="ri-error-warning-line"></i> Ошибка';
+                            setTimeout(() => {
+                                button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
+                            }, 2000);
+                        }
+                    });
+                    pre.appendChild(button);
                 }
+            });
+        }
+
+        // Инициализация кнопки "Поделиться"
+        function initializeShareButton() {
+            const shareButton = document.getElementById('shareButton');
+            if (shareButton) {
+                shareButton.addEventListener('click', async () => {
+                    const shareData = {
+                        title: document.title,
+                        text: document.querySelector('meta[name="description"]').content,
+                        url: window.location.href
+                    };
+                    try {
+                        await navigator.share(shareData);
+                    } catch (err) {
+                        console.warn('Share API not supported or failed:', err);
+                        await navigator.clipboard.writeText(shareData.url);
+                        alert('Ссылка скопирована в буфер обмена!');
+                    }
+                });
+            }
+        }
+
+        // Инициализация навигации по заголовкам
+        function initializeHeadingsNavigation() {
+            const toggleHeadings = document.getElementById('toggleHeadings');
+            const headingsContainer = document.getElementById('headingsContainer');
+            const headingsBlock = document.querySelector('.headings-block');
+            if (toggleHeadings && headingsContainer) {
+                toggleHeadings.addEventListener('click', () => {
+                    const isCollapsed = headingsContainer.classList.toggle('collapsed');
+                    headingsBlock.classList.toggle('collapsed', isCollapsed);
+                    toggleHeadings.querySelector('i').className = isCollapsed ? 'ri-eye-off-line' : 'ri-eye-line';
+                    toggleHeadings.setAttribute('aria-label', isCollapsed ? 'Развернуть содержание' : 'Свернуть содержание');
+                });
+            }
+
+            document.querySelectorAll('.heading-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = item.getAttribute('data-id');
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        window.history.pushState(null, '', `#${targetId}`);
+                    }
+                });
             });
         }
 
         // Инициализация просмотрщика изображений
         function initializeImageViewer() {
-            const viewer = document.getElementById('imageViewer');
+            const imageViewer = document.getElementById('imageViewer');
             const viewerImage = document.getElementById('viewerImage');
-            const closeViewer = document.getElementById('closeViewer');
             const zoomIn = document.getElementById('zoomIn');
             const zoomOut = document.getElementById('zoomOut');
             const zoomLevel = document.getElementById('zoomLevel');
+            const closeViewer = document.getElementById('closeViewer');
             let currentScale = 1;
 
             document.querySelectorAll('.article-text img').forEach(img => {
                 img.addEventListener('click', () => {
                     viewerImage.src = img.src;
-                    viewerImage.alt = img.alt || 'Увеличенное изображение';
-                    viewer.classList.add('active');
+                    viewerImage.alt = img.alt;
+                    imageViewer.classList.add('active');
                     currentScale = 1;
-                    viewerImage.style.transform = `scale(${currentScale})`;
                     zoomLevel.textContent = '100%';
-                    document.body.style.overflow = 'hidden';
+                    viewerImage.style.transform = `scale(${currentScale})`;
                 });
             });
 
-            closeViewer.addEventListener('click', () => {
-                viewer.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-
-            zoomIn.addEventListener('click', () => {
-                currentScale = Math.min(currentScale + 0.2, 3);
-                viewerImage.style.transform = `scale(${currentScale})`;
-                zoomLevel.textContent = `${Math.round(currentScale * 100)}%`;
-            });
-
-            zoomOut.addEventListener('click', () => {
-                currentScale = Math.max(currentScale - 0.2, 0.2);
-                viewerImage.style.transform = `scale(${currentScale})`;
-                zoomLevel.textContent = `${Math.round(currentScale * 100)}%`;
-            });
-
-            viewer.addEventListener('click', (e) => {
-                if (e.target === viewer) {
-                    viewer.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
-            });
-        }
-
-        // Инициализация навигации по заголовкам
-        function initializeHeadingNavigation() {
-            const toggleHeadings = document.getElementById('toggleHeadings');
-            const headingsContainer = document.getElementById('headingsContainer');
-            const headingsBlock = document.querySelector('.headings-block');
-
-            if (toggleHeadings && headingsContainer && headingsBlock) {
-                toggleHeadings.addEventListener('click', () => {
-                    headingsContainer.classList.toggle('collapsed');
-                    headingsBlock.classList.toggle('collapsed');
-                    toggleHeadings.querySelector('i').className = headingsContainer.classList.contains('collapsed') ? 'ri-eye-off-line' : 'ri-eye-line';
-                    toggleHeadings.setAttribute('aria-label', headingsContainer.classList.contains('collapsed') ? 'Развернуть содержание' : 'Свернуть содержание');
+            if (zoomIn && zoomOut && closeViewer) {
+                zoomIn.addEventListener('click', () => {
+                    currentScale = Math.min(currentScale + 0.2, 3);
+                    viewerImage.style.transform = `scale(${currentScale})`;
+                    zoomLevel.textContent = `${Math.round(currentScale * 100)}%`;
                 });
 
-                document.querySelectorAll('.heading-item').forEach(item => {
-                    item.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        const targetId = item.getAttribute('data-id');
-                        const targetElement = document.getElementById(targetId);
-                        if (targetElement) {
-                            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                            history.pushState(null, '', `#${targetId}`);
-                        }
-                    });
+                zoomOut.addEventListener('click', () => {
+                    currentScale = Math.max(currentScale - 0.2, 0.5);
+                    viewerImage.style.transform = `scale(${currentScale})`;
+                    zoomLevel.textContent = `${Math.round(currentScale * 100)}%`;
+                });
+
+                closeViewer.addEventListener('click', () => {
+                    imageViewer.classList.remove('active');
+                    viewerImage.src = '';
+                    currentScale = 1;
+                    zoomLevel.textContent = '100%';
+                });
+
+                imageViewer.addEventListener('click', (e) => {
+                    if (e.target === imageViewer) {
+                        imageViewer.classList.remove('active');
+                        viewerImage.src = '';
+                        currentScale = 1;
+                        zoomLevel.textContent = '100%';
+                    }
                 });
             }
         }
 
         // Поиск
-        function performSearch(query) {
+        function initializeSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchPanelInput = document.getElementById('searchPanelInput');
+            const searchPanel = document.getElementById('searchPanel');
+            const searchOverlay = document.getElementById('searchOverlay');
+            const closeSearch = document.getElementById('closeSearch');
             const searchResults = document.getElementById('searchResults');
-            if (!query.trim()) {
-                searchResults.innerHTML = '<p class="text-center text-gray-400">Введите запрос для поиска</p>';
-                return;
-            }
 
-            const filteredPages = pagesData.filter(page => {
-                const title = page.title?.toLowerCase() || '';
-                const content = page.content?.toLowerCase() || '';
-                const category = page.category?.toLowerCase() || '';
-                const tags = page.tags?.map(tag => tag.toLowerCase()) || [];
-                const queryLower = query.toLowerCase();
-                return title.includes(queryLower) ||
-                       content.includes(queryLower) ||
-                       category.includes(queryLower) ||
-                       tags.some(tag => tag.includes(queryLower));
-            });
+            function performSearch(query) {
+                query = query.toLowerCase().trim();
+                const results = pagesData.filter(page => {
+                    const titleMatch = page.title?.toLowerCase().includes(query);
+                    const contentMatch = page.content?.toLowerCase().includes(query);
+                    const tagsMatch = page.tags?.some(tag => tag.toLowerCase().includes(query));
+                    const categoryMatch = page.category?.toLowerCase().includes(query);
+                    return titleMatch || contentMatch || tagsMatch || categoryMatch;
+                }).slice(0, 10);
 
-            if (filteredPages.length === 0) {
-                searchResults.innerHTML = '<p class="text-center text-gray-400">Ничего не найдено</p>';
-                return;
-            }
-
-            searchResults.innerHTML = filteredPages.slice(0, 10).map(page => {
-                const dateString = page.date ? new Date(page.date).toLocaleDateString('ru-RU', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric'
-                }) : 'Нет даты';
-                return `
+                searchResults.innerHTML = results.length > 0 ? results.map(page => `
                     <div class="search-result-item" data-slug="${page.slug}">
                         <div class="search-result-title">${page.title || 'Без названия'}</div>
                         <div class="search-result-meta">
-                            <span><i class="ri-folder-line mr-1"></i>${page.category || 'Разное'}</span>
-                            <span><i class="ri-calendar-line mr-1"></i>${dateString}</span>
+                            <span><i class="ri-folder-line"></i> ${page.category || 'Разное'}</span>
+                            ${page.date ? `<span><i class="ri-calendar-line"></i> ${new Date(page.date).toLocaleDateString('ru-RU')}</span>` : ''}
                         </div>
                         <div class="search-result-description">
                             <p>${page.description || page.content.substring(0, 150) + '...'}</p>
                         </div>
-                        ${page.tags?.length ? `
-                            <div class="tags mt-2">
-                                ${page.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                            </div>
-                        ` : ''}
+                    </div>
+                `).join('') : `
+                    <div class="text-center text-gray-400 py-4">
+                        <i class="ri-search-line text-2xl mb-2"></i>
+                        <p>Ничего не найдено</p>
                     </div>
                 `;
-            }).join('');
 
-            document.querySelectorAll('.search-result-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const slug = item.dataset.slug;
-                    const page = pagesData.find(p => p.slug === slug);
-                    if (page) {
-                        loadPage(page);
-                        localStorage.setItem('lastPageSlug', slug);
-                        closeSearch();
-                    }
+                document.querySelectorAll('.search-result-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const slug = item.dataset.slug;
+                        const page = pagesData.find(p => p.slug === slug);
+                        if (page) {
+                            loadPage(page);
+                            localStorage.setItem('lastPageSlug', page.slug);
+                            updateActiveStates(slug);
+                            searchPanel.classList.remove('active');
+                            searchOverlay.classList.remove('active');
+                            searchPanelInput.value = '';
+                        }
+                    });
                 });
+            }
+
+            searchInput.addEventListener('focus', () => {
+                searchPanel.classList.add('active');
+                searchOverlay.classList.add('active');
+                searchPanelInput.focus();
+                performSearch(searchInput.value);
+            });
+
+            searchPanelInput.addEventListener('input', () => {
+                performSearch(searchPanelInput.value);
+            });
+
+            closeSearch.addEventListener('click', () => {
+                searchPanel.classList.remove('active');
+                searchOverlay.classList.remove('active');
+                searchInput.value = '';
+                searchPanelInput.value = '';
+            });
+
+            searchOverlay.addEventListener('click', () => {
+                searchPanel.classList.remove('active');
+                searchOverlay.classList.remove('active');
+                searchInput.value = '';
+                searchPanelInput.value = '';
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    searchPanel.classList.remove('active');
+                    searchOverlay.classList.remove('active');
+                    searchInput.value = '';
+                    searchPanelInput.value = '';
+                }
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    searchPanel.classList.add('active');
+                    searchOverlay.classList.add('active');
+                    searchPanelInput.focus();
+                }
             });
         }
 
-        // Закрытие поиска
-        function closeSearch() {
-            const searchPanel = document.getElementById('searchPanel');
-            const searchOverlay = document.getElementById('searchOverlay');
-            searchPanel.classList.remove('active');
-            searchOverlay.classList.remove('active');
-            document.getElementById('searchPanelInput').value = '';
-            document.getElementById('searchResults').innerHTML = '';
-            document.body.style.overflow = '';
+        // Инициализация мобильного меню
+        function initializeMobileMenu() {
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const articlesColumn = document.getElementById('articlesColumn');
+
+            mobileMenuToggle.addEventListener('click', () => {
+                articlesColumn.classList.toggle('active');
+                mobileMenuToggle.querySelector('i').className = articlesColumn.classList.contains('active') ? 'ri-close-line' : 'ri-menu-line';
+                mobileMenuToggle.setAttribute('aria-label', articlesColumn.classList.contains('active') ? 'Закрыть боковое меню' : 'Открыть боковое меню');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!articlesColumn.contains(e.target) && !mobileMenuToggle.contains(e.target) && articlesColumn.classList.contains('active')) {
+                    articlesColumn.classList.remove('active');
+                    mobileMenuToggle.querySelector('i').className = 'ri-menu-line';
+                    mobileMenuToggle.setAttribute('aria-label', 'Открыть боковое меню');
+                }
+            });
         }
 
-        // Обработка событий
-        document.getElementById('mobileMenuToggle').addEventListener('click', () => {
-            document.getElementById('articlesColumn').classList.toggle('active');
-        });
-
-        document.getElementById('searchInput').addEventListener('click', () => {
-            const searchPanel = document.getElementById('searchPanel');
-            const searchOverlay = document.getElementById('searchOverlay');
-            searchPanel.classList.add('active');
-            searchOverlay.classList.add('active');
-            document.getElementById('searchPanelInput').focus();
-            document.body.style.overflow = 'hidden';
-        });
-
-        document.getElementById('closeSearch').addEventListener('click', closeSearch);
-
-        document.getElementById('searchOverlay').addEventListener('click', closeSearch);
-
-        document.getElementById('searchPanelInput').addEventListener('input', (e) => {
-            performSearch(e.target.value);
-        });
-
-        document.getElementById('telegramButton').addEventListener('click', () => {
-            const telegramMenu = document.getElementById('telegramMenu');
-            telegramMenu.classList.toggle('active');
-        });
-
-        document.addEventListener('click', (e) => {
-            const telegramMenu = document.getElementById('telegramMenu');
+        // Инициализация Telegram-меню
+        function initializeTelegramMenu() {
             const telegramButton = document.getElementById('telegramButton');
-            if (!telegramMenu.contains(e.target) && !telegramButton.contains(e.target)) {
-                telegramMenu.classList.remove('active');
-            }
-        });
+            const telegramMenu = document.getElementById('telegramMenu');
 
-        document.getElementById('supportButton').addEventListener('click', () => {
+            telegramButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                telegramMenu.classList.toggle('active');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!telegramMenu.contains(e.target) && !telegramButton.contains(e.target)) {
+                    telegramMenu.classList.remove('active');
+                }
+            });
+        }
+
+        // Инициализация модального окна поддержки
+        function initializeSupportModal() {
+            const supportButton = document.getElementById('supportButton');
             const supportModal = document.getElementById('supportModal');
             const supportModalOverlay = document.getElementById('supportModalOverlay');
-            supportModal.classList.add('active');
-            supportModalOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        });
+            const closeSupport = document.getElementById('closeSupport');
 
-        document.getElementById('closeSupport').addEventListener('click', () => {
-            const supportModal = document.getElementById('supportModal');
-            const supportModalOverlay = document.getElementById('supportModalOverlay');
-            supportModal.classList.remove('active');
-            supportModalOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        });
+            supportButton.addEventListener('click', () => {
+                supportModal.classList.add('active');
+                supportModalOverlay.classList.add('active');
+            });
 
-        document.getElementById('supportModalOverlay').addEventListener('click', () => {
-            const supportModal = document.getElementById('supportModal');
-            const supportModalOverlay = document.getElementById('supportModalOverlay');
-            supportModal.classList.remove('active');
-            supportModalOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        });
+            closeSupport.addEventListener('click', () => {
+                supportModal.classList.remove('active');
+                supportModalOverlay.classList.remove('active');
+            });
 
-        document.getElementById('scrollTopButton').addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+            supportModalOverlay.addEventListener('click', () => {
+                supportModal.classList.remove('active');
+                supportModalOverlay.classList.remove('active');
+            });
 
-        document.getElementById('shareButton').addEventListener('click', () => {
-            const url = window.location.href;
-            if (navigator.share) {
-                navigator.share({ url });
-            } else {
-                navigator.clipboard.writeText(url).then(() => {
-                    const shareButton = document.getElementById('shareButton');
-                    shareButton.innerHTML = '<i class="ri-check-line"></i> Скопировано!';
-                    setTimeout(() => {
-                        shareButton.innerHTML = '<i class="ri-share-line"></i> Поделиться';
-                    }, 2000);
-                });
-            }
-        });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && supportModal.classList.contains('active')) {
+                    supportModal.classList.remove('active');
+                    supportModalOverlay.classList.remove('active');
+                }
+            });
+        }
 
-        // Обработка скролла для кнопки "Наверх"
-        window.addEventListener('scroll', () => {
+        // Инициализация кнопки прокрутки наверх
+        function initializeScrollTopButton() {
             const scrollTopButton = document.getElementById('scrollTopButton');
-            if (window.scrollY > 300) {
-                scrollTopButton.classList.add('visible');
-            } else {
-                scrollTopButton.classList.remove('visible');
-            }
-        });
 
-        // Обработка изменения хеша
-        window.addEventListener('hashchange', () => {
-            const slug = window.location.hash.slice(1);
-            if (slug && slug !== lastPageSlug) {
-                const page = pagesData.find(p => p.slug === slug) || pagesData.find(p => p.path === 'README.md') || pagesData[0];
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopButton.classList.add('visible');
+                } else {
+                    scrollTopButton.classList.remove('visible');
+                }
+            });
+
+            scrollTopButton.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+
+        // Обработка хэша в URL
+        function handleHashChange() {
+            const hash = window.location.hash.replace('#', '');
+            if (hash) {
+                const page = pagesData.find(p => p.slug === hash);
                 if (page) {
                     loadPage(page);
                     localStorage.setItem('lastPageSlug', page.slug);
+                    updateActiveStates(hash);
+                } else {
+                    const element = document.getElementById(hash);
+                    if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                    }
                 }
             }
-        });
+        }
 
-        // Ловушка фокуса для поисковой панели
-        function trapFocus(modal, firstFocusable, lastFocusable) {
-            modal.addEventListener('keydown', (e) => {
-                if (e.key === 'Tab') {
-                    if (e.shiftKey && document.activeElement === firstFocusable) {
-                        e.preventDefault();
-                        lastFocusable.focus();
-                    } else if (!e.shiftKey && document.activeElement === lastFocusable) {
-                        e.preventDefault();
-                        firstFocusable.focus();
-                    }
+        // Пасхалка
+        function initializeEasterEgg() {
+            const easterEggIcon = document.getElementById('easterEggIcon');
+            let clickCount = 0;
+
+            easterEggIcon.addEventListener('click', () => {
+                clickCount++;
+                if (clickCount >= 5) {
+                    alert('🎉 Пасхалка! Ты нашёл секрет! 🐱‍👤');
+                    clickCount = 0;
                 }
             });
         }
 
-        trapFocus(
-            document.getElementById('searchPanel'),
-            document.getElementById('searchPanelInput'),
-            document.getElementById('closeSearch')
-        );
+        // Инициализация приложения
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPagesData();
+            initializeSearch();
+            initializeMobileMenu();
+            initializeTelegramMenu();
+            initializeSupportModal();
+            initializeScrollTopButton();
+            initializeEasterEgg();
 
-        // Ловушка фокуса для модального окна поддержки
-        trapFocus(
-            document.getElementById('supportModal'),
-            document.querySelector('.telegram-support'),
-            document.getElementById('closeSupport')
-        );
-
-        // Инициализация страницы
-        loadPagesData();
-
-        // Пасхалка на иконке заголовка
-        document.getElementById('easterEggIcon').addEventListener('click', () => {
-            const icon = document.getElementById('easterEggIcon');
-            icon.className = 'ri-star-smile-line';
-            setTimeout(() => {
-                icon.className = 'ri-book-open-line';
-            }, 1000);
+            window.addEventListener('hashchange', handleHashChange);
+            handleHashChange();
         });
     </script>
 </body>
