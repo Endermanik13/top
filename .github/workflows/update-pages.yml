@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - '**/*.md'
+      - 'src/input.css'
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -25,8 +26,13 @@ jobs:
       - name: Install dependencies
         run: |
           npm install @octokit/rest@18.12.0 gray-matter@4.0.3 p-retry@4.6.2
+          npm install -D tailwindcss
           npm install -g markdown-link-check
-          npm list p-retry # Для отладки
+          npm list p-retry
+
+      - name: Build Tailwind CSS
+        run: |
+          npx tailwindcss -i ./src/input.css -o ./assets/tailwind.css --minify
 
       - name: Check Markdown links
         continue-on-error: true
@@ -78,7 +84,7 @@ jobs:
                   title: item.title,
                   slug: item.slug,
                   description: item.description || item.content.substring(0, 100) + "...",
-                  link: item.url,
+                  link: "https://endermanik13.github.io/top/#" + item.slug,
                   category: item.path.split("/")[1] || "Разное",
                   content: item.content,
                   date: item.updatedAt,
@@ -153,7 +159,7 @@ jobs:
                     title: frontmatter.title || titleMatch?.[1] || file.name.replace(".md", ""),
                     slug,
                     description: frontmatter.description || content.split("\n").slice(1).join(" ").substring(0, 100) + "...",
-                    link: "https://endermanik13.github.io/top/page/" + slug,
+                    link: "https://endermanik13.github.io/top/#" + slug,
                     category: frontmatter.category || dirName,
                     content,
                     date,
@@ -192,8 +198,8 @@ jobs:
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          git add pages.json file-dates.json sitemap.xml
-          git commit -m "Update pages.json, file-dates.json, and sitemap.xml" || echo "No changes to commit"
+          git add pages.json file-dates.json sitemap.xml assets/tailwind.css
+          git commit -m "Update pages.json, file-dates.json, sitemap.xml, and Tailwind CSS" || echo "No changes to commit"
           git push
 
       - name: Clear GitHub Pages cache
@@ -209,11 +215,11 @@ jobs:
         run: |
           curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
             -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-            -d text="✅ Pages.json updated successfully! Commit: ${{ github.sha }}"
+            -d text="✅ Pages.json and Tailwind CSS updated successfully! Commit: ${{ github.sha }}"
 
       - name: Notify Telegram on Failure
         if: failure()
         run: |
           curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
             -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-            -d text="❌ Failed to update pages.json: ${{ github.sha }}"
+            -d text="❌ Failed to update pages.json or Tailwind CSS: ${{ github.sha }}"
