@@ -3,10 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Cache-Control" content="public, max-age=31536000, immutable">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Энциклопедия Эндера</title>
+    <meta name="description" content="Энциклопедия знаний и заметок от Endermanik. Исследуйте статьи, руководства и идеи по различным темам.">
+    <meta property="og:title" content="Энциклопедия Эндера">
+    <meta property="og:description" content="Энциклопедия знаний и заметок от Endermanik. Исследуйте статьи, руководства и идеи по различным темам.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://endermanik13.github.io/top/">
+    <meta property="og:image" content="https://endermanik13.github.io/top/assets/og-image.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="sitemap" href="/top/sitemap.xml">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text x='0' y='20' font-size='20'>📘</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -944,6 +952,7 @@
             display: block;
             cursor: pointer;
             transition: transform 0.3s ease;
+            loading: lazy;
         }
 
         .article-text img:hover {
@@ -1477,6 +1486,76 @@
             transform: scale(1.1);
         }
 
+        .tag {
+            display: inline-block;
+            margin-right: 0.5rem;
+            background-color: var(--bg-quaternary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .tag:hover {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+        }
+
+        .breadcrumbs {
+            font-size: 0.9rem;
+            color: var(--text-tertiary);
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumbs a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .breadcrumbs a:hover {
+            text-decoration: underline;
+        }
+
+        .share-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.6rem 1rem;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .share-button:hover {
+            background: var(--bg-quaternary);
+            color: var(--accent-color);
+        }
+
+        .share-button i {
+            margin-right: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .share-button:hover i {
+            transform: scale(1.2);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
         @font-face {
             font-family: 'Fira Code';
             src: url('https://fonts.gstatic.com/s/firacode/v21/uU9eCBsR6Z2vfE9aq3bL0fxyUs4tcw4W_AjE7W0.woff2') format('woff2');
@@ -1549,44 +1628,45 @@
 <body>
     <div id="particles-js"></div>
     <div class="content-wrapper">
-        <header class="header">
+        <header class="header" role="banner">
             <div class="flex items-center">
-                <button class="mobile-menu-toggle mr-4" id="mobileMenuToggle">
+                <button class="mobile-menu-toggle mr-4" id="mobileMenuToggle" aria-label="Открыть боковое меню">
                     <i class="ri-menu-line"></i>
                 </button>
                 <span class="blog-title">
-                    <i class="ri-book-open-line" id="easterEggIcon"></i>
+                    <i class="ri-book-open-line" id="easterEggIcon" aria-hidden="true"></i>
                     Энциклопедия Эндера
                 </span>
-                <a href="https://endermanik13.github.io/importer/" class="md-pdf-button">
+                <a href="https://endermanik13.github.io/importer/" class="md-pdf-button" aria-label="Конвертировать Markdown в PDF">
                     <i class="ri-file-pdf-line"></i>
                     MD -> PDF
                 </a>
             </div>
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="Поиск..." id="searchInput">
-                <button class="action-button telegram-button" id="telegramButton">
+                <input type="text" class="search-input" placeholder="Поиск..." id="searchInput" aria-label="Поиск по статьям и тегам">
+                <button class="action-button telegram-button" id="telegramButton" aria-label="Открыть Telegram-меню">
                     <i class="ri-telegram-fill mr-2"></i>
                     Telegram
                 </button>
-                <div class="telegram-menu" id="telegramMenu">
-                    <a href="https://t.me/endermanik13" target="_blank">Личный чат автора</a>
-                    <a href="https://t.me/endermanik12" target="_blank">Канал автора</a>
+                <div class="telegram-menu" id="telegramMenu" role="menu">
+                    <a href="https://t.me/endermanik13" target="_blank" role="menuitem">Личный чат автора</a>
+                    <a href="https://t.me/endermanik12" target="_blank" role="menuitem">Канал автора</a>
                 </div>
             </div>
         </header>
 
-        <div class="search-overlay" id="searchOverlay"></div>
-        <div class="search-panel" id="searchPanel">
-            <button class="close-search" id="closeSearch">
+        <div class="search-overlay" id="searchOverlay" role="presentation"></div>
+        <div class="search-panel" id="searchPanel" role="dialog" aria-labelledby="searchPanelLabel">
+            <h2 id="searchPanelLabel" class="sr-only">Поиск</h2>
+            <button class="close-search" id="closeSearch" aria-label="Закрыть поиск">
                 <i class="ri-close-line"></i>
             </button>
-            <input type="text" class="search-panel-input" id="searchPanelInput" placeholder="Введите запрос..." autocomplete="off">
+            <input type="text" class="search-panel-input" id="searchPanelInput" placeholder="Введите запрос..." autocomplete="off" aria-label="Поиск по статьям и тегам">
             <div class="search-results" id="searchResults"></div>
         </div>
 
         <div class="flex flex-1">
-            <div class="articles-column" id="articlesColumn">
+            <div class="articles-column" id="articlesColumn" role="navigation" aria-label="Боковое меню">
                 <div class="sidebar-header">
                     <p><i class="ri-file-text-line"></i> Лекции: <span id="articleCount">0</span></p>
                     <p><i class="ri-folder-line"></i> Кол-во предметов: <span id="categoryCount">0</span></p>
@@ -1605,7 +1685,8 @@
                 </div>
             </div>
 
-            <main id="mainContent">
+            <main id="mainContent" role="main">
+                <nav id="breadcrumbs" class="breadcrumbs"></nav>
                 <div class="text-center py-12">
                     <div class="inline-flex items-center text-lg">
                         <div class="loading-spinner"></div>
@@ -1615,15 +1696,16 @@
             </main>
         </div>
 
-        <button class="support-button" id="supportButton">
+        <button class="support-button" id="supportButton" aria-label="Открыть модальное окно поддержки">
             <i class="ri-heart-line"></i>
         </button>
-        <button class="scroll-top-button" id="scrollTopButton">
+        <button class="scroll-top-button" id="scrollTopButton" aria-label="Прокрутить наверх">
             <i class="ri-arrow-up-line"></i>
         </button>
-        <div class="support-modal-overlay" id="supportModalOverlay"></div>
-        <div class="support-modal" id="supportModal">
-            <button class="close-support" id="closeSupport">
+        <div class="support-modal-overlay" id="supportModalOverlay" role="presentation"></div>
+        <div class="support-modal" id="supportModal" role="dialog" aria-labelledby="supportModalLabel">
+            <h2 id="supportModalLabel" class="sr-only">Поддержка</h2>
+            <button class="close-support" id="closeSupport" aria-label="Закрыть модальное окно поддержки">
                 <i class="ri-close-line"></i>
             </button>
             <h3><i class="ri-heart-fill"></i> Спасибо за вашу поддержку!</h3>
@@ -1638,15 +1720,16 @@
             </a>
         </div>
 
-        <div class="image-viewer" id="imageViewer">
-            <button class="close-viewer" id="closeViewer">
+        <div class="image-viewer" id="imageViewer" role="dialog" aria-labelledby="imageViewerLabel">
+            <h2 id="imageViewerLabel" class="sr-only">Просмотр изображения</h2>
+            <button class="close-viewer" id="closeViewer" aria-label="Закрыть просмотр изображения">
                 <i class="ri-close-line"></i>
             </button>
-            <img id="viewerImage" src="">
+            <img id="viewerImage" src="" alt="Увеличенное изображение" loading="lazy">
             <div class="controls">
-                <button id="zoomIn"><i class="ri-zoom-in-line"></i></button>
+                <button id="zoomIn" aria-label="Увеличить изображение"><i class="ri-zoom-in-line"></i></button>
                 <span id="zoomLevel">100%</span>
-                <button id="zoomOut"><i class="ri-zoom-out-line"></i></button>
+                <button id="zoomOut" aria-label="Уменьшить изображение"><i class="ri-zoom-out-line"></i></button>
             </div>
         </div>
     </div>
@@ -1657,6 +1740,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sanitize-html@2.7.0/dist/sanitize-html.min.js"></script>
     <script>
         // Инициализация переменных
         let pagesData = [];
@@ -1675,7 +1759,7 @@
         particlesJS('particles-js', {
             particles: {
                 number: {
-                    value: 60,
+                    value: window.innerWidth < 640 ? 30 : 60,
                     density: {
                         enable: true,
                         value_area: 800
@@ -1704,7 +1788,7 @@
                 },
                 move: {
                     enable: true,
-                    speed: 1.5,
+                    speed: window.innerWidth < 640 ? 1 : 1.5,
                     direction: 'none',
                     random: false,
                     straight: false,
@@ -1736,7 +1820,7 @@
         // Загрузка данных страниц
         async function loadPagesData() {
             try {
-                const response = await fetch('pages.json', {
+                const response = await fetch('/top/pages.json', {
                     cache: 'no-store',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1759,7 +1843,7 @@
 
                 pagesData.forEach(page => {
                     if (!page.category || page.category.trim() === '') {
-                        page.category = 'Немного о странице';
+                        page.category = 'Разное';
                     }
                 });
 
@@ -1865,6 +1949,7 @@
                     `;
                     articleItem.dataset.slug = page.slug;
                     articleItem.title = page.title || 'Без названия';
+                    articleItem.setAttribute('aria-label', `Открыть статью ${page.title || 'Без названия'}`);
 
                     articleItem.addEventListener('click', (e) => {
                         e.preventDefault();
@@ -1962,9 +2047,17 @@
                         return `<a href="${href}" title="${title || ''}" target="_blank">${text}</a>`;
                     },
                     image(href, title, text) {
-                        return `<img src="${href}" alt="${text || ''}" title="${title || ''}" class="markdown-image">`;
+                        return `<img src="${href}" alt="${text || 'Изображение'}" title="${title || ''}" class="markdown-image" loading="lazy">`;
                     }
                 })
+            });
+            htmlContent = sanitizeHtml(htmlContent, {
+                allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'iframe']),
+                allowedAttributes: {
+                    img: ['src', 'alt', 'title', 'loading'],
+                    iframe: ['src', 'frameborder', 'allowfullscreen'],
+                    a: ['href', 'title', 'target']
+                }
             });
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlContent, 'text/html');
@@ -1984,6 +2077,7 @@
         // Загрузка страницы
         async function loadPage(page) {
             const mainContent = document.getElementById('mainContent');
+            const breadcrumbs = document.getElementById('breadcrumbs');
             mainContent.innerHTML = `
                 <div class="text-center py-12">
                     <div class="inline-flex items-center text-lg">
@@ -2007,6 +2101,11 @@
                     <div class="article-header">
                         <h1 class="text-3xl font-bold mb-2">${processTitle(page.title)}</h1>
                         ${dateString ? `<p class="text-sm text-gray-400"><i class="ri-calendar-line"></i> ${dateString}</p>` : ''}
+                        ${page.tags?.length ? `
+                            <div class="tags mt-2">
+                                ${page.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                            </div>
+                        ` : ''}
                     </div>
                     <article class="mb-12">
                         <div class="article-content">
@@ -2017,7 +2116,7 @@
                             <div class="headings-block">
                                 <div class="headings-header">
                                     <h4><i class="ri-list-check"></i> Содержание</h4>
-                                    <button class="toggle-headings" id="toggleHeadings">
+                                    <button class="toggle-headings" id="toggleHeadings" aria-label="Свернуть/развернуть содержание">
                                         <i class="ri-eye-line"></i>
                                     </button>
                                 </div>
@@ -2026,7 +2125,8 @@
                                         <a href="#${heading.id}" 
                                            class="heading-item ${heading.tag}" 
                                            data-id="${heading.id}"
-                                           style="padding-left: ${heading.level * 12 + 12}px;">
+                                           style="padding-left: ${heading.level * 12 + 12}px;"
+                                           aria-label="Перейти к разделу ${heading.text}">
                                             ${heading.text}
                                         </a>
                                     `).join('')}
@@ -2035,121 +2135,116 @@
                             ` : ''}
                         </div>
                     </article>
+                    <button class="share-button" id="shareButton" aria-label="Поделиться страницей">
+                        <i class="ri-share-line"></i> Поделиться
+                    </button>
+                `;
+// Update meta tags
+                document.title = `${page.title} | Энциклопедия Эндера`;
+                const metaDesc = document.querySelector('meta[name="description"]') || document.createElement('meta');
+                metaDesc.name = "description";
+                metaDesc.content = page.description || page.content.substring(0, 160) + '...';
+                document.head.appendChild(metaDesc);
+
+                const ogTitle = document.querySelector('meta[property="og:title"]') || document.createElement('meta');
+                ogTitle.setAttribute('property', 'og:title');
+                ogTitle.content = page.title;
+                document.head.appendChild(ogTitle);
+
+                const ogDesc = document.querySelector('meta[property="og:description"]') || document.createElement('meta');
+                ogDesc.setAttribute('property', 'og:description');
+                ogDesc.content = page.description || page.content.substring(0, 160) + '...';
+                document.head.appendChild(ogDesc);
+
+                // Structured data
+                const existingSchema = document.querySelector('script[type="application/ld+json"]');
+                if (existingSchema) existingSchema.remove();
+                const script = document.createElement('script');
+                script.type = 'application/ld+json';
+                script.textContent = JSON.stringify({
+                    '@context': 'https://schema.org',
+                    '@type': 'Article',
+                    headline: page.title,
+                    datePublished: page.date,
+                    description: page.description,
+                    author: { '@type': 'Person', name: 'Endermanik' }
+                });
+                document.head.appendChild(script);
+
+                // Breadcrumbs
+                breadcrumbs.innerHTML = `
+                    <a href="#readme">Главная</a> > 
+                    <span>${page.category || 'Разное'}</span> > 
+                    <span>${page.title}</span>
                 `;
 
-                setupCodeBlocks();
-                setupImageViewer();
+                // Highlight code blocks
                 Prism.highlightAll();
-                if (headings.length > 0) {
-                    setupHeadingsNavigation();
-                    setupHeadingsToggle();
-                }
 
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                // Initialize copy code buttons
+                initializeCopyButtons();
+
+                // Initialize image viewer
+                initializeImageViewer();
+
+                // Initialize heading navigation
+                initializeHeadingNavigation();
+
+                // Update history and local storage
                 history.pushState(null, '', `#${page.slug}`);
+                localStorage.setItem('lastPageSlug', page.slug);
+                lastPageSlug = page.slug;
+
+                // Update active states
+                updateActiveStates(page.slug);
+
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             } catch (error) {
-                console.error('Error rendering page:', error);
-                showErrorMessage(`Ошибка при загрузке статьи: ${error.message}`);
+                console.error('Error loading page:', error);
+                mainContent.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="inline-flex items-center text-lg text-red-400">
+                            <i class="ri-error-warning-line mr-2"></i>
+                            Ошибка загрузки статьи: ${error.message}
+                        </div>
+                    </div>
+                `;
             }
         }
 
-        // Настройка сворачивания/разворачивания содержимого
-        function setupHeadingsToggle() {
-            const toggleButton = document.getElementById('toggleHeadings');
-            const headingsContainer = document.getElementById('headingsContainer');
-            const headingsBlock = document.querySelector('.headings-block');
+        // Инициализация кнопок копирования кода
+        function initializeCopyButtons() {
+            document.querySelectorAll('pre').forEach(pre => {
+                if (!pre.querySelector('.copy-code-btn')) {
+                    const code = pre.querySelector('code');
+                    if (code) {
+                        const copyButton = document.createElement('button');
+                        copyButton.className = 'copy-code-btn';
+                        copyButton.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
+                        copyButton.setAttribute('aria-label', 'Копировать код');
+                        pre.appendChild(copyButton);
 
-            if (!toggleButton || !headingsContainer) return;
-
-            toggleButton.addEventListener('click', () => {
-                const isCollapsed = headingsContainer.classList.toggle('collapsed');
-                headingsBlock.classList.toggle('collapsed', isCollapsed);
-                toggleButton.innerHTML = `<i class="ri-${isCollapsed ? 'eye-off' : 'eye'}-line"></i>`;
-                const h4 = headingsBlock.querySelector('h4');
-                h4.style.display = isCollapsed ? 'none' : 'flex';
-            });
-
-            if (window.innerWidth < 1024) {
-                headingsBlock.addEventListener('click', (e) => {
-                    if (e.target.closest('.toggle-headings') || e.target.closest('.heading-item')) return;
-                    headingsBlock.classList.toggle('active');
-                    const isCollapsed = !headingsContainer.classList.contains('collapsed');
-                    if (!isCollapsed) {
-                        headingsContainer.classList.add('collapsed');
-                        headingsBlock.classList.add('collapsed');
-                        toggleButton.innerHTML = `<i class="ri-eye-off-line"></i>`;
-                    }
-                });
-            }
-        }
-
-        // Настройка блоков с кодом
-        function setupCodeBlocks() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const block = entry.target;
-                        if (!block.querySelector('.copy-code-btn')) {
-                            const button = document.createElement('button');
-                            button.className = 'copy-code-btn';
-                            button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
-                            button.addEventListener('click', () => copyCode(block, button));
-                            block.appendChild(button);
-                        }
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            document.querySelectorAll('.article-text pre').forEach(block => {
-                const code = block.querySelector('code');
-                if (code) {
-                    const langMatch = /language-(\w+)/.exec(code.className);
-                    if (langMatch) {
-                        block.dataset.language = langMatch[1];
-                    }
-                }
-                observer.observe(block);
-            });
-        }
-
-        // Копирование кода
-        async function copyCode(block, button) {
-            const code = block.querySelector('code')?.textContent || '';
-            try {
-                await navigator.clipboard.writeText(code);
-                button.innerHTML = '<i class="ri-check-line"></i> Скопировано!';
-                setTimeout(() => {
-                    button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
-                }, 2000);
-            } catch (err) {
-                console.error('Copy failed:', err);
-                button.innerHTML = '<i class="ri-close-line"></i> Ошибка';
-                setTimeout(() => {
-                    button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
-                }, 2000);
-            }
-        }
-
-        // Настройка навигации по заголовкам
-        function setupHeadingsNavigation() {
-            document.querySelectorAll('.heading-item').forEach(item => {
-                item.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetId = item.getAttribute('href').substring(1);
-                    const targetElement = document.getElementById(targetId);
-
-                    if (targetElement) {
-                        window.scrollTo({
-                            top: targetElement.offsetTop - 20,
-                            behavior: 'smooth'
+                        copyButton.addEventListener('click', () => {
+                            const text = code.textContent;
+                            navigator.clipboard.writeText(text).then(() => {
+                                copyButton.innerHTML = '<i class="ri-check-line"></i> Скопировано!';
+                                copyButton.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+                                setTimeout(() => {
+                                    copyButton.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
+                                    copyButton.style.background = 'linear-gradient(135deg, #2AABEE, #1A8BCF)';
+                                }, 2000);
+                            }).catch(err => {
+                                console.error('Ошибка копирования:', err);
+                            });
                         });
                     }
-                });
+                }
             });
         }
 
-        // Настройка просмотра изображений
-        function setupImageViewer() {
+        // Инициализация просмотрщика изображений
+        function initializeImageViewer() {
             const viewer = document.getElementById('imageViewer');
             const viewerImage = document.getElementById('viewerImage');
             const closeViewer = document.getElementById('closeViewer');
@@ -2158,294 +2253,284 @@
             const zoomLevel = document.getElementById('zoomLevel');
             let currentScale = 1;
 
-            function openViewer(src) {
-                viewerImage.src = src;
-                viewer.classList.add('active');
-                currentScale = 1;
-                updateZoom();
-            }
-
-            function closeViewerFunc() {
-                viewer.classList.remove('active');
-                viewerImage.style.transform = `scale(1)`;
-                currentScale = 1;
-                updateZoom();
-            }
-
-            function updateZoom() {
-                viewerImage.style.transform = `scale(${currentScale})`;
-                zoomLevel.textContent = `${Math.round(currentScale * 100)}%`;
-            }
-
-            document.querySelectorAll('.article-text img.markdown-image').forEach(img => {
-                img.addEventListener('click', () => openViewer(img.src));
+            document.querySelectorAll('.article-text img').forEach(img => {
+                img.addEventListener('click', () => {
+                    viewerImage.src = img.src;
+                    viewerImage.alt = img.alt || 'Увеличенное изображение';
+                    viewer.classList.add('active');
+                    currentScale = 1;
+                    viewerImage.style.transform = `scale(${currentScale})`;
+                    zoomLevel.textContent = '100%';
+                    document.body.style.overflow = 'hidden';
+                });
             });
 
-            closeViewer.addEventListener('click', closeViewerFunc);
-            viewer.addEventListener('click', (e) => {
-                if (e.target === viewer) closeViewerFunc();
+            closeViewer.addEventListener('click', () => {
+                viewer.classList.remove('active');
+                document.body.style.overflow = '';
             });
 
             zoomIn.addEventListener('click', () => {
                 currentScale = Math.min(currentScale + 0.2, 3);
-                updateZoom();
+                viewerImage.style.transform = `scale(${currentScale})`;
+                zoomLevel.textContent = `${Math.round(currentScale * 100)}%`;
             });
 
             zoomOut.addEventListener('click', () => {
-                currentScale = Math.max(currentScale - 0.2, 0.5);
-                updateZoom();
+                currentScale = Math.max(currentScale - 0.2, 0.2);
+                viewerImage.style.transform = `scale(${currentScale})`;
+                zoomLevel.textContent = `${Math.round(currentScale * 100)}%`;
             });
 
-            viewerImage.addEventListener('wheel', (e) => {
-                e.preventDefault();
-                const delta = e.deltaY > 0 ? -0.1 : 0.1;
-                currentScale = Math.max(0.5, Math.min(3, currentScale + delta));
-                updateZoom();
-            });
-        }
-
-        // Настройка кнопки "Наверх"
-        function setupScrollTopButton() {
-            const scrollTopButton = document.getElementById('scrollTopButton');
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 200) {
-                    scrollTopButton.classList.add('visible');
-                } else {
-                    scrollTopButton.classList.remove('visible');
+            viewer.addEventListener('click', (e) => {
+                if (e.target === viewer) {
+                    viewer.classList.remove('active');
+                    document.body.style.overflow = '';
                 }
             });
+        }
 
-            scrollTopButton.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Инициализация навигации по заголовкам
+        function initializeHeadingNavigation() {
+            const toggleHeadings = document.getElementById('toggleHeadings');
+            const headingsContainer = document.getElementById('headingsContainer');
+            const headingsBlock = document.querySelector('.headings-block');
+
+            if (toggleHeadings && headingsContainer && headingsBlock) {
+                toggleHeadings.addEventListener('click', () => {
+                    headingsContainer.classList.toggle('collapsed');
+                    headingsBlock.classList.toggle('collapsed');
+                    toggleHeadings.querySelector('i').className = headingsContainer.classList.contains('collapsed') ? 'ri-eye-off-line' : 'ri-eye-line';
+                    toggleHeadings.setAttribute('aria-label', headingsContainer.classList.contains('collapsed') ? 'Развернуть содержание' : 'Свернуть содержание');
+                });
+
+                document.querySelectorAll('.heading-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const targetId = item.getAttribute('data-id');
+                        const targetElement = document.getElementById(targetId);
+                        if (targetElement) {
+                            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            history.pushState(null, '', `#${targetId}`);
+                        }
+                    });
+                });
+            }
+        }
+
+        // Поиск
+        function performSearch(query) {
+            const searchResults = document.getElementById('searchResults');
+            if (!query.trim()) {
+                searchResults.innerHTML = '<p class="text-center text-gray-400">Введите запрос для поиска</p>';
+                return;
+            }
+
+            const filteredPages = pagesData.filter(page => {
+                const title = page.title?.toLowerCase() || '';
+                const content = page.content?.toLowerCase() || '';
+                const category = page.category?.toLowerCase() || '';
+                const tags = page.tags?.map(tag => tag.toLowerCase()) || [];
+                const queryLower = query.toLowerCase();
+                return title.includes(queryLower) ||
+                       content.includes(queryLower) ||
+                       category.includes(queryLower) ||
+                       tags.some(tag => tag.includes(queryLower));
+            });
+
+            if (filteredPages.length === 0) {
+                searchResults.innerHTML = '<p class="text-center text-gray-400">Ничего не найдено</p>';
+                return;
+            }
+
+            searchResults.innerHTML = filteredPages.slice(0, 10).map(page => {
+                const dateString = page.date ? new Date(page.date).toLocaleDateString('ru-RU', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                }) : 'Нет даты';
+                return `
+                    <div class="search-result-item" data-slug="${page.slug}">
+                        <div class="search-result-title">${page.title || 'Без названия'}</div>
+                        <div class="search-result-meta">
+                            <span><i class="ri-folder-line mr-1"></i>${page.category || 'Разное'}</span>
+                            <span><i class="ri-calendar-line mr-1"></i>${dateString}</span>
+                        </div>
+                        <div class="search-result-description">
+                            <p>${page.description || page.content.substring(0, 150) + '...'}</p>
+                        </div>
+                        ${page.tags?.length ? `
+                            <div class="tags mt-2">
+                                ${page.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            document.querySelectorAll('.search-result-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const slug = item.dataset.slug;
+                    const page = pagesData.find(p => p.slug === slug);
+                    if (page) {
+                        loadPage(page);
+                        localStorage.setItem('lastPageSlug', slug);
+                        closeSearch();
+                    }
+                });
             });
         }
 
-// Поиск
-    const searchInput = document.getElementById('searchInput');
-    const searchPanel = document.getElementById('searchPanel');
-    const searchOverlay = document.getElementById('searchOverlay');
-    const searchPanelInput = document.getElementById('searchPanelInput');
-    const searchResults = document.getElementById('searchResults');
-    const closeSearch = document.getElementById('closeSearch');
-
-    searchInput.addEventListener('input', () => {
-        if (searchInput.value.trim()) {
-            searchPanel.classList.add('active');
-            searchOverlay.classList.add('active');
-            searchPanelInput.value = searchInput.value;
-            performSearch(searchPanelInput.value);
-        } else {
+        // Закрытие поиска
+        function closeSearch() {
+            const searchPanel = document.getElementById('searchPanel');
+            const searchOverlay = document.getElementById('searchOverlay');
             searchPanel.classList.remove('active');
             searchOverlay.classList.remove('active');
-            searchResults.innerHTML = '';
-        }
-    });
-
-    searchPanelInput.addEventListener('input', () => {
-        searchInput.value = searchPanelInput.value;
-        performSearch(searchPanelInput.value);
-    });
-
-    closeSearch.addEventListener('click', () => {
-        searchPanel.classList.remove('active');
-        searchOverlay.classList.remove('active');
-        searchInput.value = '';
-        searchPanelInput.value = '';
-        searchResults.innerHTML = '';
-    });
-
-    searchOverlay.addEventListener('click', () => {
-        searchPanel.classList.remove('active');
-        searchOverlay.classList.remove('active');
-        searchInput.value = '';
-        searchPanelInput.value = '';
-        searchResults.innerHTML = '';
-    });
-
-    function performSearch(query) {
-        if (!query.trim()) {
-            searchResults.innerHTML = `
-                <div class="text-center text-sm text-gray-400 py-4">
-                    Введите запрос для поиска
-                </div>
-            `;
-            return;
+            document.getElementById('searchPanelInput').value = '';
+            document.getElementById('searchResults').innerHTML = '';
+            document.body.style.overflow = '';
         }
 
-        const filteredPages = pagesData.filter(page =>
-            page.title?.toLowerCase().includes(query.toLowerCase()) ||
-            page.content?.toLowerCase().includes(query.toLowerCase()) ||
-            page.category?.toLowerCase().includes(query.toLowerCase())
-        );
+        // Обработка событий
+        document.getElementById('mobileMenuToggle').addEventListener('click', () => {
+            document.getElementById('articlesColumn').classList.toggle('active');
+        });
 
-        if (filteredPages.length === 0) {
-            searchResults.innerHTML = `
-                <div class="text-center text-sm text-gray-400 py-4">
-                    Ничего не найдено
-                </div>
-            `;
-            return;
-        }
+        document.getElementById('searchInput').addEventListener('click', () => {
+            const searchPanel = document.getElementById('searchPanel');
+            const searchOverlay = document.getElementById('searchOverlay');
+            searchPanel.classList.add('active');
+            searchOverlay.classList.add('active');
+            document.getElementById('searchPanelInput').focus();
+            document.body.style.overflow = 'hidden';
+        });
 
-        searchResults.innerHTML = filteredPages.map(page => `
-            <div class="search-result-item" data-slug="${page.slug}">
-                <div class="search-result-title">${highlightText(page.title || 'Без названия', query)}</div>
-                <div class="search-result-meta">
-                    <span><i class="ri-folder-line"></i> ${page.category || 'Без категории'}</span>
-                    ${page.date ? `<span><i class="ri-calendar-line"></i> ${new Date(page.date).toLocaleDateString('ru-RU')}</span>` : ''}
-                </div>
-                <div class="search-result-description">
-                    <p>${highlightText(truncateText(page.content || '', 150), query)}</p>
-                </div>
-            </div>
-        `).join('');
+        document.getElementById('closeSearch').addEventListener('click', closeSearch);
 
-        document.querySelectorAll('.search-result-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const slug = item.dataset.slug;
-                const page = pagesData.find(p => p.slug === slug);
+        document.getElementById('searchOverlay').addEventListener('click', closeSearch);
+
+        document.getElementById('searchPanelInput').addEventListener('input', (e) => {
+            performSearch(e.target.value);
+        });
+
+        document.getElementById('telegramButton').addEventListener('click', () => {
+            const telegramMenu = document.getElementById('telegramMenu');
+            telegramMenu.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            const telegramMenu = document.getElementById('telegramMenu');
+            const telegramButton = document.getElementById('telegramButton');
+            if (!telegramMenu.contains(e.target) && !telegramButton.contains(e.target)) {
+                telegramMenu.classList.remove('active');
+            }
+        });
+
+        document.getElementById('supportButton').addEventListener('click', () => {
+            const supportModal = document.getElementById('supportModal');
+            const supportModalOverlay = document.getElementById('supportModalOverlay');
+            supportModal.classList.add('active');
+            supportModalOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        document.getElementById('closeSupport').addEventListener('click', () => {
+            const supportModal = document.getElementById('supportModal');
+            const supportModalOverlay = document.getElementById('supportModalOverlay');
+            supportModal.classList.remove('active');
+            supportModalOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        document.getElementById('supportModalOverlay').addEventListener('click', () => {
+            const supportModal = document.getElementById('supportModal');
+            const supportModalOverlay = document.getElementById('supportModalOverlay');
+            supportModal.classList.remove('active');
+            supportModalOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        document.getElementById('scrollTopButton').addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        document.getElementById('shareButton').addEventListener('click', () => {
+            const url = window.location.href;
+            if (navigator.share) {
+                navigator.share({ url });
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    const shareButton = document.getElementById('shareButton');
+                    shareButton.innerHTML = '<i class="ri-check-line"></i> Скопировано!';
+                    setTimeout(() => {
+                        shareButton.innerHTML = '<i class="ri-share-line"></i> Поделиться';
+                    }, 2000);
+                });
+            }
+        });
+
+        // Обработка скролла для кнопки "Наверх"
+        window.addEventListener('scroll', () => {
+            const scrollTopButton = document.getElementById('scrollTopButton');
+            if (window.scrollY > 300) {
+                scrollTopButton.classList.add('visible');
+            } else {
+                scrollTopButton.classList.remove('visible');
+            }
+        });
+
+        // Обработка изменения хеша
+        window.addEventListener('hashchange', () => {
+            const slug = window.location.hash.slice(1);
+            if (slug && slug !== lastPageSlug) {
+                const page = pagesData.find(p => p.slug === slug) || pagesData.find(p => p.path === 'README.md') || pagesData[0];
                 if (page) {
                     loadPage(page);
                     localStorage.setItem('lastPageSlug', page.slug);
-                    updateActiveStates(page.slug);
-                    searchPanel.classList.remove('active');
-                    searchOverlay.classList.remove('active');
-                    searchInput.value = '';
-                    searchPanelInput.value = '';
+                }
+            }
+        });
+
+        // Ловушка фокуса для поисковой панели
+        function trapFocus(modal, firstFocusable, lastFocusable) {
+            modal.addEventListener('keydown', (e) => {
+                if (e.key === 'Tab') {
+                    if (e.shiftKey && document.activeElement === firstFocusable) {
+                        e.preventDefault();
+                        lastFocusable.focus();
+                    } else if (!e.shiftKey && document.activeElement === lastFocusable) {
+                        e.preventDefault();
+                        firstFocusable.focus();
+                    }
                 }
             });
+        }
+
+        trapFocus(
+            document.getElementById('searchPanel'),
+            document.getElementById('searchPanelInput'),
+            document.getElementById('closeSearch')
+        );
+
+        // Ловушка фокуса для модального окна поддержки
+        trapFocus(
+            document.getElementById('supportModal'),
+            document.querySelector('.telegram-support'),
+            document.getElementById('closeSupport')
+        );
+
+        // Инициализация страницы
+        loadPagesData();
+
+        // Пасхалка на иконке заголовка
+        document.getElementById('easterEggIcon').addEventListener('click', () => {
+            const icon = document.getElementById('easterEggIcon');
+            icon.className = 'ri-star-smile-line';
+            setTimeout(() => {
+                icon.className = 'ri-book-open-line';
+            }, 1000);
         });
-    }
-
-    function highlightText(text, query) {
-        const regex = new RegExp(`(${query})`, 'gi');
-        return text.replace(regex, '<span style="background: var(--search-highlight);">$1</span>');
-    }
-
-    function truncateText(text, maxLength) {
-        if (text.length <= maxLength) return text;
-        return text.substring(0, maxLength) + '...';
-    }
-
-    // Настройка мобильного меню
-    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-    const articlesColumn = document.getElementById('articlesColumn');
-
-    mobileMenuToggle.addEventListener('click', () => {
-        articlesColumn.classList.toggle('active');
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!articlesColumn.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
-            articlesColumn.classList.remove('active');
-        }
-    });
-
-    // Настройка выпадающего меню Telegram
-    const telegramButton = document.getElementById('telegramButton');
-    const telegramMenu = document.getElementById('telegramMenu');
-
-    telegramButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        telegramMenu.classList.toggle('active');
-    });
-
-    document.addEventListener('click', () => {
-        telegramMenu.classList.remove('active');
-    });
-
-    telegramMenu.addEventListener('click', (e) => {
-        e.stopPropagation();
-    });
-
-    // Настройка модального окна поддержки
-    const supportButton = document.getElementById('supportButton');
-    const supportModal = document.getElementById('supportModal');
-    const supportModalOverlay = document.getElementById('supportModalOverlay');
-    const closeSupport = document.getElementById('closeSupport');
-
-    supportButton.addEventListener('click', () => {
-        supportModal.classList.add('active');
-        supportModalOverlay.classList.add('active');
-    });
-
-    closeSupport.addEventListener('click', () => {
-        supportModal.classList.remove('active');
-        supportModalOverlay.classList.remove('active');
-    });
-
-    supportModalOverlay.addEventListener('click', () => {
-        supportModal.classList.remove('active');
-        supportModalOverlay.classList.remove('active');
-    });
-
-    // Обработка клавиатурных событий
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            searchPanel.classList.remove('active');
-            searchOverlay.classList.remove('active');
-            supportModal.classList.remove('active');
-            supportModalOverlay.classList.remove('active');
-            telegramMenu.classList.remove('active');
-            articlesColumn.classList.remove('active');
-            document.getElementById('imageViewer').classList.remove('active');
-        }
-        if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
-            e.preventDefault();
-            searchInput.focus();
-            searchPanel.classList.add('active');
-            searchOverlay.classList.add('active');
-            searchPanelInput.focus();
-        }
-    });
-
-    // Пасхалка при клике на иконку заголовка
-    const easterEggIcon = document.getElementById('easterEggIcon');
-    let clickCount = 0;
-
-    easterEggIcon.addEventListener('click', () => {
-        clickCount++;
-        if (clickCount >= 5) {
-            alert('🥚 Пасхалка! Ты нашёл секрет! 🎉');
-            clickCount = 0;
-        }
-    });
-
-    // Обработка изменения размера окна
-    window.addEventListener('resize', () => {
-        if (window.innerWidth >= 1024) {
-            articlesColumn.classList.remove('active');
-        }
-    });
-
-    // Инициализация
-    loadPagesData();
-    setupScrollTopButton();
-
-    // Обработка popstate для поддержки навигации назад/вперёд
-    window.addEventListener('popstate', () => {
-        const slug = window.location.hash.substring(1);
-        const page = pagesData.find(p => p.slug === slug) || pagesData.find(p => p.path === 'README.md') || pagesData[0];
-        if (page) {
-            loadPage(page);
-            updateActiveStates(page.slug);
-        }
-    });
-
-    // Проверка поддержки WebP
-    function testWebP(callback) {
-        const webP = new Image();
-        webP.src = 'data:image/webp;base64,UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA';
-        webP.onload = webP.onerror = () => callback(webP.height === 1);
-    }
-
-    testWebP((support) => {
-        if (!support) {
-            document.querySelectorAll('img[src$=".webp"]').forEach(img => {
-                img.src = img.src.replace('.webp', '.png');
-            });
-        }
-    });
-</script>
+    </script>
 </body>
 </html>
