@@ -1584,20 +1584,35 @@
 
         // Загрузка данных страниц
         async function loadPagesData() {
+            const mainContent = document.getElementById('mainContent');
             try {
+                mainContent.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="inline-flex items-center text-lg">
+                            <div class="loading-spinner"></div>
+                            Загрузка контента...
+                        </div>
+                    </div>
+                `;
+
                 const response = await fetch('pages.json', {
                     cache: 'no-store',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
                 });
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                pagesData = await response.json();
-                pagesData = pagesData.filter(page => 
+                
+                const data = await response.json();
+                if (!Array.isArray(data)) throw new Error('Данные pages.json должны быть массивом');
+
+                pagesData = data.filter(page => 
+                    page && typeof page === 'object' &&
                     page.category && 
                     page.category.trim() !== '' && 
                     !page.path?.includes('Excalidraw') &&
                     page.category?.toUpperCase() !== 'EXCALIDRAW' &&
                     page.category?.toUpperCase() !== 'БЕЗ КАТЕГОРИИ'
                 );
+
                 pagesData.forEach(page => {
                     if (!page.category || page.category.trim() === '') page.category = 'Немного о странице';
                     if (!page.date) {
@@ -1606,17 +1621,21 @@
                         page.date = formatDate(page.date);
                     }
                 });
+
                 pagesData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
                 renderCategories();
                 updateSidebarStats();
+
                 lastPageSlug = localStorage.getItem('lastPageSlug');
                 let pageToLoad = pagesData.find(page => page.path === 'README.md') || pagesData[0];
+
                 if (lastPageSlug) {
                     const savedPage = pagesData.find(page => page.slug === lastPageSlug);
                     if (savedPage) pageToLoad = savedPage;
                 }
-                if (pagesData.length > 0) {
-                    loadPage(pageToLoad);
+
+                if (pagesData.length > 0 && pageToLoad) {
+                    await loadPage(pageToLoad);
                 } else {
                     showErrorMessage('Страницы не найдены.');
                 }
@@ -1636,27 +1655,34 @@
 
         // Отображение ошибки
         function showErrorMessage(message) {
-            document.getElementById('mainContent').innerHTML = `
-                <div class="text-center py-12">
-                    <div class="inline-flex items-center text-lg text-red-400">
-                        <i class="ri-error-warning-line mr-2"></i>
-                        ${message}
+            const mainContent = document.getElementById('mainContent');
+            if (mainContent) {
+                mainContent.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="inline-flex items-center text-lg text-red-400">
+                            <i class="ri-error-warning-line mr-2"></i>
+                            ${message}
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+            }
         }
 
         // Рендеринг категорий
         function renderCategories() {
             const categoryList = document.getElementById('categoryList');
+            if (!categoryList) return;
+
             const categories = {};
             pagesData.forEach(page => {
                 if (!page.category || page.path === 'README.md') return;
                 if (!categories[page.category]) categories[page.category] = [];
                 categories[page.category].push(page);
             });
+
             const sortedCategories = Object.keys(categories).sort();
             categoryList.innerHTML = '';
+
             if (sortedCategories.length === 0) {
                 categoryList.innerHTML = `
                     <div class="text-center text-sm text-gray-400 py-4">
@@ -1665,6 +1691,7 @@
                 `;
                 return;
             }
+
             sortedCategories.forEach(category => {
                 const categoryDiv = document.createElement('div');
                 categoryDiv.className = 'category';
@@ -1675,9 +1702,11 @@
                     <i class="ri-arrow-right-s-line ml-auto transition-transform duration-300"></i>
                 `;
                 categoryDiv.appendChild(categoryTitle);
+
                 const categoryItems = document.createElement('div');
                 categoryItems.className = 'category-items';
                 const sortedPages = categories[category].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+
                 sortedPages.forEach(page => {
                     const articleItem = document.createElement('a');
                     articleItem.href = `#${page.slug}`;
@@ -1700,13 +1729,16 @@
                     });
                     categoryItems.appendChild(articleItem);
                 });
+
                 categoryDiv.appendChild(categoryItems);
                 categoryList.appendChild(categoryDiv);
+
                 categoryTitle.addEventListener('click', () => {
                     const isActive = categoryItems.classList.toggle('active');
                     const arrowIcon = categoryTitle.querySelector('.ri-arrow-right-s-line');
                     arrowIcon.style.transform = isActive ? 'rotate(90deg)' : 'rotate(0)';
                 });
+
                 if (sortedPages.some(page => page.slug === lastPageSlug)) {
                     categoryItems.classList.add('active');
                     categoryTitle.querySelector('.ri-arrow-right-s-line').style.transform = 'rotate(90deg)';
@@ -1736,6 +1768,8 @@
 
         // Обработка контента
         function processContent(content, title) {
+            if (!content) return '';
+
             const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?([A-Za-z0-9_-]{11})/g;
             const processedContent = content.replace(youtubeRegex, (match, videoId) => {
                 return `
@@ -1745,6 +1779,7 @@
                     </div>
                 `;
             });
+
             let htmlContent = marked.parse(processedContent, {
                 renderer: new marked.Renderer({
                     image(href, title, text) {
@@ -1759,10 +1794,11 @@
                     }
                 })
             });
+
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlContent, 'text/html');
             const firstH1 = doc.querySelector('h1');
-            if (firstH1 && firstH1.textContent.trim() === title?.trim()) {
+            if (firstH1 && title && firstH1.textContent.trim() === title.trim()) {
                 firstH1.remove();
             }
             return doc.body.innerHTML;
@@ -1777,6 +1813,8 @@
         // Загрузка страницы
         async function loadPage(page) {
             const mainContent = document.getElementById('mainContent');
+            if (!mainContent) return;
+
             mainContent.innerHTML = `
                 <div class="text-center py-12">
                     <div class="inline-flex items-center text-lg">
@@ -1785,10 +1823,12 @@
                     </div>
                 </div>
             `;
+
             try {
                 const processedContent = processContent(page.content, page.title);
                 const { headings, updatedContent } = extractHeadings(processedContent);
                 const dateString = page.date || '';
+
                 mainContent.innerHTML = `
                     <div class="article-header">
                         <h1 class="text-3xl font-bold mb-2">${processTitle(page.title)}</h1>
@@ -1822,13 +1862,16 @@
                         </div>
                     </article>
                 `;
+
                 setupCodeBlocks();
                 setupImageViewer();
                 Prism.highlightAll();
+
                 if (headings.length > 0) {
                     setupHeadingsNavigation();
                     setupHeadingsToggle();
                 }
+
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 history.pushState(null, '', `#${page.slug}`);
             } catch (error) {
@@ -1842,16 +1885,20 @@
             const toggleButton = document.getElementById('toggleHeadings');
             const headingsContainer = document.getElementById('headingsContainer');
             if (!toggleButton || !headingsContainer) return;
+
             toggleButton.addEventListener('click', () => {
                 const isCollapsed = headingsContainer.classList.toggle('collapsed');
                 toggleButton.innerHTML = `<i class="ri-${isCollapsed ? 'eye-off' : 'eye'}-line"></i>`;
             });
+
             if (window.innerWidth < 1024) {
                 const headingsBlock = document.querySelector('.headings-block');
-                headingsBlock.addEventListener('click', (e) => {
-                    if (e.target.closest('.toggle-headings') || e.target.closest('.heading-item')) return;
-                    headingsBlock.classList.toggle('active');
-                });
+                if (headingsBlock) {
+                    headingsBlock.addEventListener('click', (e) => {
+                        if (e.target.closest('.toggle-headings') || e.target.closest('.heading-item')) return;
+                        headingsBlock.classList.toggle('active');
+                    });
+                }
             }
         }
 
@@ -1871,6 +1918,7 @@
                     }
                 });
             });
+
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -1881,6 +1929,7 @@
                     }
                 });
             }, { rootMargin: '-100px 0px -50% 0px', threshold: 0.1 });
+
             document.querySelectorAll('h2, h3').forEach(heading => observer.observe(heading));
         }
 
@@ -1907,6 +1956,7 @@
                     }
                 });
             }, { threshold: 0.1 });
+
             document.querySelectorAll('.article-text pre').forEach(block => {
                 const code = block.querySelector('code');
                 if (code) {
@@ -2212,8 +2262,24 @@
 
         // Настройка Telegram-меню
         const telegramButton = document.getElementById('telegramButton');
-       hadings-block');
-                if (headingsBlock) headingsBlock.classList.remove('active');
+        const telegramMenu = document.getElementById('telegramMenu');
+        telegramButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            telegramMenu.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!telegramButton.contains(e.target) && !telegramMenu.contains(e.target)) {
+                telegramMenu.classList.remove('active');
+            }
+        });
+
+        // Закрытие панели заголовков при клике вне её
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth >= 1024) return;
+            const headingsBlock = document.querySelector('.headings-block');
+            if (headingsBlock && !headingsBlock.contains(e.target) && headingsBlock.classList.contains('active')) {
+                headingsBlock.classList.remove('active');
             }
         });
 
