@@ -192,6 +192,10 @@
             color: var(--accent-color);
         }
 
+        .category h3 .ri-arrow-right-s-line {
+            transition: transform 0.3s ease;
+        }
+
         .category-items {
             max-height: 0;
             overflow: hidden;
@@ -205,10 +209,19 @@
             padding: 0.5rem 0;
         }
 
+        .category .article-date {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            opacity: 0.5;
+            margin-left: 1.75rem;
+            margin-top: -0.25rem;
+            padding-bottom: 0.5rem;
+        }
+
         .article-item {
             display: flex;
             align-items: center;
-            padding: 0.75rem 1.5rem;
+            padding: 0.75rem 1rem;
             margin: 0 0.5rem;
             border-radius: 8px;
             font-size: 0.9rem;
@@ -234,7 +247,7 @@
         .article-item:hover {
             background-color: var(--bg-quaternary);
             color: var(--accent-color);
-            padding-left: 1.75rem;
+            padding-left: 1.25rem;
         }
 
         .article-item:hover::before {
@@ -748,6 +761,8 @@
             padding: 0.25rem 0.5rem;
             border-radius: 6px;
             font-size: 0.9em;
+            white-space: pre-wrap;
+            word-break: break-all;
         }
 
         .article-text pre {
@@ -759,6 +774,17 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             overflow-x: auto;
             border: 1px solid var(--border-color);
+            font-family: 'Fira Code', monospace;
+            white-space: pre;
+            word-wrap: normal;
+            line-height: 1.5;
+        }
+
+        .article-text pre code {
+            background: none;
+            padding: 0;
+            white-space: pre;
+            word-wrap: normal;
         }
 
         .copy-code-btn {
@@ -839,9 +865,9 @@
         .article-text blockquote {
             background: var(--bg-quaternary);
             border-left: 4px solid var(--accent-color);
-            padding: 1rem 1.5rem;
+            padding: 0.75rem 1rem;
             margin: 1.5rem 0;
-            border-radius: 4px;
+            border-radius: 8px;
             color: var(--text-secondary);
             font-size: 0.95rem;
             line-height: 1.7;
@@ -884,10 +910,12 @@
             max-height: 400px;
             overflow-y: auto;
             width: 280px;
+            position: sticky;
+            top: 80px;
         }
 
         .headings-block.collapsed {
-            width: 50px;
+            max-width: 50px;
             overflow: hidden;
         }
 
@@ -988,6 +1016,14 @@
             font-size: 0.8rem;
             background: var(--bg-tertiary);
             border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-header i {
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header i:hover {
+            transform: scale(1.2);
         }
 
         .support-button {
@@ -1446,6 +1482,19 @@
             return null;
         }
 
+        // Форматирование даты из ISO-формата
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) {
+                return extractDateFromFilename(dateString) || '';
+            }
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}.${month}.${year}`;
+        }
+
         // Загрузка данных страниц
         async function loadPagesData() {
             try {
@@ -1466,6 +1515,8 @@
                     if (!page.category || page.category.trim() === '') page.category = 'Немного о странице';
                     if (!page.date) {
                         page.date = extractDateFromFilename(page.path || '') || '';
+                    } else {
+                        page.date = formatDate(page.date);
                     }
                 });
                 pagesData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
@@ -1531,12 +1582,19 @@
                 const categoryDiv = document.createElement('div');
                 categoryDiv.className = 'category';
                 const categoryTitle = document.createElement('h3');
+                const categoryDate = categories[category][0].date || '';
                 categoryTitle.innerHTML = `
                     <i class="ri-folder-line"></i>
                     <span>${category}</span>
-                    <i class="ri-arrow-down-s-line ml-auto transition-transform duration-300"></i>
+                    <i class="ri-arrow-right-s-line ml-auto transition-transform duration-300"></i>
                 `;
                 categoryDiv.appendChild(categoryTitle);
+                if (categoryDate) {
+                    const dateDiv = document.createElement('div');
+                    dateDiv.className = 'article-date';
+                    dateDiv.textContent = categoryDate;
+                    categoryDiv.appendChild(dateDiv);
+                }
                 const categoryItems = document.createElement('div');
                 categoryItems.className = 'category-items';
                 const sortedPages = categories[category].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
@@ -1562,12 +1620,12 @@
                 categoryList.appendChild(categoryDiv);
                 categoryTitle.addEventListener('click', () => {
                     const isActive = categoryItems.classList.toggle('active');
-                    const arrowIcon = categoryTitle.querySelector('.ri-arrow-down-s-line');
-                    arrowIcon.style.transform = isActive ? 'rotate(180deg)' : 'rotate(0)';
+                    const arrowIcon = categoryTitle.querySelector('.ri-arrow-right-s-line');
+                    arrowIcon.style.transform = isActive ? 'rotate(90deg)' : 'rotate(0)';
                 });
                 if (sortedPages.some(page => page.slug === lastPageSlug)) {
                     categoryItems.classList.add('active');
-                    categoryTitle.querySelector('.ri-arrow-down-s-line').style.transform = 'rotate(180deg)';
+                    categoryTitle.querySelector('.ri-arrow-right-s-line').style.transform = 'rotate(90deg)';
                 }
             });
         }
@@ -1630,6 +1688,10 @@
                     },
                     image(href, title, text) {
                         return `<img src="${href}" alt="${text || ''}" title="${title || ''}" class="markdown-image" loading="lazy">`;
+                    },
+                    code(code, language) {
+                        const normalizedCode = code.replace(/\r\n/g, '\n').replace(/\t/g, '    ');
+                        return `<pre><code class="language-${language || ''}">${normalizedCode}</code></pre>`;
                     }
                 })
             });
@@ -1718,8 +1780,8 @@
             const headingsBlock = document.querySelector('.headings-block');
             if (!toggleButton || !headingsContainer) return;
             toggleButton.addEventListener('click', () => {
-                const isCollapsed = headingsContainer.classList.toggle('collapsed');
-                headingsBlock.classList.toggle('collapsed', isCollapsed);
+                const isCollapsed = headingsBlock.classList.toggle('collapsed');
+                headingsContainer.classList.toggle('collapsed', isCollapsed);
                 toggleButton.innerHTML = `<i class="ri-${isCollapsed ? 'eye-off' : 'eye'}-line"></i>`;
             });
             if (window.innerWidth < 1024) {
@@ -1987,22 +2049,17 @@
 
         function performSearch(query) {
             if (!query.trim()) {
-                searchResults.innerHTML = `
-                    <div class="text-center text-sm text-gray-400 py-4">
-                        Введите запрос для поиска
-                    </div>
-                `;
+                searchResults.innerHTML = '';
                 return;
             }
-            const filteredPages = pagesData.filter(page =>
-                page.title?.toLowerCase().includes(query.toLowerCase()) ||
-                page.content?.toLowerCase().includes(query.toLowerCase()) ||
-                page.category?.toLowerCase().includes(query.toLowerCase())
-            );
+            const filteredPages = pagesData.filter(page => {
+                const searchText = `${page.title || ''} ${page.content || ''} ${page.category || ''}`.toLowerCase();
+                return searchText.includes(query.toLowerCase());
+            });
             if (filteredPages.length === 0) {
                 searchResults.innerHTML = `
                     <div class="text-center text-sm text-gray-400 py-4">
-                        Ничего не найдено
+                        <p>Ничего не найдено по запросу "${query}"</p>
                     </div>
                 `;
                 return;
@@ -2128,7 +2185,7 @@
         easterEggIcon.addEventListener('click', () => {
             clickCount++;
             if (clickCount >= 5) {
-                alert('Пасхалка! 🐣 Ты нашёл секрет! Напиши автору в Telegram, чтобы получить приз! 😎');
+                window.open('https://github.com/Endermanik13/top', '_blank');
                 clickCount = 0;
             }
         });
