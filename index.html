@@ -400,7 +400,7 @@
         }
 
         .search-input {
-            pointer-events: none;
+            cursor: pointer;
             opacity: 0.7;
         }
 
@@ -491,11 +491,13 @@
         }
 
         .search-result-meta i.ri-folder-line,
+        .search-result-meta i.ri-star-line,
         .search-result-meta i.ri-calendar-line {
             transition: transform 0.3s ease;
         }
 
         .search-result-meta:hover i.ri-folder-line,
+        .search-result-meta:hover i.ri-star-line,
         .search-result-meta:hover i.ri-calendar-line {
             transform: scale(1.2);
             color: var(--accent-color);
@@ -1415,7 +1417,7 @@
                 </a>
             </div>
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="Поиск..." id="searchInput" aria-label="Поиск по сайту" readonly>
+                <input type="text" class="search-input" placeholder="Поиск..." id="searchInput" aria-label="Поиск по сайту">
                 <button class="action-button telegram-button" id="telegramButton" aria-label="Открыть Telegram меню">
                     <i class="ri-telegram-fill mr-2"></i>
                     Telegram
@@ -1848,7 +1850,7 @@
 
                 setupCodeBlocks();
                 setupImageViewer();
-                Prism.highlightAll();
+                Prism.highlightAll(); // Применяем подсветку синтаксиса ко всем блокам кода
 
                 if (headings.length > 0) {
                     setupHeadingsNavigation();
@@ -1933,7 +1935,7 @@
                         }
                         const code = block.querySelector('code');
                         if (code) {
-                            Prism.highlightElement(code);
+                            Prism.highlightElement(code); // Применяем подсветку к каждому блоку
                         }
                     }
                 });
@@ -1946,6 +1948,7 @@
                     if (langMatch) {
                         block.dataset.language = langMatch[1];
                     }
+                    Prism.highlightElement(code); // Применяем подсветку сразу
                 }
                 observer.observe(block);
             });
@@ -2102,7 +2105,7 @@
             });
         }
 
-// Настройка кнопки прокрутки наверх
+        // Настройка кнопки прокрутки наверх
         function setupScrollTopButton() {
             const scrollTopButton = document.getElementById('scrollTopButton');
             window.addEventListener('scroll', () => {
@@ -2113,7 +2116,11 @@
                 }
             });
             scrollTopButton.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
             });
         }
 
