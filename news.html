@@ -6,10 +6,11 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Проекты по C++ | Энциклопедия Эндера</title>
+    <title>Важная информация</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text x='0' y='20' font-size='20'>📘</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
     <style>
         :root {
@@ -20,16 +21,15 @@
             --text-primary: #e6edf3;
             --text-secondary: #c9d1d9;
             --text-tertiary: #8b949e;
-            --accent-color: #3b82f6;
-            --accent-hover: #60a5fa;
-            --accent-active: #2563eb;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --highlight-yellow: #4a4a1a;
-            --highlight-red: #4a1a1a;
+            --accent-color: #4b6bff;
+            --accent-hover: #6b8cff;
+            --border-color: rgba(255, 255, 255, 0.15);
+            --gradient-subtle: linear-gradient(135deg, rgba(75, 107, 255, 0.2), rgba(30, 64, 175, 0.1));
+            --warning-color: #ef4444;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             margin: 0;
@@ -60,7 +60,7 @@
             overflow-y: auto;
             border-right: 1px solid var(--border-color);
             background: var(--bg-secondary);
-            transition: all 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             width: 320px;
             flex-shrink: 0;
             display: flex;
@@ -73,7 +73,7 @@
                 left: -320px;
                 top: 68px;
                 z-index: 100;
-                transition: transform 0.3s ease;
+                box-shadow: 4px 0 20px rgba(0, 0, 0, 0.4);
             }
 
             .articles-column.active {
@@ -111,32 +111,30 @@
         }
 
         .menu-container {
-            position: relative;
-            padding: 1rem;
+            padding: 1.5rem;
         }
 
         .menu-item {
-            position: relative;
-            z-index: 1;
-            transition: all 0.3s ease;
+            transition: all 0.3s ease-in-out;
             color: var(--text-tertiary);
             font-weight: 500;
             display: flex;
             align-items: center;
             padding: 0.75rem 1rem;
             border-radius: 8px;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
             text-decoration: none;
         }
 
         .menu-item:hover {
             color: var(--accent-color);
-            background-color: var(--bg-tertiary);
+            background: var(--bg-tertiary);
+            transform: translateX(4px);
         }
 
         .menu-item.active {
             color: var(--accent-color);
-            background-color: var(--bg-tertiary);
+            background: var(--bg-tertiary);
         }
 
         .menu-item i {
@@ -144,11 +142,6 @@
             font-size: 1.1rem;
             width: 20px;
             text-align: center;
-            transition: transform 0.3s ease;
-        }
-
-        .menu-item:hover i {
-            transform: scale(1.2);
         }
 
         .header {
@@ -156,13 +149,12 @@
             justify-content: space-between;
             align-items: center;
             padding: 1rem 2rem;
-            background: rgba(13, 17, 23, 0.95);
+            background: var(--bg-secondary);
             border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
             z-index: 50;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
         @media (max-width: 768px) {
@@ -189,11 +181,6 @@
                 align-items: flex-start;
             }
             
-            .search-input {
-                width: 100%;
-                min-width: auto;
-            }
-            
             .telegram-button {
                 display: none;
             }
@@ -202,11 +189,10 @@
         .blog-title {
             display: flex;
             align-items: center;
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--text-primary);
-            transition: all 0.3s ease;
-            cursor: default;
+            transition: all 0.3s ease-in-out;
         }
 
         .blog-title:hover {
@@ -216,38 +202,73 @@
         .blog-title i {
             margin-right: 0.75rem;
             color: var(--accent-color);
-            transition: transform 0.3s ease;
-            cursor: default;
-        }
-
-        .blog-title:hover i {
-            transform: scale(1.1);
+            font-size: 1.5rem;
         }
 
         .search-container {
-            position: relative;
             display: flex;
             align-items: center;
             gap: 1rem;
         }
 
-        .search-input {
-            padding: 0.6rem 2.5rem 0.6rem 1rem;
-            background-color: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
+        .action-button {
+            display: flex;
+            align-items: center;
+            padding: 0.6rem 1.5rem;
             border-radius: 8px;
-            color: var(--text-primary);
-            transition: all 0.3s ease;
-            min-width: 200px;
+            transition: all 0.3s ease-in-out;
+            text-decoration: none;
+            font-weight: 500;
             font-size: 0.9rem;
-            position: relative;
         }
 
-        .search-input:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            background-color: var(--bg-quaternary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        .telegram-button {
+            background: var(--gradient-subtle);
+            color: var(--text-primary);
+        }
+
+        .telegram-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(75, 107, 255, 0.4);
+        }
+
+        .telegram-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            display: none;
+            flex-direction: column;
+            padding: 0.5rem;
+            min-width: 200px;
+            opacity: 0;
+            transform: scale(0.95) translateY(-10px);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .telegram-menu.active {
+            display: flex;
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        .telegram-menu a {
+            padding: 0.5rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s ease-in-out;
+            background: var(--gradient-subtle);
+            margin: 0.25rem 0;
+        }
+
+        .telegram-menu a:hover {
+            background: var(--accent-color);
+            transform: translateX(4px);
         }
 
         .mobile-menu-toggle {
@@ -257,7 +278,7 @@
             color: var(--text-primary);
             font-size: 1.5rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s ease-in-out;
             padding: 0.5rem;
             border-radius: 6px;
         }
@@ -265,122 +286,188 @@
         .mobile-menu-toggle:hover {
             background: var(--bg-tertiary);
             color: var(--accent-color);
-            transform: rotate(90deg);
         }
 
         main {
             flex: 1;
-            padding: 2rem;
-            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuMjHxIGmVAAAAL0lEQVQYV2P4//8/AwYQhxitgA8Y0cTwZ2A4DMMiYBhOwwKCAX4GBoa4oXgAHy0HLLM8a5kAAAAASUVORK5CYII=') repeat;
-            background-size: 10px 10px;
-            background-opacity: 0.05;
+            padding: 3rem 2rem;
+            background: var(--bg-primary);
         }
 
-        .article-text h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 2rem 0 1.5rem;
-            color: var(--text-primary);
-            position: relative;
-            line-height: 1.3;
-        }
-
-        .article-text h1::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--accent-color);
-            transition: width 0.5s ease-in-out;
-        }
-
-        .article-text h1:hover::after {
-            width: 100%;
-        }
-
-        .article-text p {
-            font-size: 1rem;
-            line-height: 1.8;
-            margin-bottom: 1.25rem;
-            color: var(--text-secondary);
-        }
-
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-        }
-
-        @media (max-width: 1024px) {
-            .project-grid {
-                grid-template-columns: repeat(2, 1fr);
+        @media (max-width: 768px) {
+            main {
+                padding: 2rem 1rem;
             }
         }
 
-        @media (max-width: 640px) {
-            .project-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .project-item {
+        .section-card {
             background: var(--bg-tertiary);
             border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
+        }
+
+        .section-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .warning-card {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .deadline-card {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
+        }
+
+        .deadline-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .deadline-inner {
+            background: var(--bg-quaternary);
+            border-radius: 9999px;
+            padding: 0.75rem 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-header {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-header i {
+            margin-right: 0.75rem;
+            font-size: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        .warning-card .section-header i {
+            color: var(--warning-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.95rem;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            text-align: left;
+            color: var(--text-secondary);
+            transition: background 0.3s ease-in-out;
+        }
+
+        th {
+            background: var(--bg-quaternary);
+            font-weight: 600;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            border-radius: 8px;
+        }
+
+        tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        tr:hover td {
+            background: rgba(75, 107, 255, 0.1);
+        }
+
+        .status-done {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            background: rgba(34, 197, 94, 0.15);
+            color: #34d399;
+        }
+
+        .status-in-progress {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            background: rgba(249, 115, 22, 0.15);
+            color: #f97316;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .criterion-card {
+            background: var(--bg-quaternary);
+            border-radius: 10px;
             padding: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+            transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
             border: 1px solid var(--border-color);
         }
 
-        .project-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        .criterion-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
-        .project-item.has-topic {
-            background: var(--highlight-yellow);
-        }
-
-        .project-item.no-topic {
-            background: var(--highlight-red);
-        }
-
-        .project-title {
+        .criterion-card h3 {
             font-size: 1.2rem;
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 0.5rem;
-        }
-
-        .project-status {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
         }
 
-        .project-description {
-            display: none;
+        .criterion-card h3 i {
+            margin-right: 0.5rem;
+            color: var(--accent-color);
+        }
+
+        .criterion-card p {
             font-size: 0.95rem;
             color: var(--text-secondary);
             line-height: 1.7;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .project-description.active {
-            display: block;
-            animation: fadeIn 0.3s ease-out;
         }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(12px);
             }
             to {
                 opacity: 1;
@@ -388,184 +475,8 @@
             }
         }
 
-        .clock-emoji {
-            display: inline-block;
-            animation: rotateClock 4s infinite steps(12);
-        }
-
-        @keyframes rotateClock {
-            0% { content: '🕓'; }
-            8.33% { content: '🕔'; }
-            16.67% { content: '🕕'; }
-            25% { content: '🕖'; }
-            33.33% { content: '🕗'; }
-            41.67% { content: '🕘'; }
-            50% { content: '🕙'; }
-            58.33% { content: '🕚'; }
-            66.67% { content: '🕛'; }
-            75% { content: '🕐'; }
-            83.33% { content: '🕑'; }
-            91.67% { content: '🕒'; }
-            100% { content: '🕓'; }
-        }
-
-        .telegram-button {
-            background: linear-gradient(135deg, #2AABEE, #1A8BCF);
-            color: white;
-            position: relative;
-            transition: all 0.3s ease;
-            padding: 0.6rem 1.25rem;
-            border-radius: 8px;
-            font-weight: 500;
-            font-size: 0.9rem;
-            text-decoration: none;
-        }
-
-        .telegram-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-
-        .support-button {
-            position: fixed;
-            bottom: 1.5rem;
-            right: 1.5rem;
-            width: 50px;
-            height: 50px;
-            background: var(--bg-tertiary);
-            color: var(--accent-color);
-            border: none;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 50;
-        }
-
-        .support-button:hover {
-            background: var(--bg-quaternary);
-            transform: scale(1.1);
-        }
-
-        .support-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.95);
-            width: min(90%, 500px);
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1.5rem;
-            z-index: 100;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-        }
-
-        .support-modal.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .support-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            z-index: 90;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .support-modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .support-modal h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .support-modal h3 i {
-            margin-right: 0.5rem;
-            color: #ff5555;
-        }
-
-        .support-modal p {
-            font-size: 1rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-            line-height: 1.6;
-        }
-
-        .support-modal .namemc-button {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.5rem 1rem;
-            background: linear-gradient(90deg, #000, #444);
-            color: var(--text-primary);
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 0.9rem;
-            margin: 0.5rem 0;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .support-modal .namemc-button:hover {
-            background: linear-gradient(90deg, #333, #555);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .support-modal .telegram-support {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.5rem 1rem;
-            background: var(--accent-color);
-            color: white;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .support-modal .telegram-support:hover {
-            background: var(--accent-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(15, 130, 246, 0.3);
-        }
-
-        .support-modal .close-support {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            color: var(--text-tertiary);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .support-modal .close-support:hover {
-            color: var(--accent-color);
-            transform: rotate(90deg);
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-in-out;
         }
     </style>
 </head>
@@ -574,22 +485,21 @@
     <div class="content-wrapper">
         <header class="header">
             <div class="flex items-center">
-                <button class="mobile-menu-toggle mr-4" id="mobileMenuToggle">
+                <button class="mobile-menu-toggle mr-4" id="mobileMenuToggle" aria-label="Открыть меню">
                     <i class="ri-menu-line"></i>
                 </button>
                 <span class="blog-title">
                     <i class="ri-book-open-line"></i>
-                    Энциклопедия Эндера
+                    Важная информация
                 </span>
             </div>
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="Поиск..." id="searchInput">
-                <button class="telegram-button" id="telegramButton">
+                <button class="action-button telegram-button" id="telegramButton" aria-label="Открыть Telegram меню">
                     <i class="ri-telegram-fill mr-2"></i>
                     Telegram
                 </button>
                 <div class="telegram-menu" id="telegramMenu">
-                    <a href="https://t.me/endermanik13" target="_blank">Тг автора</a>
+                    <a href="https://t.me/endermanik13" target="_blank">Личный чат автора</a>
                     <a href="https://t.me/endermanik12" target="_blank">Канал автора</a>
                 </div>
             </div>
@@ -597,270 +507,313 @@
 
         <div class="flex flex-1">
             <div class="articles-column" id="articlesColumn">
-                <div class="menu-container">
-                    <ul class="mb-8">
-                        <li><a href="https://endermanik13.github.io/top/#readme" class="menu-item"><i class="ri-home-line"></i> Главная</a></li>
-                        <li><a href="#" class="menu-item active"><i class="ri-newspaper-line"></i> Важная информация</a></li>
-                        <li><a href="https://endermanik13.gitbook.io/info" target="_blank" class="menu-item"><i class="ri-book-line"></i> GitBook</a></li>
-                        <li><a href="#" class="menu-item"><i class="ri-user-line"></i> Обо мне</a></li>
-                    </ul>
-                </div>
                 <div class="p-4 flex-1">
-                    <div class="category">
-                        <h3><i class="ri-folder-line"></i> C++ <i class="ri-arrow-down-s-line ml-auto transition-transform duration-300" style="transform: rotate(180deg);"></i></h3>
-                        <div class="category-items active">
-                            <a href="#" class="article-item active"><i class="ri-file-text-line"></i> Проекты по C++</a>
-                        </div>
+                    <div class="menu-container">
+                        <ul class="mb-8">
+                            <li><a href="https://endermanik13.github.io/top/#readme" class="menu-item"><i class="ri-home-line"></i> Главная</a></li>
+                            <li><a href="#" class="menu-item active"><i class="ri-information-line"></i> Важная информация</a></li>
+                            <li><a href="#" class="menu-item"><i class="ri-git-branch-line"></i> GitBook</a></li>
+                            <li><a href="#" class="menu-item"><i class="ri-user-line"></i> Обо мне</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
 
             <main id="mainContent">
-                <div class="article-text">
-                    <h1>Проекты по C++</h1>
-                    <p>Ниже представлен список студентов и их проектов по C++, выполненных в рамках учебного курса. Студенты, выбравшие тему, подсвечены жёлтым, а те, кто ещё не выбрал — красным. Нажмите на карточку студента, чтобы узнать подробности проекта.</p>
-                    <div class="project-grid">
-                        <div class="project-item has-topic" data-project="leventsov">
-                            <div class="project-title">Левенцов Никита</div>
-                            <div class="project-status"><span class="clock-emoji">🕓</span> В разработке</div>
-                            <div class="project-description" id="leventsov-desc">
-                                <p>Проект: <strong>Почтовый клиент (упрощенный)</strong></p>
-                                <p>Основные классы:</p>
-                                <ul class="list-disc pl-5">
-                                    <li><strong>Email</strong>: содержит информацию о письме (отправитель, тема, текст, дата).</li>
-                                    <li><strong>Inbox</strong>: хранит список писем.</li>
-                                </ul>
-                                <p>Функционал:</p>
-                                <ul class="list-disc pl-5">
-                                    <li>Отправка писем (сохранение в файл).</li>
-                                    <li>Поиск писем по теме или отправителю.</li>
-                                    <li>Пометка писем как прочитанных.</li>
-                                </ul>
+                <div class="max-w-5xl mx-auto">
+                    <div class="section-card animate-fade-in">
+                        <h2 class="section-header"><i class="ri-group-line"></i> Статус выбора темы студентами</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>№</th>
+                                    <th>Студент</th>
+                                    <th>Группа</th>
+                                    <th>Тема проекта</th>
+                                    <th>Статус</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Левенцов Никита</td>
+                                    <td>9/2-РПО-23/1</td>
+                                    <td>Почтовый клиент</td>
+                                    <td>
+                                        <span class="status-done">
+                                            <span class="status-dot bg-green-400"></span>
+                                            Сделал
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Попов Андрей</td>
+                                    <td>9/2-РПО-23/1</td>
+                                    <td>Библиотека книг (с арендой)</td>
+                                    <td>
+                                        <span class="status-in-progress">
+                                            <span class="status-dot bg-orange-400"></span>
+                                            В процессе
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Перов Дима</td>
+                                    <td>9/2-РПО-23/1</td>
+                                    <td>Банкомат: Клиент, Счёт, Операции</td>
+                                    <td>
+                                        <span class="status-in-progress">
+                                            <span class="status-dot bg-orange-400"></span>
+                                            В процессе
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>Клеймёнов Александр</td>
+                                    <td>9/2-РПО-23/1</td>
+                                    <td>Сборщик тачки</td>
+                                    <td>
+                                        <span class="status-in-progress">
+                                            <span class="status-dot bg-orange-400"></span>
+                                            В процессе
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>Нефёдов Иван</td>
+                                    <td>9/2-РПО-23/1</td>
+                                    <td>Архив Документов</td>
+                                    <td>
+                                        <span class="status-in-progress">
+                                            <span class="status-dot bg-orange-400"></span>
+                                            В процессе
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>Попов Александр</td>
+                                    <td>9/2-РПО-23/1</td>
+                                    <td>Сапёр</td>
+                                    <td>
+                                        <span class="status-in-progress">
+                                            <span class="status-dot bg-orange-400"></span>
+                                            В процессе
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>7</td>
+                                    <td>Климов Илья</td>
+                                    <td>9/2-РПО-23/1</td>
+                                    <td>Кинотеатр</td>
+                                    <td>
+                                        <span class="status-in-progress">
+                                            <span class="status-dot bg-orange-400"></span>
+                                            В процессе
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>8</td>
+                                    <td>Антон</td>
+                                    <td>9/2-РПО-23/1</td>
+                                    <td>Кафе: Меню, заказ, клиент</td>
+                                    <td>
+                                        <span class="status-in-progress">
+                                            <span class="status-dot bg-orange-400"></span>
+                                            В процессе
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>9</td>
+                                    <td>Макар</td>
+                                    <td>9/2-РПО-23/1</td>
+                                    <td>Музыкальный магазин</td>
+                                    <td>
+                                        <span class="status-in-progress">
+                                            <span class="status-dot bg-orange-400"></span>
+                                            В процессе
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>10</td>
+                                    <td>Вишня</td>
+                                    <td>9/2-РПО-23/1</td>
+                                    <td>Мессенджер</td>
+                                    <td>
+                                        <span class="status-in-progress">
+                                            <span class="status-dot bg-orange-400"></span>
+                                            В процессе
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="section-card animate-fade-in">
+                        <h2 class="section-header"><i class="ri-calendar-check-line"></i> Назначенные экзамены и зачёты</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Предмет</th>
+                                    <th>Автоматы</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>14.05.2025</td>
+                                    <td>История СПО</td>
+                                    <td>Левенцов Никита</td>
+                                </tr>
+                                <tr>
+                                    <td>20.05.2025</td>
+                                    <td>Объектно-ориентированное программирование с использованием языка С++</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>30.05.2025</td>
+                                    <td>Платформа Microsoft.NET и язык программирования С#</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>18.06.2025</td>
+                                    <td>Поддержка и тестирование программных модулей</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>23.06.2025</td>
+                                    <td>Разработка программных модулей</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>25.06.2025</td>
+                                    <td>Разработка мобильных приложений</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>27.06.2025</td>
+                                    <td>Основы разработки приложений с использованием Windows Forms и WPF</td>
+                                    <td>-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="deadline-card animate-fade-in">
+                        <h2 class="section-header"><i class="ri-time-line"></i> Дедлайн проекта</h2>
+                        <div class="flex flex-col space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-primary font-semibold text-lg">20.05.2025</span>
+                                <div class="deadline-inner">
+                                    <i class="ri-timer-line text-xl"></i>
+                                    <span id="countdown" class="font-mono text-lg"></span>
+                                </div>
+                            </div>
+                            <p class="text-secondary italic">Успейте завершить проект вовремя — это главное!</p>
+                        </div>
+                    </div>
+
+                    <div class="section-card animate-fade-in">
+                        <h2 class="section-header"><i class="ri-checkbox-circle-line"></i> Критерии проекта C++</h2>
+                        <div class="space-y-4">
+                            <div class="criterion-card">
+                                <h3><i class="ri-code-box-line"></i> 1. Классы</h3>
+                                <p>Проект должен содержать классы, обеспечивающие структурированную организацию кода.</p>
+                            </div>
+                            <div class="criterion-card">
+                                <h3><i class="ri-file-code-line"></i> 2. Структура кода</h3>
+                                <p>Код должен быть распределён по нескольким файлам, соответствующим различным классам.</p>
                             </div>
                         </div>
-                        <div class="project-item no-topic" data-project="vorotnikov">
-                            <div class="project-title">Воротников Макар</div>
-                            <div class="project-status"><span>❌</span> Не выбрана тема</div>
-                            <div class="project-description" id="vorotnikov-desc">
-                                <p>Студент пока не выбрал тему для проекта.</p>
-                            </div>
-                        </div>
-                        <div class="project-item no-topic" data-project="klimov">
-                            <div class="project-title">Климов Илья</div>
-                            <div class="project-status"><span>❌</span> Не выбрана тема</div>
-                            <div class="project-description" id="klimov-desc">
-                                <p>Студент пока не выбрал тему для проекта.</p>
-                            </div>
-                        </div>
-                        <div class="project-item has-topic" data-project="kleymenov">
-                            <div class="project-title">Клеймёнов Саня</div>
-                            <div class="project-status"><span class="clock-emoji">🕓</span> В разработке</div>
-                            <div class="project-description" id="kleymenov-desc">
-                                <p>Проект: <strong>Сборщик тачки</strong></p>
-                                <p>Моделирует сборку автомобиля из комплектующих. Основная задача — рассчитать конечные характеристики автомобиля на основе выбранных деталей.</p>
-                                <p>Функционал:</p>
-                                <ul class="list-disc pl-5">
-                                    <li>Сборка автомобиля из заранее подготовленных комплектующих.</li>
-                                    <li>Расчет характеристик (например, скорость, мощность) на основе компонентов.</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="project-item no-topic" data-project="misyurev">
-                            <div class="project-title">Мисюрёв Сергей</div>
-                            <div class="project-status"><span>❌</span> Не выбрана тема</div>
-                            <div class="project-description" id="misyurev-desc">
-                                <p>Студент пока не выбрал тему для проекта.</p>
-                            </div>
-                        </div>
-                        <div class="project-item no-topic" data-project="nefedov">
-                            <div class="project-title">Нефёдов Ваня</div>
-                            <div class="project-status"><span>❌</span> Не выбрана тема</div>
-                            <div class="project-description" id="nefedov-desc">
-                                <p>Студент пока не выбрал тему для проекта.</p>
-                            </div>
-                        </div>
-                        <div class="project-item has-topic" data-project="perov">
-                            <div class="project-title">Перов Дима</div>
-                            <div class="project-status"><span class="clock-emoji">🕓</span> В разработке</div>
-                            <div class="project-description" id="perov-desc">
-                                <p>Проект: <strong>Банкомат</strong></p>
-                                <p>Моделирует работу банкомата. Основные классы:</p>
-                                <ul class="list-disc pl-5">
-                                    <li><strong>Client</strong>: клиент с ФИО и PIN-кодом.</li>
-                                    <li><strong>Account</strong>: счет с номером, балансом и привязкой к клиенту.</li>
-                                    <li><strong>ATM</strong>: банкомат с методами входа по PIN, пополнения, снятия и просмотра баланса.</li>
-                                </ul>
-                                <p>Логика:</p>
-                                <ul class="list-disc pl-5">
-                                    <li>Проверка PIN-кода.</li>
-                                    <li>Лимиты на снятие средств.</li>
-                                    <li>Отображение текущего баланса.</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="project-item has-topic" data-project="podugolnikov">
-                            <div class="project-title">Подугольников Антон</div>
-                            <div class="project-status"><span class="clock-emoji">🕓</span> В разработке</div>
-                            <div class="project-description" id="podugolnikov-desc">
-                                <p>Проект: <strong>Кафе</strong></p>
-                                <p>Симулирует работу кафе с системой заказов. Основные классы:</p>
-                                <ul class="list-disc pl-5">
-                                    <li><strong>MenuItem</strong>: блюдо с названием и ценой.</li>
-                                    <li><strong>Client</strong>: клиент с именем и балансом.</li>
-                                    <li><strong>Order</strong>: заказ, содержащий список блюд и информацию о клиенте.</li>
-                                </ul>
-                                <p>Логика:</p>
-                                <ul class="list-disc pl-5">
-                                    <li>Добавление блюда в заказ (метод addItemToOrder).</li>
-                                    <li>Проверка наличия средств у клиента.</li>
-                                    <li>Подсчет итоговой суммы заказа.</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="project-item has-topic" data-project="popov_andrey">
-                            <div class="project-title">Попов Андрей</div>
-                            <div class="project-status"><span class="clock-emoji">🕓</span> В разработке</div>
-                            <div class="project-description" id="popov_andrey-desc">
-                                <p>Проект: <strong>Библиотека книг (с арендой)</strong></p>
-                                <p>Реализует систему управления библиотекой книг с функцией аренды. Основной класс:</p>
-                                <ul class="list-disc pl-5">
-                                    <li><strong>Book</strong>: книга с названием, автором, годом издания и статусом ("доступна" или "арендована").</li>
-                                </ul>
-                                <p>Функционал:</p>
-                                <ul class="list-disc pl-5">
-                                    <li>Поиск книг по автору.</li>
-                                    <li>Аренда и возврат книг.</li>
-                                    <li>Автосохранение статуса книг в файл.</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="project-item no-topic" data-project="popov_sanya">
-                            <div class="project-title">Попов Саня</div>
-                            <div class="project-status"><span>❌</span> Не выбрана тема</div>
-                            <div class="project-description" id="popov_sanya-desc">
-                                <p>Студент пока не выбрал тему для проекта.</p>
-                            </div>
-                        </div>
-                        <div class="project-item no-topic" data-project="khlupin">
-                            <div class="project-title">Хлупин Влад</div>
-                            <div class="project-status"><span>❌</span> Не выбрана тема</div>
-                            <div class="project-description" id="khlupin-desc">
-                                <p>Студент пока не выбрал тему для проекта.</p>
-                            </div>
+                    </div>
+
+                    <div class="section-card warning-card animate-fade-in">
+                        <h2 class="section-header"><i class="ri-error-warning-line"></i> Важное предупреждение</h2>
+                        <div class="flex items-center">
+                            <p class="text-secondary text-lg">Во время сдачи проекта в аудитории будет присутствовать Владислав. Убедитесь, что ваш проект готов к демонстрации.</p>
                         </div>
                     </div>
                 </div>
             </main>
-        </div>
-
-        <button class="support-button" id="supportButton">
-            <i class="ri-heart-line"></i>
-        </button>
-        <div class="support-modal-overlay" id="supportModalOverlay"></div>
-        <div class="support-modal" id="supportModal">
-            <button class="close-support" id="closeSupport">
-                <i class="ri-close-line"></i>
-            </button>
-            <h3><i class="ri-heart-fill"></i> Спасибо за вашу поддержку!</h3>
-            <p>Автор очень старается впечатлить своих зрителей и коллег по учёбе, и ему очень было бы приятно услышать пару идей или благодарностей в свой адрес.</p>
-            <p>Если же хотите его прям порадовать, можете нарисовать по автору рисунок по его майнкрафт персонажу.</p>
-            <a href="https://namemc.com/skin/51f0ca7a48e29545" target="_blank" class="namemc-button">
-                <i class="ri-gamepad-line"></i> NameMC
-            </a>
-            <p>Ваша обратная связь помогает улучшать сайт и мотивирует на дальнейшую работу!</p>
-            <a href="https://t.me/endermanik13" target="_blank" class="telegram-support">
-                <i class="ri-telegram-fill mr-2"></i> Telegram
-            </a>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
         // Инициализация particles.js
-        function initParticles() {
-            try {
-                particlesJS('particles-js', {
-                    particles: {
-                        number: { value: 60, density: { enable: true, value_area: 800 } },
-                        color: { value: '#58a6ff' },
-                        shape: { type: 'circle' },
-                        opacity: { value: 0.3, random: false },
-                        size: { value: 3, random: true },
-                        line_linked: { enable: true, distance: 150, color: '#58a6ff', opacity: 0.2, width: 1 },
-                        move: { enable: true, speed: 1.5, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
-                    },
-                    interactivity: {
-                        detect_on: 'canvas',
-                        events: { onhover: { enable: true, mode: 'grab' }, resize: true },
-                        modes: { grab: { distance: 140, line_linked: { opacity: 0.5 } } }
-                    },
-                    retina_detect: true
-                });
-            } catch (error) {
-                console.error('Error initializing particles.js:', error);
-            }
-        }
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 60, density: { enable: true, value_area: 800 } },
+                color: { value: '#58a6ff' },
+                shape: { type: 'circle' },
+                opacity: { value: 0.3, random: false },
+                size: { value: 3, random: true },
+                line_linked: { enable: true, distance: 150, color: '#58a6ff', opacity: 0.2, width: 1 },
+                move: { enable: true, speed: 1.5, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: { onhover: { enable: true, mode: 'grab' }, resize: true },
+                modes: { grab: { distance: 140, line_linked: { opacity: 0.5 } } }
+            },
+            retina_detect: true
+        });
 
-        // Мобильное меню
+        // Обработка таймера
+        document.addEventListener('DOMContentLoaded', function() {
+            function updateCountdown() {
+                const deadline = new Date('2025-05-20T23:59:59').getTime();
+                const now = new Date().getTime();
+                const distance = deadline - now;
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                document.getElementById('countdown').innerHTML = `${days}д ${hours}ч ${minutes}м ${seconds}с`;
+                if (distance < 0) {
+                    document.getElementById('countdown').innerHTML = "Срок сдачи истек";
+                }
+            }
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        });
+
+        // Настройка мобильного меню
         const mobileMenuToggle = document.getElementById('mobileMenuToggle');
         const articlesColumn = document.getElementById('articlesColumn');
+        mobileMenuToggle.addEventListener('click', () => {
+            articlesColumn.classList.toggle('active');
+        });
 
-        function toggleMobileMenu(forceState = null) {
-            const isActive = forceState !== null ? forceState : !articlesColumn.classList.contains('active');
-            articlesColumn.classList.toggle('active', isActive);
-            mobileMenuToggle.innerHTML = `<i class="ri-${isActive ? 'close' : 'menu'}-line"></i>`;
-        }
+        // Закрытие мобильного меню при клике вне его
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth >= 1024) return;
+            if (!articlesColumn.contains(e.target) && !mobileMenuToggle.contains(e.target) && articlesColumn.classList.contains('active')) {
+                articlesColumn.classList.remove('active');
+            }
+        });
 
-        mobileMenuToggle.addEventListener('click', () => toggleMobileMenu());
-
-        // Telegram меню
+        // Настройка Telegram-меню
         const telegramButton = document.getElementById('telegramButton');
         const telegramMenu = document.getElementById('telegramMenu');
-
         telegramButton.addEventListener('click', (e) => {
             e.stopPropagation();
             telegramMenu.classList.toggle('active');
         });
 
         document.addEventListener('click', (e) => {
-            if (!telegramMenu.contains(e.target) && !telegramButton.contains(e.target)) {
+            if (!telegramButton.contains(e.target) && !telegramMenu.contains(e.target)) {
                 telegramMenu.classList.remove('active');
             }
-        });
-
-        // Модальное окно поддержки
-        const supportButton = document.getElementById('supportButton');
-        const supportModal = document.getElementById('supportModal');
-        const supportModalOverlay = document.getElementById('supportModalOverlay');
-        const closeSupport = document.getElementById('closeSupport');
-
-        function toggleSupportModal() {
-            const isActive = !supportModal.classList.contains('active');
-            supportModal.classList.toggle('active', isActive);
-            supportModalOverlay.classList.toggle('active', isActive);
-        }
-
-        supportButton.addEventListener('click', toggleSupportModal);
-        closeSupport.addEventListener('click', toggleSupportModal);
-        supportModalOverlay.addEventListener('click', toggleSupportModal);
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && supportModal.classList.contains('active')) {
-                toggleSupportModal();
-            }
-        });
-
-        // Показ/скрытие описания проекта
-        document.querySelectorAll('.project-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const desc = item.querySelector('.project-description');
-                desc.classList.toggle('active');
-            });
-        });
-
-        // Инициализация
-        document.addEventListener('DOMContentLoaded', () => {
-            initParticles();
         });
     </script>
 </body>
