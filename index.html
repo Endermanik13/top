@@ -10,6 +10,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text x='0' y='20' font-size='20'>📘</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-one-dark.min.css" rel="stylesheet">
     <style>
@@ -32,7 +33,7 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             margin: 0;
@@ -183,12 +184,16 @@
             background: var(--bg-quaternary);
         }
 
-        .category h3 i.ri-folder-line {
+        .category h3 .ri-folder-line,
+        .category h3 .ri-star-line,
+        .category h3 .ri-calendar-line {
             margin-right: 0.5rem;
             transition: all 0.3s ease;
         }
 
-        .category h3:hover .ri-folder-line {
+        .category h3:hover .ri-folder-line,
+        .category h3:hover .ri-star-line,
+        .category h3:hover .ri-calendar-line {
             transform: scale(1.2);
             color: var(--accent-color);
         }
@@ -277,6 +282,15 @@
             color: var(--text-tertiary);
             opacity: 0.5;
             margin-top: 0.25rem;
+        }
+
+        .article-item-date i.ri-calendar-line {
+            transition: transform 0.3s ease;
+        }
+
+        .article-item-date:hover i.ri-calendar-line {
+            transform: scale(1.2);
+            color: var(--accent-color);
         }
 
         .article-header {
@@ -476,6 +490,17 @@
             margin-bottom: 0.5rem;
         }
 
+        .search-result-meta i.ri-folder-line,
+        .search-result-meta i.ri-calendar-line {
+            transition: transform 0.3s ease;
+        }
+
+        .search-result-meta:hover i.ri-folder-line,
+        .search-result-meta:hover i.ri-calendar-line {
+            transform: scale(1.2);
+            color: var(--accent-color);
+        }
+
         .search-result-description {
             font-size: 0.9rem;
             color: var(--text-secondary);
@@ -624,7 +649,7 @@
                 right: 1rem;
                 top: 80px;
                 width: 280px;
-                max-height: 400px;
+                max-height: 500px;
                 overflow-y: auto;
                 z-index: 40;
                 transform: translateX(100%);
@@ -665,7 +690,7 @@
                 width: 100%;
                 right: 0;
                 top: 68px;
-                max-height: 350px;
+                max-height: 450px;
             }
         }
 
@@ -764,7 +789,7 @@
         }
 
         .article-text code {
-            font-family: 'Fira Code', monospace;
+            font-family: 'JetBrains Mono', monospace;
             background-color: var(--inline-code-bg);
             color: var(--text-primary);
             padding: 0.25rem 0.5rem;
@@ -783,7 +808,7 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             overflow-x: auto;
             border: 1px solid var(--border-color);
-            font-family: 'Fira Code', monospace;
+            font-family: 'JetBrains Mono', monospace;
             white-space: pre;
             word-wrap: normal;
             line-height: 1.5;
@@ -960,8 +985,8 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             border: 1px solid var(--border-color);
             transition: all 0.3s ease;
-            max-height: 400px;
-            overflow-y: hidden;
+            max-height: 500px;
+            overflow-y: auto;
             width: 280px;
             position: sticky;
             top: 80px;
@@ -989,30 +1014,11 @@
             align-items: center;
         }
 
-        .toggle-headings {
-            background: none;
-            border: none;
-            color: var(--text-tertiary);
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .toggle-headings:hover {
-            color: var(--accent-color);
-        }
-
         .headings-container {
             transition: max-height 0.3s ease, opacity 0.3s ease;
-            max-height: 300px;
+            max-height: 400px;
             opacity: 1;
             overflow-y: auto;
-        }
-
-        .headings-container.collapsed {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
         }
 
         .heading-item {
@@ -1340,8 +1346,8 @@
         }
 
         @font-face {
-            font-family: 'Fira Code';
-            src: url('https://cdn.jsdelivr.net/npm/@fontsource/fira-code@5.0.18/files/fira-code-latin-400-normal.woff2') format('woff2');
+            font-family: 'JetBrains Mono';
+            src: url('https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.0.20/files/jetbrains-mono-latin-400-normal.woff2') format('woff2');
             font-weight: 400;
             font-style: normal;
         }
@@ -1673,9 +1679,12 @@
                 const categoryDiv = document.createElement('div');
                 categoryDiv.className = 'category';
                 const categoryTitle = document.createElement('h3');
+                const isIgnoreCategory = category.toLowerCase() === 'безкатегории';
+                const displayCategory = isIgnoreCategory ? 'Игнорируй' : category;
+                const iconClass = isIgnoreCategory ? 'ri-star-line' : 'ri-folder-line';
                 categoryTitle.innerHTML = `
-                    <i class="ri-folder-line"></i>
-                    <span>${category}</span>
+                    <i class="${iconClass}"></i>
+                    <span>${displayCategory}</span>
                     <i class="ri-arrow-right-s-line ml-auto transition-transform duration-300"></i>
                 `;
                 categoryDiv.appendChild(categoryTitle);
@@ -1688,13 +1697,13 @@
                     const articleItem = document.createElement('a');
                     articleItem.href = `#${page.slug}`;
                     articleItem.className = `article-item ${page.slug === lastPageSlug ? 'active' : ''}`;
-                    const iconClass = page.category.toLowerCase().includes('программ') ? 'ri-code-line' : 'ri-file-text-line';
+                    const iconClass = isIgnoreCategory ? 'ri-star-line' : (page.category.toLowerCase().includes('программ') ? 'ri-code-line' : 'ri-file-text-line');
                     articleItem.innerHTML = `
                         <div class="article-item-title">
                             <i class="${iconClass}"></i>
                             <span class="truncate">${page.title || 'Без названия'}</span>
                         </div>
-                        ${page.date ? `<div class="article-item-date">${page.date}</div>` : ''}
+                        ${page.date ? `<div class="article-item-date"><i class="ri-calendar-line"></i> ${page.date}</div>` : ''}
                     `;
                     articleItem.dataset.slug = page.slug;
                     articleItem.title = page.title || 'Без названия';
@@ -1820,9 +1829,6 @@
                             <div class="headings-block" role="navigation" aria-label="Содержание статьи">
                                 <div class="headings-header">
                                     <h4><i class="ri-list-check"></i> Содержание</h4>
-                                    <button class="toggle-headings" id="toggleHeadings" aria-label="Свернуть/развернуть содержание">
-                                        <i class="ri-eye-line"></i>
-                                    </button>
                                 </div>
                                 <div class="headings-container" id="headingsContainer">
                                     ${headings.map(heading => `
@@ -1846,7 +1852,6 @@
 
                 if (headings.length > 0) {
                     setupHeadingsNavigation();
-                    setupHeadingsToggle();
                 }
 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1854,31 +1859,6 @@
             } catch (error) {
                 console.error('Error rendering page:', error);
                 showErrorMessage(`Ошибка при загрузке статьи: ${error.message}`);
-            }
-        }
-
-        // Настройка сворачивания содержимого
-        function setupHeadingsToggle() {
-            const toggleButton = document.getElementById('toggleHeadings');
-            const headingsContainer = document.getElementById('headingsContainer');
-            const headingsBlock = document.querySelector('.headings-block');
-            if (!toggleButton || !headingsContainer || !headingsBlock) return;
-
-            toggleButton.addEventListener('click', () => {
-                const isCollapsed = headingsContainer.classList.toggle('collapsed');
-                toggleButton.innerHTML = `<i class="ri-${isCollapsed ? 'eye-off' : 'eye'}-line"></i>`;
-                if (isCollapsed) {
-                    headingsBlock.style.overflowY = 'hidden';
-                } else {
-                    headingsBlock.style.overflowY = 'auto';
-                }
-            });
-
-            if (window.innerWidth < 1024) {
-                headingsBlock.addEventListener('click', (e) => {
-                    if (e.target.closest('.toggle-headings') || e.target.closest('.heading-item')) return;
-                    headingsBlock.classList.toggle('active');
-                });
             }
         }
 
@@ -1951,6 +1931,10 @@
                             label.textContent = language.toUpperCase();
                             block.appendChild(label);
                         }
+                        const code = block.querySelector('code');
+                        if (code) {
+                            Prism.highlightElement(code);
+                        }
                     }
                 });
             }, { threshold: 0.1 });
@@ -1961,7 +1945,6 @@
                     const langMatch = /language-(\w+)/.exec(code.className);
                     if (langMatch) {
                         block.dataset.language = langMatch[1];
-                        Prism.highlightElement(code);
                     }
                 }
                 observer.observe(block);
@@ -2119,7 +2102,7 @@
             });
         }
 
-        // Настройка кнопки прокрутки наверх
+// Настройка кнопки прокрутки наверх
         function setupScrollTopButton() {
             const scrollTopButton = document.getElementById('scrollTopButton');
             window.addEventListener('scroll', () => {
@@ -2189,7 +2172,7 @@
                 <div class="search-result-item" data-slug="${page.slug}">
                     <div class="search-result-title">${highlightText(page.title || 'Без названия', query)}</div>
                     <div class="search-result-meta">
-                        <span><i class="ri-folder-line"></i> ${page.category || 'Без категории'}</span>
+                        <span><i class="${page.category.toLowerCase() === 'безкатегории' ? 'ri-star-line' : 'ri-folder-line'}"></i> ${page.category.toLowerCase() === 'безкатегории' ? 'Игнорируй' : page.category || 'Без категории'}</span>
                         ${page.date ? `<span><i class="ri-calendar-line"></i> ${page.date}</span>` : ''}
                     </div>
                     <div class="search-result-description">
