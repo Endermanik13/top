@@ -60,7 +60,7 @@
             overflow-y: auto;
             border-right: 1px solid var(--border-color);
             background: var(--bg-secondary);
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             width: 320px;
             flex-shrink: 0;
             display: flex;
@@ -111,13 +111,10 @@
         }
 
         .menu-container {
-            position: relative;
             padding: 1rem;
         }
 
         .menu-item {
-            position: relative;
-            z-index: 1;
             transition: all 0.3s ease;
             color: var(--text-tertiary);
             font-weight: 500;
@@ -149,14 +146,6 @@
 
         .menu-item:hover i {
             transform: scale(1.2);
-        }
-
-        .menu-highlight {
-            position: absolute;
-            background-color: var(--bg-quaternary);
-            border-radius: 8px;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 0;
         }
 
         .category {
@@ -202,15 +191,16 @@
         }
 
         .category-items {
-            display: none;
-            padding: 0.5rem 0;
+            max-height: 0;
+            overflow: hidden;
+            padding: 0;
             background: var(--bg-tertiary);
-            transition: all 0.3s ease;
+            transition: max-height 0.3s ease, padding 0.3s ease;
         }
 
         .category-items.active {
-            display: block;
-            animation: fadeIn 0.3s ease-out;
+            max-height: 1000px;
+            padding: 0.5rem 0;
         }
 
         .article-item {
@@ -343,7 +333,6 @@
             margin-right: 0.75rem;
             color: var(--accent-color);
             transition: transform 0.3s ease;
-            cursor: default;
         }
 
         .blog-title:hover i {
@@ -367,30 +356,6 @@
             transition: all 0.3s ease;
             min-width: 200px;
             font-size: 0.9rem;
-            position: relative;
-        }
-
-        .search-input::after,
-        .search-panel-input::after {
-            content: '\e6b2';
-            font-family: 'remixicon';
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-tertiary);
-            opacity: 0.5;
-            font-size: 1rem;
-        }
-
-        .search-input:focus::after,
-        .search-panel-input:focus::after {
-            opacity: 0.7;
-        }
-
-        .search-input::placeholder,
-        .search-panel-input::placeholder {
-            color: var(--text-tertiary);
         }
 
         .search-input:focus,
@@ -497,10 +462,6 @@
             -webkit-mask-image: linear-gradient(180deg, #fff 60%, transparent 100%);
         }
 
-        .search-result-description p {
-            margin: 0;
-        }
-
         .close-search {
             position: absolute;
             top: 1rem;
@@ -532,18 +493,12 @@
         .telegram-button {
             background: linear-gradient(135deg, #2AABEE, #1A8BCF);
             color: white;
-            position: relative;
             transition: all 0.3s ease;
         }
 
         .telegram-button:hover {
             transform: scale(1.05);
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-
-        .telegram-button:active {
-            transform: scale(0.95);
-            box-shadow: none;
         }
 
         .telegram-menu {
@@ -561,21 +516,13 @@
             min-width: 200px;
             opacity: 0;
             transform: scale(0.95) translateY(-10px);
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            transform-origin: top right;
-        }
-
-        .telegram-menu:not(.active) {
-            opacity: 0;
-            transform: scale(0.95) translateY(-10px);
-            pointer-events: none;
+            transition: all 0.3s ease;
         }
 
         .telegram-menu.active {
             display: flex;
             opacity: 1;
             transform: scale(1) translateY(0);
-            animation: slideInMenu 0.3s ease-out;
         }
 
         .telegram-menu a {
@@ -583,25 +530,9 @@
             color: white;
             text-decoration: none;
             border-radius: 6px;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s ease;
             background: linear-gradient(135deg, #2A4365, #2C5282);
             margin: 0.25rem 0;
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        .telegram-menu.active a {
-            opacity: 1;
-            transform: translateY(0);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-
-        .telegram-menu.active a:nth-child(1) {
-            transition-delay: 0.1s;
-        }
-
-        .telegram-menu.active a:nth-child(2) {
-            transition-delay: 0.2s;
         }
 
         .telegram-menu a:hover {
@@ -625,15 +556,6 @@
         .md-pdf-button:hover {
             background: var(--bg-quaternary);
             color: var(--accent-color);
-        }
-
-        .md-pdf-button i {
-            margin-right: 0.5rem;
-            transition: transform 0.3s ease;
-        }
-
-        .md-pdf-button:hover i {
-            transform: scale(1.2);
         }
 
         .mobile-menu-toggle {
@@ -777,13 +699,6 @@
             color: var(--text-primary);
         }
 
-        .article-text h4 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin: 1.25rem 0 0.5rem;
-            color: var(--text-primary);
-        }
-
         .article-text p {
             font-size: 1rem;
             line-height: 1.8;
@@ -825,14 +740,12 @@
         }
 
         .article-text code {
-            font-family: 'Fira Code', 'JetBrains Mono', monospace;
+            font-family: 'Fira Code', monospace;
             background-color: #1e3a8a;
             color: #bfdbfe;
             padding: 0.25rem 0.5rem;
             border-radius: 6px;
             font-size: 0.9em;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            border: none;
         }
 
         .article-text pre {
@@ -844,23 +757,6 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             overflow-x: auto;
             border: 1px solid var(--border-color);
-            transition: transform 0.3s ease;
-            font-family: 'Fira Code', 'JetBrains Mono', monospace;
-        }
-
-        .article-text pre:hover {
-            transform: translateY(-2px);
-        }
-
-        .article-text pre code {
-            background: none;
-            padding: 0;
-            border: none;
-            color: #e6edf3;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            white-space: pre;
-            display: block;
         }
 
         .copy-code-btn {
@@ -876,24 +772,11 @@
             font-size: 0.85rem;
             font-weight: 500;
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         .copy-code-btn:hover {
             background: linear-gradient(135deg, #60a5fa, #3b82f6);
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .copy-code-btn:active {
-            transform: scale(0.95);
-        }
-
-        .copy-code-btn i {
-            font-size: 0.9rem;
         }
 
         .article-text table {
@@ -904,7 +787,6 @@
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            animation: tableSlideIn 0.5s ease-out;
         }
 
         .article-text th,
@@ -913,7 +795,6 @@
             border: 1px solid var(--border-color);
             text-align: left;
             color: var(--text-secondary);
-            transition: background-color 0.3s ease;
         }
 
         .article-text th {
@@ -922,17 +803,8 @@
             color: var(--text-primary);
         }
 
-        .article-text tr {
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-
         .article-text tr:nth-child(even) {
             background-color: rgba(255, 255, 255, 0.03);
-        }
-
-        .article-text tr:hover {
-            background-color: var(--bg-quaternary);
-            transform: scale(1.01);
         }
 
         .article-text img {
@@ -944,44 +816,11 @@
             display: block;
             cursor: pointer;
             transition: transform 0.3s ease;
+            loading: lazy;
         }
 
         .article-text img:hover {
             transform: scale(1.02);
-        }
-
-        .article-text .embed-container {
-            position: relative;
-            background: var(--bg-tertiary);
-            border-radius: 12px;
-            padding: 1rem;
-            margin: 1.5rem 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
-        }
-
-        .article-text .embed-container:hover {
-            transform: translateY(-2px);
-        }
-
-        .article-text .embed-container iframe {
-            width: 100%;
-            border-radius: 8px;
-            border: none;
-            aspect-ratio: 16 / 9;
-        }
-
-        .article-text .embed-container .embed-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .article-text .embed-container .embed-description {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
         }
 
         .article-text blockquote {
@@ -991,23 +830,8 @@
             margin: 1.5rem 0;
             border-radius: 4px;
             color: var(--text-secondary);
-            font-style: normal;
             font-size: 0.95rem;
             line-height: 1.7;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .article-text blockquote p {
-            margin: 0;
-        }
-
-        .article-text hr {
-            border: none;
-            height: 3px;
-            background: var(--border-color);
-            opacity: 0.3;
-            border-radius: 4px;
-            margin: 1.5rem 0;
         }
 
         .headings-block {
@@ -1027,7 +851,7 @@
         }
 
         .headings-block.collapsed {
-            width: 60px;
+            width: 50px;
             overflow: hidden;
         }
 
@@ -1047,17 +871,12 @@
             align-items: center;
         }
 
-        .headings-block h4 i {
-            margin-right: 0.5rem;
-            color: var(--accent-color);
-        }
-
         .toggle-headings {
             background: none;
             border: none;
             color: var(--text-tertiary);
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 1rem;
             transition: all 0.3s ease;
         }
 
@@ -1069,26 +888,13 @@
             flex: 1;
             overflow-y: auto;
             padding-right: 0.5rem;
-            transition: max-height 0.3s ease, opacity 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .headings-container.collapsed {
             max-height: 0;
             opacity: 0;
             overflow: hidden;
-        }
-
-        .headings-container::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .headings-container::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 2px;
-        }
-
-        .headings-container::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.3);
         }
 
         .heading-item {
@@ -1108,6 +914,11 @@
             background-color: var(--bg-quaternary);
         }
 
+        .heading-item.active {
+            color: var(--accent-color);
+            background-color: rgba(59, 130, 246, 0.2);
+        }
+
         .heading-item.h3 {
             padding-left: 1.5rem;
         }
@@ -1123,21 +934,6 @@
         @media (max-width: 768px) {
             main {
                 padding: 1.5rem;
-            }
-
-            .article-content {
-                flex-direction: column;
-                gap: 1.5rem;
-            }
-
-            .article-text h1 {
-                font-size: 1.8rem;
-                margin: 1.5rem 0 1rem;
-            }
-
-            .article-text h2 {
-                font-size: 1.4rem;
-                margin: 1.5rem 0 0.75rem;
             }
         }
 
@@ -1161,23 +957,6 @@
             border-bottom: 1px solid var(--border-color);
         }
 
-        .sidebar-header p {
-            margin: 0.25rem 0;
-        }
-
-        .sidebar-header i,
-        .article-header i {
-            font-size: 14px;
-            margin-right: 0.5rem;
-            color: var(--accent-color);
-            transition: transform 0.3s ease;
-        }
-
-        .sidebar-header i:hover,
-        .article-header i:hover {
-            transform: scale(1.2);
-        }
-
         .support-button {
             position: fixed;
             bottom: 1.5rem;
@@ -1195,15 +974,6 @@
             cursor: pointer;
             transition: all 0.3s ease;
             z-index: 50;
-        }
-
-        @media (max-width: 640px) {
-            .support-button {
-                bottom: 1rem;
-                right: 1rem;
-                width: 40px;
-                height: 40px;
-            }
         }
 
         .support-button:hover {
@@ -1243,24 +1013,6 @@
             background: var(--accent-color);
             color: white;
             transform: scale(1.1);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-        }
-
-        .scroll-top-button i {
-            font-size: 1.5rem;
-        }
-
-        @media (max-width: 640px) {
-            .scroll-top-button {
-                bottom: 1rem;
-                right: 4.5rem;
-                width: 40px;
-                height: 40px;
-            }
-
-            .scroll-top-button i {
-                font-size: 1.2rem;
-            }
         }
 
         .support-modal {
@@ -1314,18 +1066,6 @@
             align-items: center;
         }
 
-        .support-modal h3 i {
-            margin-right: 0.5rem;
-            color: #ff5555;
-        }
-
-        .support-modal p {
-            font-size: 1rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-            line-height: 1.6;
-        }
-
         .support-modal .namemc-button {
             display: inline-flex;
             align-items: center;
@@ -1336,22 +1076,12 @@
             text-decoration: none;
             font-size: 0.9rem;
             margin: 0.5rem 0;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s ease;
         }
 
         .support-modal .namemc-button:hover {
             background: linear-gradient(90deg, #333, #555);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .support-modal .namemc-button i {
-            margin-right: 0.5rem;
-            transition: transform 0.3s ease;
-        }
-
-        .support-modal .namemc-button:hover i {
-            transform: scale(1.2);
         }
 
         .support-modal .telegram-support {
@@ -1364,21 +1094,12 @@
             text-decoration: none;
             font-size: 0.9rem;
             margin-top: 0.5rem;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s ease;
         }
 
         .support-modal .telegram-support:hover {
             background: var(--accent-hover);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-
-        .support-modal .telegram-support i {
-            transition: transform 0.3s ease;
-        }
-
-        .support-modal .telegram-support:hover i {
-            transform: scale(1.2);
         }
 
         .support-modal .close-support {
@@ -1418,13 +1139,28 @@
             opacity: 1;
         }
 
-        .image-viewer img {
+        .image-viewer-container {
+            position: relative;
             max-width: 90%;
             max-height: 80vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-viewer img {
+            max-width: 100%;
+            max-height: 80vh;
             object-fit: contain;
-            transform: scale(1);
+            transform-origin: center;
             transition: transform 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            cursor: grab;
+            user-select: none;
+        }
+
+        .image-viewer img.dragging {
+            cursor: grabbing;
         }
 
         .image-viewer .controls {
@@ -1500,50 +1236,6 @@
                 transform: translateY(0);
             }
         }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                max-height: 0;
-            }
-            to {
-                opacity: 1;
-                max-height: calc(100vh - 180px);
-            }
-        }
-
-        @keyframes slideOut {
-            from {
-                opacity: 1;
-                max-height: calc(100vh - 180px);
-            }
-            to {
-                opacity: 0;
-                max-height: 0;
-            }
-        }
-
-        @keyframes slideInMenu {
-            from {
-                opacity: 0;
-                transform: scale(0.95) translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        @keyframes tableSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
     </style>
 </head>
 <body>
@@ -1551,7 +1243,7 @@
     <div class="content-wrapper">
         <header class="header">
             <div class="flex items-center">
-                <button class="mobile-menu-toggle mr-4" id="mobileMenuToggle">
+                <button class="mobile-menu-toggle mr-4" id="mobileMenuToggle" aria-label="Открыть меню">
                     <i class="ri-menu-line"></i>
                 </button>
                 <span class="blog-title">
@@ -1564,8 +1256,8 @@
                 </a>
             </div>
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="Поиск..." id="searchInput">
-                <button class="action-button telegram-button" id="telegramButton">
+                <input type="text" class="search-input" placeholder="Поиск..." id="searchInput" aria-label="Поиск по сайту">
+                <button class="action-button telegram-button" id="telegramButton" aria-label="Открыть Telegram меню">
                     <i class="ri-telegram-fill mr-2"></i>
                     Telegram
                 </button>
@@ -1578,10 +1270,10 @@
 
         <div class="search-overlay" id="searchOverlay"></div>
         <div class="search-panel" id="searchPanel">
-            <button class="close-search" id="closeSearch">
+            <button class="close-search" id="closeSearch" aria-label="Закрыть поиск">
                 <i class="ri-close-line"></i>
             </button>
-            <input type="text" class="search-panel-input" id="searchPanelInput" placeholder="Введите запрос..." autocomplete="off">
+            <input type="text" class="search-panel-input" id="searchPanelInput" placeholder="Введите запрос..." autocomplete="off" aria-label="Поиск по сайту">
             <div class="search-results" id="searchResults"></div>
         </div>
 
@@ -1593,7 +1285,6 @@
                 </div>
                 <div class="p-4 flex-1">
                     <div class="menu-container">
-                        <div class="menu-highlight" id="menuHighlight"></div>
                         <ul class="mb-8">
                             <li><a href="https://endermanik13.github.io/top/#readme" class="menu-item" id="homeLink"><i class="ri-home-line"></i> Главная</a></li>
                             <li><a href="https://endermanik13.github.io/top/news.html" class="menu-item"><i class="ri-newspaper-line"></i> Важная информация</a></li>
@@ -1615,15 +1306,15 @@
             </main>
         </div>
 
-        <button class="support-button" id="supportButton">
+        <button class="support-button" id="supportButton" aria-label="Открыть поддержку">
             <i class="ri-heart-line"></i>
         </button>
-        <button class="scroll-top-button" id="scrollTopButton">
+        <button class="scroll-top-button" id="scrollTopButton" aria-label="Прокрутить наверх">
             <i class="ri-arrow-up-line"></i>
         </button>
         <div class="support-modal-overlay" id="supportModalOverlay"></div>
         <div class="support-modal" id="supportModal">
-            <button class="close-support" id="closeSupport">
+            <button class="close-support" id="closeSupport" aria-label="Закрыть поддержку">
                 <i class="ri-close-line"></i>
             </button>
             <h3><i class="ri-heart-fill"></i> Спасибо за вашу поддержку!</h3>
@@ -1638,15 +1329,19 @@
             </a>
         </div>
 
-        <div class="image-viewer" id="imageViewer">
-            <button class="close-viewer" id="closeViewer">
+        <div class="image-viewer" id="imageViewer" role="dialog" aria-label="Просмотр изображения">
+            <button class="close-viewer" id="closeViewer" aria-label="Закрыть просмотр">
                 <i class="ri-close-line"></i>
             </button>
-            <img id="viewerImage" src="">
+            <div class="image-viewer-container" id="imageViewerContainer">
+                <img id="viewerImage" src="" alt="Просматриваемое изображение">
+            </div>
             <div class="controls">
-                <button id="zoomIn"><i class="ri-zoom-in-line"></i></button>
+                <button id="zoomIn" aria-label="Увеличить"><i class="ri-zoom-in-line"></i></button>
                 <span id="zoomLevel">100%</span>
-                <button id="zoomOut"><i class="ri-zoom-out-line"></i></button>
+                <button id="zoomOut" aria-label="Уменьшить"><i class="ri-zoom-out-line"></i></button>
+                <button id="rotateLeft" aria-label="Повернуть влево"><i class="ri-rotate-lock-line"></i></button>
+                <button id="rotateRight" aria-label="Повернуть вправо"><i class="ri-refresh-line"></i></button>
             </div>
         </div>
     </div>
@@ -1674,61 +1369,18 @@
         // Инициализация particles.js
         particlesJS('particles-js', {
             particles: {
-                number: {
-                    value: 60,
-                    density: {
-                        enable: true,
-                        value_area: 800
-                    }
-                },
-                color: {
-                    value: '#58a6ff'
-                },
-                shape: {
-                    type: 'circle'
-                },
-                opacity: {
-                    value: 0.3,
-                    random: false
-                },
-                size: {
-                    value: 3,
-                    random: true
-                },
-                line_linked: {
-                    enable: true,
-                    distance: 150,
-                    color: '#58a6ff',
-                    opacity: 0.2,
-                    width: 1
-                },
-                move: {
-                    enable: true,
-                    speed: 1.5,
-                    direction: 'none',
-                    random: false,
-                    straight: false,
-                    out_mode: 'out',
-                    bounce: false
-                }
+                number: { value: 60, density: { enable: true, value_area: 800 } },
+                color: { value: '#58a6ff' },
+                shape: { type: 'circle' },
+                opacity: { value: 0.3, random: false },
+                size: { value: 3, random: true },
+                line_linked: { enable: true, distance: 150, color: '#58a6ff', opacity: 0.2, width: 1 },
+                move: { enable: true, speed: 1.5, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
             },
             interactivity: {
                 detect_on: 'canvas',
-                events: {
-                    onhover: {
-                        enable: true,
-                        mode: 'grab'
-                    },
-                    resize: true
-                },
-                modes: {
-                    grab: {
-                        distance: 140,
-                        line_linked: {
-                            opacity: 0.5
-                        }
-                    }
-                }
+                events: { onhover: { enable: true, mode: 'grab' }, resize: true },
+                modes: { grab: { distance: 140, line_linked: { opacity: 0.5 } } }
             },
             retina_detect: true
         });
@@ -1738,16 +1390,9 @@
             try {
                 const response = await fetch('pages.json', {
                     cache: 'no-store',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    }
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
                 });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 pagesData = await response.json();
                 pagesData = pagesData.filter(page => 
                     page.category && 
@@ -1756,26 +1401,18 @@
                     page.category?.toUpperCase() !== 'EXCALIDRAW' &&
                     page.category?.toUpperCase() !== 'БЕЗ КАТЕГОРИИ'
                 );
-
                 pagesData.forEach(page => {
-                    if (!page.category || page.category.trim() === '') {
-                        page.category = 'Немного о странице';
-                    }
+                    if (!page.category || page.category.trim() === '') page.category = 'Немного о странице';
                 });
-
                 pagesData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
-
                 renderCategories();
                 updateSidebarStats();
-
                 lastPageSlug = localStorage.getItem('lastPageSlug');
                 let pageToLoad = pagesData.find(page => page.path === 'README.md') || pagesData[0];
-
                 if (lastPageSlug) {
                     const savedPage = pagesData.find(page => page.slug === lastPageSlug);
                     if (savedPage) pageToLoad = savedPage;
                 }
-
                 if (pagesData.length > 0) {
                     loadPage(pageToLoad);
                 } else {
@@ -1787,18 +1424,15 @@
             }
         }
 
-        // Обновление статистики вверху боковой панели
+        // Обновление статистики в боковой панели
         function updateSidebarStats() {
             const articleCount = pagesData.length;
-            const categoryCount = new Set(
-                pagesData.map(page => page.category)
-                    .filter(cat => cat && cat.toUpperCase() !== 'EXCALIDRAW')
-            ).size;
+            const categoryCount = new Set(pagesData.map(page => page.category).filter(cat => cat && cat.toUpperCase() !== 'EXCALIDRAW')).size;
             document.getElementById('articleCount').textContent = articleCount;
             document.getElementById('categoryCount').textContent = categoryCount;
         }
 
-        // Функция отображения сообщения об ошибке
+        // Отображение ошибки
         function showErrorMessage(message) {
             document.getElementById('mainContent').innerHTML = `
                 <div class="text-center py-12">
@@ -1810,23 +1444,17 @@
             `;
         }
 
-        // Рендеринг категорий и статей
+        // Рендеринг категорий
         function renderCategories() {
             const categoryList = document.getElementById('categoryList');
-
             const categories = {};
             pagesData.forEach(page => {
                 if (!page.category || page.path === 'README.md') return;
-                if (!categories[page.category]) {
-                    categories[page.category] = [];
-                }
+                if (!categories[page.category]) categories[page.category] = [];
                 categories[page.category].push(page);
             });
-
             const sortedCategories = Object.keys(categories).sort();
-
             categoryList.innerHTML = '';
-
             if (sortedCategories.length === 0) {
                 categoryList.innerHTML = `
                     <div class="text-center text-sm text-gray-400 py-4">
@@ -1835,11 +1463,9 @@
                 `;
                 return;
             }
-
             sortedCategories.forEach(category => {
                 const categoryDiv = document.createElement('div');
                 categoryDiv.className = 'category';
-
                 const categoryTitle = document.createElement('h3');
                 categoryTitle.innerHTML = `
                     <i class="ri-folder-line"></i>
@@ -1847,14 +1473,9 @@
                     <i class="ri-arrow-down-s-line ml-auto transition-transform duration-300"></i>
                 `;
                 categoryDiv.appendChild(categoryTitle);
-
                 const categoryItems = document.createElement('div');
                 categoryItems.className = 'category-items';
-
-                const sortedPages = categories[category].sort((a, b) =>
-                    new Date(b.date || 0) - new Date(a.date || 0)
-                );
-
+                const sortedPages = categories[category].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
                 sortedPages.forEach(page => {
                     const articleItem = document.createElement('a');
                     articleItem.href = `#${page.slug}`;
@@ -1865,34 +1486,21 @@
                     `;
                     articleItem.dataset.slug = page.slug;
                     articleItem.title = page.title || 'Без названия';
-
                     articleItem.addEventListener('click', (e) => {
                         e.preventDefault();
                         loadPage(page);
                         localStorage.setItem('lastPageSlug', page.slug);
                         updateActiveStates(page.slug);
                     });
-
                     categoryItems.appendChild(articleItem);
                 });
-
                 categoryDiv.appendChild(categoryItems);
                 categoryList.appendChild(categoryDiv);
-
                 categoryTitle.addEventListener('click', () => {
-                    document.querySelectorAll('.category-items.active').forEach(item => {
-                        if (item !== categoryItems) {
-                            item.classList.remove('active');
-                            const arrow = item.parentElement.querySelector('.ri-arrow-down-s-line');
-                            arrow.style.transform = 'rotate(0)';
-                        }
-                    });
-
                     const isActive = categoryItems.classList.toggle('active');
                     const arrowIcon = categoryTitle.querySelector('.ri-arrow-down-s-line');
                     arrowIcon.style.transform = isActive ? 'rotate(180deg)' : 'rotate(0)';
                 });
-
                 if (sortedPages.some(page => page.slug === lastPageSlug)) {
                     categoryItems.classList.add('active');
                     categoryTitle.querySelector('.ri-arrow-down-s-line').style.transform = 'rotate(180deg)';
@@ -1900,14 +1508,14 @@
             });
         }
 
-        // Обновление активных состояний статей
+        // Обновление активных состояний
         function updateActiveStates(slug) {
             document.querySelectorAll('.article-item').forEach(item => {
                 item.classList.toggle('active', item.dataset.slug === slug);
             });
         }
 
-        // Извлечение заголовков из контента
+        // Извлечение заголовков
         function extractHeadings(htmlContent) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlContent, 'text/html');
@@ -1915,20 +1523,12 @@
                 const level = heading.tagName.toLowerCase() === 'h2' ? 0 : 1;
                 const id = heading.id || `heading-${index}`;
                 heading.id = id;
-                return {
-                    text: heading.textContent,
-                    level,
-                    id,
-                    tag: heading.tagName.toLowerCase()
-                };
+                return { text: heading.textContent, level, id, tag: heading.tagName.toLowerCase() };
             });
-            return {
-                headings,
-                updatedContent: doc.body.innerHTML
-            };
+            return { headings, updatedContent: doc.body.innerHTML };
         }
 
-        // Обработка заголовков с **текстом** и удаление первого h1
+        // Обработка контента
         function processContent(content, title) {
             let htmlContent = marked.parse(content || '', {
                 renderer: new marked.Renderer({
@@ -1943,26 +1543,10 @@
                                 </div>
                             `;
                         }
-                        const embedServices = [
-                            { regex: /(vimeo\.com)\/(\d+)/, embed: id => `https://player.vimeo.com/video/${id}` },
-                            { regex: /(dailymotion\.com|dai\.ly)\/([a-zA-Z0-9]+)/, embed: id => `https://www.dailymotion.com/embed/video/${id}` },
-                            { regex: /(soundcloud\.com)\/([\w-]+\/[\w-]+)/, embed: id => `https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/${id}` },
-                        ];
-                        for (const service of embedServices) {
-                            const match = href.match(service.regex);
-                            if (match && match[2]) {
-                                return `
-                                    <div class="embed-container">
-                                        <div class="embed-title">${text || 'Встроенный контент'}</div>
-                                        <iframe src="${service.embed(match[2])}" frameborder="0" allowfullscreen></iframe>
-                                    </div>
-                                `;
-                            }
-                        }
                         return `<a href="${href}" title="${title || ''}" target="_blank">${text}</a>`;
                     },
                     image(href, title, text) {
-                        return `<img src="${href}" alt="${text || ''}" title="${title || ''}" class="markdown-image">`;
+                        return `<img src="${href}" alt="${text || ''}" title="${title || ''}" class="markdown-image" loading="lazy">`;
                     }
                 })
             });
@@ -1975,7 +1559,7 @@
             return doc.body.innerHTML;
         }
 
-        // Обработка заголовков с **текстом**
+        // Обработка заголовков
         function processTitle(title) {
             if (!title) return 'Без названия';
             return marked.parseInline(title.replace(/\*\*(.*?)\*\*/g, '**$1**'));
@@ -1992,17 +1576,14 @@
                     </div>
                 </div>
             `;
-
             try {
                 const processedContent = processContent(page.content, page.title);
                 const { headings, updatedContent } = extractHeadings(processedContent);
-
                 const dateString = page.date ? new Date(page.date).toLocaleDateString('ru-RU', {
                     day: '2-digit',
                     month: '2-digit',
                     year: 'numeric'
                 }) : '';
-
                 mainContent.innerHTML = `
                     <div class="article-header">
                         <h1 class="text-3xl font-bold mb-2">${processTitle(page.title)}</h1>
@@ -2014,10 +1595,10 @@
                                 ${updatedContent}
                             </div>
                             ${headings.length > 0 ? `
-                            <div class="headings-block">
+                            <div class="headings-block" role="navigation" aria-label="Содержание статьи">
                                 <div class="headings-header">
                                     <h4><i class="ri-list-check"></i> Содержание</h4>
-                                    <button class="toggle-headings" id="toggleHeadings">
+                                    <button class="toggle-headings" id="toggleHeadings" aria-label="Свернуть/развернуть содержание">
                                         <i class="ri-eye-line"></i>
                                     </button>
                                 </div>
@@ -2036,7 +1617,6 @@
                         </div>
                     </article>
                 `;
-
                 setupCodeBlocks();
                 setupImageViewer();
                 Prism.highlightAll();
@@ -2044,7 +1624,6 @@
                     setupHeadingsNavigation();
                     setupHeadingsToggle();
                 }
-
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 history.pushState(null, '', `#${page.slug}`);
             } catch (error) {
@@ -2053,37 +1632,55 @@
             }
         }
 
-        // Настройка сворачивания/разворачивания содержимого
+        // Настройка сворачивания содержимого
         function setupHeadingsToggle() {
             const toggleButton = document.getElementById('toggleHeadings');
             const headingsContainer = document.getElementById('headingsContainer');
             const headingsBlock = document.querySelector('.headings-block');
-
             if (!toggleButton || !headingsContainer) return;
-
             toggleButton.addEventListener('click', () => {
                 const isCollapsed = headingsContainer.classList.toggle('collapsed');
                 headingsBlock.classList.toggle('collapsed', isCollapsed);
                 toggleButton.innerHTML = `<i class="ri-${isCollapsed ? 'eye-off' : 'eye'}-line"></i>`;
-                const h4 = headingsBlock.querySelector('h4');
-                h4.style.display = isCollapsed ? 'none' : 'flex';
             });
-
             if (window.innerWidth < 1024) {
                 headingsBlock.addEventListener('click', (e) => {
                     if (e.target.closest('.toggle-headings') || e.target.closest('.heading-item')) return;
                     headingsBlock.classList.toggle('active');
-                    const isCollapsed = !headingsContainer.classList.contains('collapsed');
-                    if (!isCollapsed) {
-                        headingsContainer.classList.add('collapsed');
-                        headingsBlock.classList.add('collapsed');
-                        toggleButton.innerHTML = `<i class="ri-eye-off-line"></i>`;
-                    }
                 });
             }
         }
 
-        // Настройка блоков с кодом
+        // Настройка навигации по заголовкам
+        function setupHeadingsNavigation() {
+            const headingItems = document.querySelectorAll('.heading-item');
+            headingItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = item.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.id;
+                        headingItems.forEach(item => {
+                            item.classList.toggle('active', item.dataset.id === id);
+                        });
+                    }
+                });
+            }, { rootMargin: '-100px 0px -50% 0px', threshold: 0.1 });
+            document.querySelectorAll('h2, h3').forEach(heading => observer.observe(heading));
+        }
+
+        // Настройка блоков кода
         function setupCodeBlocks() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -2099,14 +1696,11 @@
                     }
                 });
             }, { threshold: 0.1 });
-
             document.querySelectorAll('.article-text pre').forEach(block => {
                 const code = block.querySelector('code');
                 if (code) {
                     const langMatch = /language-(\w+)/.exec(code.className);
-                    if (langMatch) {
-                        block.dataset.language = langMatch[1];
-                    }
+                    if (langMatch) block.dataset.language = langMatch[1];
                 }
                 observer.observe(block);
             });
@@ -2130,51 +1724,45 @@
             }
         }
 
-        // Настройка навигации по заголовкам
-        function setupHeadingsNavigation() {
-            document.querySelectorAll('.heading-item').forEach(item => {
-                item.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetId = item.getAttribute('href').substring(1);
-                    const targetElement = document.getElementById(targetId);
-
-                    if (targetElement) {
-                        window.scrollTo({
-                            top: targetElement.offsetTop - 20,
-                            behavior: 'smooth'
-                        });
-                    }
-                });
-            });
-        }
-
         // Настройка просмотра изображений
         function setupImageViewer() {
             const viewer = document.getElementById('imageViewer');
+            const viewerContainer = document.getElementById('imageViewerContainer');
             const viewerImage = document.getElementById('viewerImage');
             const closeViewer = document.getElementById('closeViewer');
             const zoomIn = document.getElementById('zoomIn');
             const zoomOut = document.getElementById('zoomOut');
+            const rotateLeft = document.getElementById('rotateLeft');
+            const rotateRight = document.getElementById('rotateRight');
             const zoomLevel = document.getElementById('zoomLevel');
             let currentScale = 1;
+            let currentRotation = 0;
+            let isDragging = false;
+            let startX, startY, translateX = 0, translateY = 0;
+
+            function updateTransform() {
+                viewerImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentScale}) rotate(${currentRotation}deg)`;
+                zoomLevel.textContent = `${Math.round(currentScale * 100)}%`;
+            }
 
             function openViewer(src) {
                 viewerImage.src = src;
                 viewer.classList.add('active');
                 currentScale = 1;
-                updateZoom();
+                currentRotation = 0;
+                translateX = 0;
+                translateY = 0;
+                updateTransform();
             }
 
             function closeViewerFunc() {
                 viewer.classList.remove('active');
-                viewerImage.style.transform = `scale(1)`;
+                viewerImage.style.transform = `scale(1) rotate(0deg)`;
                 currentScale = 1;
-                updateZoom();
-            }
-
-            function updateZoom() {
-                viewerImage.style.transform = `scale(${currentScale})`;
-                zoomLevel.textContent = `${Math.round(currentScale * 100)}%`;
+                currentRotation = 0;
+                translateX = 0;
+                translateY = 0;
+                updateTransform();
             }
 
             document.querySelectorAll('.article-text img.markdown-image').forEach(img => {
@@ -2187,20 +1775,94 @@
             });
 
             zoomIn.addEventListener('click', () => {
-                currentScale = Math.min(currentScale + 0.2, 3);
-                updateZoom();
+                currentScale = Math.min(currentScale + 0.2, 5);
+                updateTransform();
             });
 
             zoomOut.addEventListener('click', () => {
-                currentScale = Math.max(currentScale - 0.2, 0.5);
-                updateZoom();
+                currentScale = Math.max(currentScale - 0.2, 0.2);
+                updateTransform();
+            });
+
+            rotateLeft.addEventListener('click', () => {
+                currentRotation -= 90;
+                updateTransform();
+            });
+
+            rotateRight.addEventListener('click', () => {
+                currentRotation += 90;
+                updateTransform();
             });
 
             viewerImage.addEventListener('wheel', (e) => {
                 e.preventDefault();
                 const delta = e.deltaY > 0 ? -0.1 : 0.1;
-                currentScale = Math.max(0.5, Math.min(3, currentScale + delta));
-                updateZoom();
+                currentScale = Math.max(0.2, Math.min(5, currentScale + delta));
+                updateTransform();
+            });
+
+            viewerImage.addEventListener('mousedown', (e) => {
+                if (currentScale > 1) {
+                    isDragging = true;
+                    startX = e.clientX - translateX;
+                    startY = e.clientY - translateY;
+                    viewerImage.classList.add('dragging');
+                }
+            });
+
+            viewerImage.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    translateX = e.clientX - startX;
+                    translateY = e.clientY - startY;
+                    updateTransform();
+                }
+            });
+
+            viewerImage.addEventListener('mouseup', () => {
+                isDragging = false;
+                viewerImage.classList.remove('dragging');
+            });
+
+            viewerImage.addEventListener('mouseleave', () => {
+                isDragging = false;
+                viewerImage.classList.remove('dragging');
+            });
+
+            // Поддержка тач-жестов
+            let touchStartScale = 1;
+            let touchStartDistance = 0;
+            viewerImage.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 2) {
+                    touchStartScale = currentScale;
+                    const dx = e.touches[0].clientX - e.touches[1].clientX;
+                    const dy = e.touches[0].clientY - e.touches[1].clientY;
+                    touchStartDistance = Math.sqrt(dx * dx + dy * dy);
+                } else if (e.touches.length === 1 && currentScale > 1) {
+                    isDragging = true;
+                    startX = e.touches[0].clientX - translateX;
+                    startY = e.touches[0].clientY - translateY;
+                }
+            });
+
+            viewerImage.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 2) {
+                    e.preventDefault();
+                    const dx = e.touches[0].clientX - e.touches[1].clientX;
+                    const dy = e.touches[0].clientY - e.touches[1].clientY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    currentScale = Math.max(0.2, Math.min(5, touchStartScale * (distance / touchStartDistance)));
+                    updateTransform();
+                } else if (isDragging && e.touches.length === 1) {
+                    e.preventDefault();
+                    translateX = e.touches[0].clientX - startX;
+                    translateY = e.touches[0].clientY - startY;
+                    updateTransform();
+                }
+            });
+
+            viewerImage.addEventListener('touchend', () => {
+                isDragging = false;
+                touchStartDistance = 0;
             });
         }
 
@@ -2208,244 +1870,208 @@
         function setupScrollTopButton() {
             const scrollTopButton = document.getElementById('scrollTopButton');
             window.addEventListener('scroll', () => {
-                if (window.scrollY > 200) {
-                    scrollTopButton.classList.add('visible');
-                } else {
-                    scrollTopButton.classList.remove('visible');
-                }
+                scrollTopButton.classList.toggle('visible', window.scrollY > 200);
             });
-
             scrollTopButton.addEventListener('click', () => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         }
 
-// Поиск
-    const searchInput = document.getElementById('searchInput');
-    const searchPanel = document.getElementById('searchPanel');
-    const searchOverlay = document.getElementById('searchOverlay');
-    const searchPanelInput = document.getElementById('searchPanelInput');
-    const searchResults = document.getElementById('searchResults');
-    const closeSearch = document.getElementById('closeSearch');
+        // Поиск
+        const searchInput = document.getElementById('searchInput');
+        const searchPanel = document.getElementById('searchPanel');
+        const searchOverlay = document.getElementById('searchOverlay');
+        const searchPanelInput = document.getElementById('searchPanelInput');
+        const searchResults = document.getElementById('searchResults');
+        const closeSearch = document.getElementById('closeSearch');
 
-    searchInput.addEventListener('input', () => {
-        if (searchInput.value.trim()) {
-            searchPanel.classList.add('active');
-            searchOverlay.classList.add('active');
-            searchPanelInput.value = searchInput.value;
-            performSearch(searchPanelInput.value);
-        } else {
-            searchPanel.classList.remove('active');
-            searchOverlay.classList.remove('active');
-            searchResults.innerHTML = '';
-        }
-    });
-
-    searchPanelInput.addEventListener('input', () => {
-        searchInput.value = searchPanelInput.value;
-        performSearch(searchPanelInput.value);
-    });
-
-    closeSearch.addEventListener('click', () => {
-        searchPanel.classList.remove('active');
-        searchOverlay.classList.remove('active');
-        searchInput.value = '';
-        searchPanelInput.value = '';
-        searchResults.innerHTML = '';
-    });
-
-    searchOverlay.addEventListener('click', () => {
-        searchPanel.classList.remove('active');
-        searchOverlay.classList.remove('active');
-        searchInput.value = '';
-        searchPanelInput.value = '';
-        searchResults.innerHTML = '';
-    });
-
-    function performSearch(query) {
-        if (!query.trim()) {
-            searchResults.innerHTML = `
-                <div class="text-center text-sm text-gray-400 py-4">
-                    Введите запрос для поиска
-                </div>
-            `;
-            return;
-        }
-
-        const filteredPages = pagesData.filter(page =>
-            page.title?.toLowerCase().includes(query.toLowerCase()) ||
-            page.content?.toLowerCase().includes(query.toLowerCase()) ||
-            page.category?.toLowerCase().includes(query.toLowerCase())
-        );
-
-        if (filteredPages.length === 0) {
-            searchResults.innerHTML = `
-                <div class="text-center text-sm text-gray-400 py-4">
-                    Ничего не найдено
-                </div>
-            `;
-            return;
-        }
-
-        searchResults.innerHTML = filteredPages.map(page => `
-            <div class="search-result-item" data-slug="${page.slug}">
-                <div class="search-result-title">${highlightText(page.title || 'Без названия', query)}</div>
-                <div class="search-result-meta">
-                    <span><i class="ri-folder-line"></i> ${page.category || 'Без категории'}</span>
-                    ${page.date ? `<span><i class="ri-calendar-line"></i> ${new Date(page.date).toLocaleDateString('ru-RU')}</span>` : ''}
-                </div>
-                <div class="search-result-description">
-                    <p>${highlightText(truncateText(page.content || '', 150), query)}</p>
-                </div>
-            </div>
-        `).join('');
-
-        document.querySelectorAll('.search-result-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const slug = item.dataset.slug;
-                const page = pagesData.find(p => p.slug === slug);
-                if (page) {
-                    loadPage(page);
-                    localStorage.setItem('lastPageSlug', page.slug);
-                    updateActiveStates(page.slug);
-                    searchPanel.classList.remove('active');
-                    searchOverlay.classList.remove('active');
-                    searchInput.value = '';
-                    searchPanelInput.value = '';
-                }
-            });
+        searchInput.addEventListener('input', () => {
+            if (searchInput.value.trim()) {
+                searchPanel.classList.add('active');
+                searchOverlay.classList.add('active');
+                searchPanelInput.value = searchInput.value;
+                performSearch(searchPanelInput.value);
+            } else {
+                searchPanel.classList.remove('active');
+                searchOverlay.classList.remove('active');
+                searchResults.innerHTML = '';
+            }
         });
-    }
 
-    function highlightText(text, query) {
-        const regex = new RegExp(`(${query})`, 'gi');
-        return text.replace(regex, '<span style="background: var(--search-highlight);">$1</span>');
-    }
+        searchPanelInput.addEventListener('input', () => {
+            searchInput.value = searchPanelInput.value;
+            performSearch(searchPanelInput.value);
+        });
 
-    function truncateText(text, maxLength) {
-        if (text.length <= maxLength) return text;
-        return text.substring(0, maxLength) + '...';
-    }
-
-    // Настройка мобильного меню
-    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-    const articlesColumn = document.getElementById('articlesColumn');
-
-    mobileMenuToggle.addEventListener('click', () => {
-        articlesColumn.classList.toggle('active');
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!articlesColumn.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
-            articlesColumn.classList.remove('active');
-        }
-    });
-
-    // Настройка выпадающего меню Telegram
-    const telegramButton = document.getElementById('telegramButton');
-    const telegramMenu = document.getElementById('telegramMenu');
-
-    telegramButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        telegramMenu.classList.toggle('active');
-    });
-
-    document.addEventListener('click', () => {
-        telegramMenu.classList.remove('active');
-    });
-
-    telegramMenu.addEventListener('click', (e) => {
-        e.stopPropagation();
-    });
-
-    // Настройка модального окна поддержки
-    const supportButton = document.getElementById('supportButton');
-    const supportModal = document.getElementById('supportModal');
-    const supportModalOverlay = document.getElementById('supportModalOverlay');
-    const closeSupport = document.getElementById('closeSupport');
-
-    supportButton.addEventListener('click', () => {
-        supportModal.classList.add('active');
-        supportModalOverlay.classList.add('active');
-    });
-
-    closeSupport.addEventListener('click', () => {
-        supportModal.classList.remove('active');
-        supportModalOverlay.classList.remove('active');
-    });
-
-    supportModalOverlay.addEventListener('click', () => {
-        supportModal.classList.remove('active');
-        supportModalOverlay.classList.remove('active');
-    });
-
-    // Обработка клавиатурных событий
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
+        closeSearch.addEventListener('click', () => {
             searchPanel.classList.remove('active');
             searchOverlay.classList.remove('active');
+            searchInput.value = '';
+            searchPanelInput.value = '';
+            searchResults.innerHTML = '';
+        });
+
+        searchOverlay.addEventListener('click', () => {
+            searchPanel.classList.remove('active');
+            searchOverlay.classList.remove('active');
+            searchInput.value = '';
+            searchPanelInput.value = '';
+            searchResults.innerHTML = '';
+        });
+
+        function performSearch(query) {
+            if (!query.trim()) {
+                searchResults.innerHTML = `
+                    <div class="text-center text-sm text-gray-400 py-4">
+                        Введите запрос для поиска
+                    </div>
+                `;
+                return;
+            }
+            const filteredPages = pagesData.filter(page =>
+                page.title?.toLowerCase().includes(query.toLowerCase()) ||
+                page.content?.toLowerCase().includes(query.toLowerCase()) ||
+                page.category?.toLowerCase().includes(query.toLowerCase())
+            );
+            if (filteredPages.length === 0) {
+                searchResults.innerHTML = `
+                    <div class="text-center text-sm text-gray-400 py-4">
+                        Ничего не найдено
+                    </div>
+                `;
+                return;
+            }
+            searchResults.innerHTML = filteredPages.map(page => `
+                <div class="search-result-item" data-slug="${page.slug}">
+                    <div class="search-result-title">${highlightText(page.title || 'Без названия', query)}</div>
+                    <div class="search-result-meta">
+                        <span><i class="ri-folder-line"></i> ${page.category || 'Без категории'}</span>
+                        ${page.date ? `<span><i class="ri-calendar-line"></i> ${new Date(page.date).toLocaleDateString('ru-RU')}</span>` : ''}
+                    </div>
+                    <div class="search-result-description">
+                        <p>${highlightText(truncateText(page.content || '', 150), query)}</p>
+                    </div>
+                </div>
+            `).join('');
+            document.querySelectorAll('.search-result-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const slug = item.dataset.slug;
+                    const page = pagesData.find(p => p.slug === slug);
+                    if (page) {
+                        loadPage(page);
+                        localStorage.setItem('lastPageSlug', page.slug);
+                        updateActiveStates(page.slug);
+                        searchPanel.classList.remove('active');
+                        searchOverlay.classList.remove('active');
+                        searchInput.value = '';
+                        searchPanelInput.value = '';
+                    }
+                });
+            });
+        }
+
+        function highlightText(text, query) {
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<span style="background: var(--search-highlight);">$1</span>');
+        }
+
+        function truncateText(text, maxLength) {
+            if (text.length <= maxLength) return text;
+            return text.substring(0, maxLength) + '...';
+        }
+
+        // Настройка мобильного меню
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const articlesColumn = document.getElementById('articlesColumn');
+        mobileMenuToggle.addEventListener('click', () => {
+            articlesColumn.classList.toggle('active');
+        });
+        document.addEventListener('click', (e) => {
+            if (!articlesColumn.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+                articlesColumn.classList.remove('active');
+            }
+        });
+
+        // Настройка Telegram меню
+        const telegramButton = document.getElementById('telegramButton');
+        const telegramMenu = document.getElementById('telegramMenu');
+        telegramButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            telegramMenu.classList.toggle('active');
+        });
+        document.addEventListener('click', () => {
+            telegramMenu.classList.remove('active');
+        });
+        telegramMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // Настройка модального окна поддержки
+        const supportButton = document.getElementById('supportButton');
+        const supportModal = document.getElementById('supportModal');
+        const supportModalOverlay = document.getElementById('supportModalOverlay');
+        const closeSupport = document.getElementById('closeSupport');
+        supportButton.addEventListener('click', () => {
+            supportModal.classList.add('active');
+            supportModalOverlay.classList.add('active');
+        });
+        closeSupport.addEventListener('click', () => {
             supportModal.classList.remove('active');
             supportModalOverlay.classList.remove('active');
-            telegramMenu.classList.remove('active');
-            articlesColumn.classList.remove('active');
-            document.getElementById('imageViewer').classList.remove('active');
-        }
-        if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
-            e.preventDefault();
-            searchInput.focus();
-            searchPanel.classList.add('active');
-            searchOverlay.classList.add('active');
-            searchPanelInput.focus();
-        }
-    });
+        });
+        supportModalOverlay.addEventListener('click', () => {
+            supportModal.classList.remove('active');
+            supportModalOverlay.classList.remove('active');
+        });
 
-    // Пасхалка при клике на иконку заголовка
-    const easterEggIcon = document.getElementById('easterEggIcon');
-    let clickCount = 0;
+        // Обработка клавиш
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                searchPanel.classList.remove('active');
+                searchOverlay.classList.remove('active');
+                searchInput.value = '';
+                searchPanelInput.value = '';
+                searchResults.innerHTML = '';
+                supportModal.classList.remove('active');
+                supportModalOverlay.classList.remove('active');
+                viewer.classList.remove('active');
+                articlesColumn.classList.remove('active');
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                e.preventDefault();
+                searchInput.focus();
+                searchPanel.classList.add('active');
+                searchOverlay.classList.add('active');
+                searchPanelInput.focus();
+            }
+        });
 
-    easterEggIcon.addEventListener('click', () => {
-        clickCount++;
-        if (clickCount >= 5) {
-            alert('🥚 Пасхалка! Ты нашёл секрет! 🎉');
-            clickCount = 0;
-        }
-    });
+        // Пасхалка
+        const easterEggIcon = document.getElementById('easterEggIcon');
+        let clickCount = 0;
+        easterEggIcon.addEventListener('click', () => {
+            clickCount++;
+            if (clickCount >= 5) {
+                alert('Пасхалка! 🐣 Ты нашёл секрет! Напиши автору в Telegram, чтобы получить приз! 😎');
+                clickCount = 0;
+            }
+        });
 
-    // Обработка изменения размера окна
-    window.addEventListener('resize', () => {
-        if (window.innerWidth >= 1024) {
-            articlesColumn.classList.remove('active');
-        }
-    });
+        // Обработка изменения истории браузера
+        window.addEventListener('popstate', () => {
+            const slug = window.location.hash.substring(1);
+            const page = pagesData.find(p => p.slug === slug);
+            if (page) {
+                loadPage(page);
+                updateActiveStates(page.slug);
+            }
+        });
 
-    // Инициализация
-    loadPagesData();
-    setupScrollTopButton();
-
-    // Обработка popstate для поддержки навигации назад/вперёд
-    window.addEventListener('popstate', () => {
-        const slug = window.location.hash.substring(1);
-        const page = pagesData.find(p => p.slug === slug) || pagesData.find(p => p.path === 'README.md') || pagesData[0];
-        if (page) {
-            loadPage(page);
-            updateActiveStates(page.slug);
-        }
-    });
-
-    // Проверка поддержки WebP
-    function testWebP(callback) {
-        const webP = new Image();
-        webP.src = 'data:image/webp;base64,UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA';
-        webP.onload = webP.onerror = () => callback(webP.height === 1);
-    }
-
-    testWebP((support) => {
-        if (!support) {
-            document.querySelectorAll('img[src$=".webp"]').forEach(img => {
-                img.src = img.src.replace('.webp', '.png');
-            });
-        }
-    });
-</script>
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPagesData();
+            setupScrollTopButton();
+        });
+    </script>
 </body>
 </html>
