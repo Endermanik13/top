@@ -26,8 +26,9 @@
             --accent-active: #2563eb;
             --border-color: rgba(255, 255, 255, 0.1);
             --search-highlight: rgba(75, 107, 159, 0.5);
-            --code-bg: rgba(30, 58, 138, 0.3);
+            --code-bg: rgba(110, 118, 129, 0.3);
             --inline-code-bg: rgba(59, 130, 246, 0.15);
+            --quote-bg: rgba(59, 130, 246, 0.05);
         }
 
         body {
@@ -368,7 +369,7 @@
         .search-panel-input {
             padding: 0.6rem 2.5rem 0.6rem 1rem;
             background-color: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 8px;
             color: var(--text-primary);
             transition: all 0.3s ease;
@@ -379,9 +380,14 @@
         .search-input:focus,
         .search-panel-input:focus {
             outline: none;
-            border-color: var(--accent-color);
+            border-color: rgba(59, 130, 246, 0.3);
             background-color: var(--bg-quaternary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-input {
+            pointer-events: none;
+            opacity: 0.7;
         }
 
         .search-panel {
@@ -793,8 +799,8 @@
         .code-language {
             position: absolute;
             top: 0.5rem;
-            right: 0.5rem;
-            background: rgba(255, 255, 255, 0.1);
+            left: 0.5rem;
+            background: rgba(110, 118, 129, 0.3);
             color: var(--text-primary);
             font-size: 0.75rem;
             padding: 0.25rem 0.5rem;
@@ -802,50 +808,14 @@
             text-transform: uppercase;
         }
 
-        pre[data-language="javascript"],
-        pre[data-language="js"] {
-            background: linear-gradient(135deg, rgba(255, 214, 0, 0.2), rgba(30, 58, 138, 0.3));
-        }
-
-        pre[data-language="javascript"] .code-language,
-        pre[data-language="js"] .code-language {
-            background: rgba(255, 214, 0, 0.3);
-        }
-
-        pre[data-language="python"],
-        pre[data-language="py"] {
-            background: linear-gradient(135deg, rgba(53, 120, 229, 0.2), rgba(30, 58, 138, 0.3));
-        }
-
-        pre[data-language="python"] .code-language,
-        pre[data-language="py"] .code-language {
-            background: rgba(53, 120, 229, 0.3);
-        }
-
-        pre[data-language="css"] {
-            background: linear-gradient(135deg, rgba(214, 40, 40, 0.2), rgba(30, 58, 138, 0.3));
-        }
-
-        pre[data-language="css"] .code-language {
-            background: rgba(214, 40, 40, 0.3);
-        }
-
-        pre[data-language="html"] {
-            background: linear-gradient(135deg, rgba(40, 167, 69, 0.2), rgba(30, 58, 138, 0.3));
-        }
-
-        pre[data-language="html"] .code-language {
-            background: rgba(40, 167, 69, 0.3);
-        }
-
         .copy-code-btn {
             position: absolute;
             top: 0.5rem;
-            right: 3.5rem;
-            background: linear-gradient(135deg, #2AABEE, #1A8BCF);
-            color: white;
+            right: 0.5rem;
+            background: rgba(110, 118, 129, 0.5);
+            color: var(--text-primary);
             border: none;
-            border-radius: 6px;
+            border-radius: 12px;
             padding: 0.5rem 1rem;
             cursor: pointer;
             font-size: 0.85rem;
@@ -854,7 +824,7 @@
         }
 
         .copy-code-btn:hover {
-            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            background: rgba(110, 118, 129, 0.7);
             transform: translateY(-1px);
         }
 
@@ -929,7 +899,7 @@
         }
 
         .article-text blockquote {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(30, 58, 138, 0.2));
+            background: var(--quote-bg);
             border-left: 4px solid var(--accent-color);
             padding: 1rem 1.5rem;
             margin: 1.5rem 0;
@@ -991,7 +961,7 @@
             border: 1px solid var(--border-color);
             transition: all 0.3s ease;
             max-height: 400px;
-            overflow-y: auto;
+            overflow-y: hidden;
             width: 280px;
             position: sticky;
             top: 80px;
@@ -1371,7 +1341,7 @@
 
         @font-face {
             font-family: 'Fira Code';
-            src: url('https://fonts.gstatic.com/s/firacode/v21/uU9eCBsR6Z2vfE9aq3bL0fxyUs4tcw4W_AjE7W0.woff2') format('woff2');
+            src: url('https://cdn.jsdelivr.net/npm/@fontsource/fira-code@5.0.18/files/fira-code-latin-400-normal.woff2') format('woff2');
             font-weight: 400;
             font-style: normal;
         }
@@ -1412,6 +1382,13 @@
                 transform: translateX(0);
             }
         }
+
+        mark {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--text-primary);
+            padding: 0.1rem 0.2rem;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -1432,7 +1409,7 @@
                 </a>
             </div>
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="Поиск..." id="searchInput" aria-label="Поиск по сайту">
+                <input type="text" class="search-input" placeholder="Поиск..." id="searchInput" aria-label="Поиск по сайту" readonly>
                 <button class="action-button telegram-button" id="telegramButton" aria-label="Открыть Telegram меню">
                     <i class="ri-telegram-fill mr-2"></i>
                     Telegram
@@ -1775,7 +1752,7 @@
                 return `
                     <div class="embed-container">
                         <div class="embed-title">YouTube видео</div>
-                        <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+                        <iframe src="https://www.youtube.com/embed/${videoId}" title="YouTube видео" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                 `;
             });
@@ -1884,27 +1861,33 @@
         function setupHeadingsToggle() {
             const toggleButton = document.getElementById('toggleHeadings');
             const headingsContainer = document.getElementById('headingsContainer');
-            if (!toggleButton || !headingsContainer) return;
+            const headingsBlock = document.querySelector('.headings-block');
+            if (!toggleButton || !headingsContainer || !headingsBlock) return;
 
             toggleButton.addEventListener('click', () => {
                 const isCollapsed = headingsContainer.classList.toggle('collapsed');
                 toggleButton.innerHTML = `<i class="ri-${isCollapsed ? 'eye-off' : 'eye'}-line"></i>`;
+                if (isCollapsed) {
+                    headingsBlock.style.overflowY = 'hidden';
+                } else {
+                    headingsBlock.style.overflowY = 'auto';
+                }
             });
 
             if (window.innerWidth < 1024) {
-                const headingsBlock = document.querySelector('.headings-block');
-                if (headingsBlock) {
-                    headingsBlock.addEventListener('click', (e) => {
-                        if (e.target.closest('.toggle-headings') || e.target.closest('.heading-item')) return;
-                        headingsBlock.classList.toggle('active');
-                    });
-                }
+                headingsBlock.addEventListener('click', (e) => {
+                    if (e.target.closest('.toggle-headings') || e.target.closest('.heading-item')) return;
+                    headingsBlock.classList.toggle('active');
+                });
             }
         }
 
         // Настройка навигации по заголовкам
         function setupHeadingsNavigation() {
             const headingItems = document.querySelectorAll('.heading-item');
+            const headingsContainer = document.getElementById('headingsContainer');
+            if (!headingsContainer) return;
+
             headingItems.forEach(item => {
                 item.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -1920,14 +1903,29 @@
             });
 
             const observer = new IntersectionObserver((entries) => {
+                let activeEntry = null;
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        const id = entry.target.id;
-                        headingItems.forEach(item => {
-                            item.classList.toggle('active', item.dataset.id === id);
-                        });
+                        activeEntry = entry;
                     }
                 });
+
+                if (activeEntry) {
+                    const id = activeEntry.target.id;
+                    headingItems.forEach(item => {
+                        const isActive = item.dataset.id === id;
+                        item.classList.toggle('active', isActive);
+                        if (isActive) {
+                            const itemTop = item.offsetTop;
+                            const containerHeight = headingsContainer.clientHeight;
+                            const itemHeight = item.offsetHeight;
+                            headingsContainer.scrollTo({
+                                top: itemTop - (containerHeight / 2) + (itemHeight / 2),
+                                behavior: 'smooth'
+                            });
+                        }
+                    });
+                }
             }, { rootMargin: '-100px 0px -50% 0px', threshold: 0.1 });
 
             document.querySelectorAll('h2, h3').forEach(heading => observer.observe(heading));
@@ -1961,7 +1959,10 @@
                 const code = block.querySelector('code');
                 if (code) {
                     const langMatch = /language-(\w+)/.exec(code.className);
-                    if (langMatch) block.dataset.language = langMatch[1];
+                    if (langMatch) {
+                        block.dataset.language = langMatch[1];
+                        Prism.highlightElement(code);
+                    }
                 }
                 observer.observe(block);
             });
@@ -2024,7 +2025,10 @@
             }
 
             document.querySelectorAll('.article-text img.markdown-image').forEach(img => {
-                img.addEventListener('click', () => openViewer(img.src));
+                img.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openViewer(img.src);
+                });
             });
 
             closeViewer.addEventListener('click', closeViewerFunc);
@@ -2138,7 +2142,7 @@
         const searchResults = document.getElementById('searchResults');
         const closeSearch = document.getElementById('closeSearch');
 
-        searchInput.addEventListener('focus', () => {
+        searchInput.addEventListener('click', () => {
             searchPanel.classList.add('active');
             searchOverlay.classList.add('active');
             searchPanelInput.focus();
