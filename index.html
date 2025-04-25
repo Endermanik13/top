@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Энциклопедия Эндера</title>
+    <title>Конспекты 2-й курс</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text x='0' y='20' font-size='20'>📘</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1409,7 +1409,7 @@
                 </button>
                 <span class="blog-title">
                     <i class="ri-book-open-line" id="easterEggIcon"></i>
-                    Энциклопедия Эндера
+                    Конспекты 2-й курс
                 </span>
                 <a href="https://endermanik13.github.io/importer/" class="md-pdf-button">
                     <i class="ri-file-pdf-line"></i>
@@ -1850,7 +1850,7 @@
 
                 setupCodeBlocks();
                 setupImageViewer();
-                Prism.highlightAll(); // Применяем подсветку синтаксиса ко всем блокам кода
+                Prism.highlightAll();
 
                 if (headings.length > 0) {
                     setupHeadingsNavigation();
@@ -1935,7 +1935,7 @@
                         }
                         const code = block.querySelector('code');
                         if (code) {
-                            Prism.highlightElement(code); // Применяем подсветку к каждому блоку
+                            Prism.highlightElement(code);
                         }
                     }
                 });
@@ -1948,7 +1948,7 @@
                     if (langMatch) {
                         block.dataset.language = langMatch[1];
                     }
-                    Prism.highlightElement(code); // Применяем подсветку сразу
+                    Prism.highlightElement(code);
                 }
                 observer.observe(block);
             });
@@ -2116,193 +2116,193 @@
                 }
             });
             scrollTopButton.addEventListener('click', () => {
-                    window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
                     });
                 });
+            }
+
+            // Настройка поиска
+            const searchInput = document.getElementById('searchInput');
+            const searchPanel = document.getElementById('searchPanel');
+            const searchOverlay = document.getElementById('searchOverlay');
+            const searchPanelInput = document.getElementById('searchPanelInput');
+            const searchResults = document.getElementById('searchResults');
+            const closeSearch = document.getElementById('closeSearch');
+
+            searchInput.addEventListener('click', () => {
+                searchPanel.classList.add('active');
+                searchOverlay.classList.add('active');
+                searchPanelInput.focus();
             });
-        }
 
-        // Настройка поиска
-        const searchInput = document.getElementById('searchInput');
-        const searchPanel = document.getElementById('searchPanel');
-        const searchOverlay = document.getElementById('searchOverlay');
-        const searchPanelInput = document.getElementById('searchPanelInput');
-        const searchResults = document.getElementById('searchResults');
-        const closeSearch = document.getElementById('closeSearch');
+            searchPanelInput.addEventListener('input', (e) => {
+                performSearch(e.target.value);
+            });
 
-        searchInput.addEventListener('click', () => {
-            searchPanel.classList.add('active');
-            searchOverlay.classList.add('active');
-            searchPanelInput.focus();
-        });
-
-        searchPanelInput.addEventListener('input', (e) => {
-            performSearch(e.target.value);
-        });
-
-        closeSearch.addEventListener('click', () => {
-            searchPanel.classList.remove('active');
-            searchOverlay.classList.remove('active');
-            searchInput.value = '';
-            searchPanelInput.value = '';
-            searchResults.innerHTML = '';
-        });
-
-        searchOverlay.addEventListener('click', () => {
-            searchPanel.classList.remove('active');
-            searchOverlay.classList.remove('active');
-            searchInput.value = '';
-            searchPanelInput.value = '';
-            searchResults.innerHTML = '';
-        });
-
-        function performSearch(query) {
-            if (!query.trim()) {
+            closeSearch.addEventListener('click', () => {
+                searchPanel.classList.remove('active');
+                searchOverlay.classList.remove('active');
+                searchInput.value = '';
+                searchPanelInput.value = '';
                 searchResults.innerHTML = '';
-                return;
-            }
-            const filteredPages = pagesData.filter(page => {
-                const searchText = `${page.title || ''} ${page.content || ''} ${page.category || ''}`.toLowerCase();
-                return searchText.includes(query.toLowerCase());
             });
-            if (filteredPages.length === 0) {
-                searchResults.innerHTML = `
-                    <div class="text-center text-sm text-gray-400 py-4">
-                        <p>Ничего не найдено по запросу "${query}"</p>
-                    </div>
-                `;
-                return;
-            }
-            searchResults.innerHTML = filteredPages.map(page => `
-                <div class="search-result-item" data-slug="${page.slug}">
-                    <div class="search-result-title">${highlightText(page.title || 'Без названия', query)}</div>
-                    <div class="search-result-meta">
-                        <span><i class="${page.category.toLowerCase() === 'безкатегории' ? 'ri-star-line' : 'ri-folder-line'}"></i> ${page.category.toLowerCase() === 'безкатегории' ? 'Игнорируй' : page.category || 'Без категории'}</span>
-                        ${page.date ? `<span><i class="ri-calendar-line"></i> ${page.date}</span>` : ''}
-                    </div>
-                    <div class="search-result-description">
-                        <p>${highlightText(truncateText(page.content || '', 150), query)}</p>
-                    </div>
-                </div>
-            `).join('');
-            document.querySelectorAll('.search-result-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const slug = item.dataset.slug;
-                    const page = pagesData.find(p => p.slug === slug);
-                    if (page) {
-                        loadPage(page);
-                        localStorage.setItem('lastPageSlug', page.slug);
-                        updateActiveStates(page.slug);
-                        searchPanel.classList.remove('active');
-                        searchOverlay.classList.remove('active');
-                        searchInput.value = '';
-                        searchPanelInput.value = '';
-                        searchResults.innerHTML = '';
-                    }
+
+            searchOverlay.addEventListener('click', () => {
+                searchPanel.classList.remove('active');
+                searchOverlay.classList.remove('active');
+                searchInput.value = '';
+                searchPanelInput.value = '';
+                searchResults.innerHTML = '';
+            });
+
+            function performSearch(query) {
+                if (!query.trim()) {
+                    searchResults.innerHTML = '';
+                    return;
+                }
+                const filteredPages = pagesData.filter(page => {
+                    const searchText = `${page.title || ''} ${page.content || ''} ${page.category || ''}`.toLowerCase();
+                    return searchText.includes(query.toLowerCase());
                 });
+                if (filteredPages.length === 0) {
+                    searchResults.innerHTML = `
+                        <div class="text-center text-sm text-gray-400 py-4">
+                            <p>Ничего не найдено по запросу "${query}"</p>
+                        </div>
+                    `;
+                    return;
+                }
+                searchResults.innerHTML = filteredPages.map(page => `
+                    <div class="search-result-item" data-slug="${page.slug}">
+                        <div class="search-result-title">${highlightText(page.title || 'Без названия', query)}</div>
+                        <div class="search-result-meta">
+                            <span><i class="${page.category.toLowerCase() === 'безкатегории' ? 'ri-star-line' : 'ri-folder-line'}"></i> ${page.category.toLowerCase() === 'безкатегории' ? 'Игнорируй' : page.category || 'Без категории'}</span>
+                            ${page.date ? `<span><i class="ri-calendar-line"></i> ${page.date}</span>` : ''}
+                        </div>
+                        <div class="search-result-description">
+                            <p>${highlightText(truncateText(page.content || '', 150), query)}</p>
+                        </div>
+                    </div>
+                `).join('');
+                document.querySelectorAll('.search-result-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const slug = item.dataset.slug;
+                        const page = pagesData.find(p => p.slug === slug);
+                        if (page) {
+                            loadPage(page);
+                            localStorage.setItem('lastPageSlug', page.slug);
+                            updateActiveStates(page.slug);
+                            searchPanel.classList.remove('active');
+                            searchOverlay.classList.remove('active');
+                            searchInput.value = '';
+                            searchPanelInput.value = '';
+                            searchResults.innerHTML = '';
+                        }
+                    });
+                });
+            }
+
+            // Подсветка текста в поиске
+            function highlightText(text, query) {
+                if (!query) return text;
+                const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                return text.replace(regex, '<mark style="background: var(--search-highlight); padding: 0.1rem 0.2rem; border-radius: 4px;">$1</mark>');
+            }
+
+            // Обрезка текста
+            function truncateText(text, maxLength) {
+                if (text.length <= maxLength) return text;
+                return text.substring(0, maxLength).trim() + '...';
+            }
+
+            // Настройка кнопки поддержки
+            const supportButton = document.getElementById('supportButton');
+            const supportModal = document.getElementById('supportModal');
+            const supportModalOverlay = document.getElementById('supportModalOverlay');
+            const closeSupport = document.getElementById('closeSupport');
+
+            supportButton.addEventListener('click', () => {
+                supportModal.classList.add('active');
+                supportModalOverlay.classList.add('active');
             });
-        }
 
-        // Подсветка текста в поиске
-        function highlightText(text, query) {
-            if (!query) return text;
-            const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-            return text.replace(regex, '<mark style="background: var(--search-highlight); padding: 0.1rem 0.2rem; border-radius: 4px;">$1</mark>');
-        }
+            closeSupport.addEventListener('click', () => {
+                supportModal.classList.remove('active');
+                supportModalOverlay.classList.remove('active');
+            });
 
-        // Обрезка текста
-        function truncateText(text, maxLength) {
-            if (text.length <= maxLength) return text;
-            return text.substring(0, maxLength).trim() + '...';
-        }
+            supportModalOverlay.addEventListener('click', () => {
+                supportModal.classList.remove('active');
+                supportModalOverlay.classList.remove('active');
+            });
 
-        // Настройка кнопки поддержки
-        const supportButton = document.getElementById('supportButton');
-        const supportModal = document.getElementById('supportModal');
-        const supportModalOverlay = document.getElementById('supportModalOverlay');
-        const closeSupport = document.getElementById('closeSupport');
+            // Настройка мобильного меню
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const articlesColumn = document.getElementById('articlesColumn');
+            mobileMenuToggle.addEventListener('click', () => {
+                articlesColumn.classList.toggle('active');
+            });
 
-        supportButton.addEventListener('click', () => {
-            supportModal.classList.add('active');
-            supportModalOverlay.classList.add('active');
-        });
+            // Закрытие мобильного меню при клике вне его
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth >= 1024) return;
+                if (!articlesColumn.contains(e.target) && !mobileMenuToggle.contains(e.target) && articlesColumn.classList.contains('active')) {
+                    articlesColumn.classList.remove('active');
+                }
+            });
 
-        closeSupport.addEventListener('click', () => {
-            supportModal.classList.remove('active');
-            supportModalOverlay.classList.remove('active');
-        });
+            // Настройка Telegram-меню
+            const telegramButton = document.getElementById('telegramButton');
+            const telegramMenu = document.getElementById('telegramMenu');
+            telegramButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                telegramMenu.classList.toggle('active');
+            });
 
-        supportModalOverlay.addEventListener('click', () => {
-            supportModal.classList.remove('active');
-            supportModalOverlay.classList.remove('active');
-        });
+            document.addEventListener('click', (e) => {
+                if (!telegramButton.contains(e.target) && !telegramMenu.contains(e.target)) {
+                    telegramMenu.classList.remove('active');
+                }
+            });
 
-        // Настройка мобильного меню
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const articlesColumn = document.getElementById('articlesColumn');
-        mobileMenuToggle.addEventListener('click', () => {
-            articlesColumn.classList.toggle('active');
-        });
+            // Закрытие панели заголовков при клике вне её
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth >= 1024) return;
+                const headingsBlock = document.querySelector('.headings-block');
+                if (headingsBlock && !headingsBlock.contains(e.target) && headingsBlock.classList.contains('active')) {
+                    headingsBlock.classList.remove('active');
+                }
+            });
 
-        // Закрытие мобильного меню при клике вне его
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth >= 1024) return;
-            if (!articlesColumn.contains(e.target) && !mobileMenuToggle.contains(e.target) && articlesColumn.classList.contains('active')) {
-                articlesColumn.classList.remove('active');
-            }
-        });
+            // Пасхалка
+            const easterEggIcon = document.getElementById('easterEggIcon');
+            let clickCount = 0;
+            easterEggIcon.addEventListener('click', () => {
+                clickCount++;
+                if (clickCount >= 5) {
+                    window.open('https://github.com/Endermanik13/top', '_blank');
+                    clickCount = 0;
+                }
+            });
 
-        // Настройка Telegram-меню
-        const telegramButton = document.getElementById('telegramButton');
-        const telegramMenu = document.getElementById('telegramMenu');
-        telegramButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            telegramMenu.classList.toggle('active');
-        });
+            // Обработка изменения истории браузера
+            window.addEventListener('popstate', () => {
+                const slug = window.location.hash.substring(1);
+                const page = pagesData.find(p => p.slug === slug);
+                if (page) {
+                    loadPage(page);
+                    updateActiveStates(page.slug);
+                }
+            });
 
-        document.addEventListener('click', (e) => {
-            if (!telegramButton.contains(e.target) && !telegramMenu.contains(e.target)) {
-                telegramMenu.classList.remove('active');
-            }
-        });
-
-        // Закрытие панели заголовков при клике вне её
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth >= 1024) return;
-            const headingsBlock = document.querySelector('.headings-block');
-            if (headingsBlock && !headingsBlock.contains(e.target) && headingsBlock.classList.contains('active')) {
-                headingsBlock.classList.remove('active');
-            }
-        });
-
-        // Пасхалка
-        const easterEggIcon = document.getElementById('easterEggIcon');
-        let clickCount = 0;
-        easterEggIcon.addEventListener('click', () => {
-            clickCount++;
-            if (clickCount >= 5) {
-                window.open('https://github.com/Endermanik13/top', '_blank');
-                clickCount = 0;
-            }
-        });
-
-        // Обработка изменения истории браузера
-        window.addEventListener('popstate', () => {
-            const slug = window.location.hash.substring(1);
-            const page = pagesData.find(p => p.slug === slug);
-            if (page) {
-                loadPage(page);
-                updateActiveStates(page.slug);
-            }
-        });
-
-        // Инициализация
-        document.addEventListener('DOMContentLoaded', () => {
-            loadPagesData();
-            setupScrollTopButton();
-        });
-    </script>
-</body>
+            // Инициализация
+            document.addEventListener('DOMContentLoaded', () => {
+                loadPagesData();
+                setupScrollTopButton();
+            });
+        </script>
+    </body>
 </html>
