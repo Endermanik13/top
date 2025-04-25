@@ -13,6 +13,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0  # Полная история репозитория для получения дат
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -24,6 +25,7 @@ jobs:
           npm install -g @actions/github
           npm install @octokit/rest@18.12.0
           npm install marked
+          npm install js-yaml  # Для парсинга frontmatter
 
       - name: Generate pages.json
         env:
@@ -33,6 +35,7 @@ jobs:
             const fs = require('fs');
             const path = require('path');
             const { Octokit } = require('@octokit/rest');
+            const yaml = require('js-yaml');  // Для парсинга frontmatter
             const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
             async function getFileCreationDate(owner, repo, filePath) {
@@ -42,11 +45,40 @@ jobs:
                   repo,
                   path: filePath,
                   per_page: 1,
+                  page: 1,
+                  // Получаем самый ранний коммит, сортируем по дате (ascending)
                 });
-                return commits.data.length > 0 ? commits.data[0].commit.committer.date : new Date().toISOString();
+                // Для получения самого раннего коммита нужно пройти по страницам
+                let earliestCommit = null;
+                let page = 1;
+                while (true) {
+                  const result = await octokit.repos.listCommits({
+                    owner,
+                    repo,
+                    path: filePath,
+                    per_page: 100,
+                    page: page,
+                  });
+                  if (result.data.length === 0) break;
+                  earliestCommit = result.data[result.data.length - 1]; // Самый ранний на этой странице
+                  page++;
+                }
+                return earliestCommit ? earliestCommit.commit.committer.date : new Date().toISOString();
               } catch (error) {
                 console.error('Error fetching commit date for', filePath, error.message);
                 return new Date().toISOString();
+              }
+            }
+
+            function extractFrontmatter(content) {
+              const frontmatterRegex = /^---\n([\s\S]+?)\n---/;
+              const match = content.match(frontmatterRegex);
+              if (!match) return {};
+              try {
+                return yaml.load(match[1]) || {};
+              } catch (error) {
+                console.error('Error parsing frontmatter:', error.message);
+                return {};
               }
             }
 
@@ -55,10 +87,9 @@ jobs:
               const files = fs.readdirSync(dir, { withFileTypes: true });
               for (const file of files) {
                 const fullPath = path.join(dir, file.name);
-                // Игнорируем папки node_modules и другие системные папки
                 if (file.isDirectory()) {
                   if (file.name === 'node_modules' || file.name.startsWith('.')) {
-                    continue; // Пропускаем системные папки
+                    continue;
                   }
                   results = results.concat(findMarkdownFiles(fullPath));
                 } else if (file.name.endsWith('.md')) {
@@ -81,16 +112,25 @@ jobs:
                 for (const file of files) {
                   const content = fs.readFileSync(file.path, 'utf8');
                   const slug = file.name.replace('.md', '').toLowerCase().replace(/\s+/g, '-');
-                  const date = await getFileCreationDate('Endermanik13', 'obsidian', file.path);
+
+                  // Извлекаем frontmatter
+                  const frontmatter = extractFrontmatter(content);
+                  let date = frontmatter.date;
+
+                  // Если дата в frontmatter отсутствует, используем дату первого коммита
+                  if (!date) {
+                    date = await getFileCreationDate('Endermanik13', 'obsidian', file.path);
+                  }
 
                   // Определяем категорию по имени папки
-                  const relativePath = file.path.replace(/\\\\/g, '/'); // Для совместимости с Windows
+                  const relativePath = file.path.replace(/\\\\/g, '/');
                   const dirName = path.dirname(relativePath) === '.' ? 'безкатегории' : path.basename(path.dirname(relativePath));
 
                   // Извлекаем заголовок и описание
-                  const titleMatch = content.match(/^# (.+)/m);
+                  const contentWithoutFrontmatter = content.replace(/^---\n([\s\S]+?)\n---\n?/, '');
+                  const titleMatch = contentWithoutFrontmatter.match(/^# (.+)/m);
                   const title = titleMatch ? titleMatch[1] : file.name.replace('.md', '');
-                  const description = content.split('\n').slice(1).join(' ').substring(0, 100) + '...';
+                  const description = contentWithoutFrontmatter.split('\n').slice(1).join(' ').substring(0, 100) + '...';
 
                   pages.push({
                     title: title,
@@ -98,7 +138,7 @@ jobs:
                     description: description,
                     link: 'https://Endermanik13.github.io/obsidian/page/' + slug,
                     category: dirName,
-                    content: content,
+                    content: contentWithoutFrontmatter,
                     date: date
                   });
                 }
