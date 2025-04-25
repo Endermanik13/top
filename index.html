@@ -209,18 +209,9 @@
             padding: 0.5rem 0;
         }
 
-        .category .article-date {
-            font-size: 0.75rem;
-            color: var(--text-tertiary);
-            opacity: 0.5;
-            margin-left: 1.75rem;
-            margin-top: -0.25rem;
-            padding-bottom: 0.5rem;
-        }
-
         .article-item {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             padding: 0.75rem 1rem;
             margin: 0 0.5rem;
             border-radius: 8px;
@@ -273,6 +264,18 @@
 
         .article-item:hover i {
             transform: scale(1.2);
+        }
+
+        .article-item-title {
+            display: flex;
+            align-items: center;
+        }
+
+        .article-item-date {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            opacity: 0.5;
+            margin-top: 0.25rem;
         }
 
         .article-header {
@@ -768,7 +771,7 @@
         .article-text pre {
             position: relative;
             background: var(--code-bg);
-            padding: 1.5rem;
+            padding: 2rem 1.5rem 1.5rem;
             border-radius: 8px;
             margin: 1.5rem 0;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -787,10 +790,58 @@
             word-wrap: normal;
         }
 
+        .code-language {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        pre[data-language="javascript"],
+        pre[data-language="js"] {
+            background: linear-gradient(135deg, rgba(255, 214, 0, 0.2), rgba(30, 58, 138, 0.3));
+        }
+
+        pre[data-language="javascript"] .code-language,
+        pre[data-language="js"] .code-language {
+            background: rgba(255, 214, 0, 0.3);
+        }
+
+        pre[data-language="python"],
+        pre[data-language="py"] {
+            background: linear-gradient(135deg, rgba(53, 120, 229, 0.2), rgba(30, 58, 138, 0.3));
+        }
+
+        pre[data-language="python"] .code-language,
+        pre[data-language="py"] .code-language {
+            background: rgba(53, 120, 229, 0.3);
+        }
+
+        pre[data-language="css"] {
+            background: linear-gradient(135deg, rgba(214, 40, 40, 0.2), rgba(30, 58, 138, 0.3));
+        }
+
+        pre[data-language="css"] .code-language {
+            background: rgba(214, 40, 40, 0.3);
+        }
+
+        pre[data-language="html"] {
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.2), rgba(30, 58, 138, 0.3));
+        }
+
+        pre[data-language="html"] .code-language {
+            background: rgba(40, 167, 69, 0.3);
+        }
+
         .copy-code-btn {
             position: absolute;
-            top: 0.75rem;
-            right: 0.75rem;
+            top: 0.5rem;
+            right: 3.5rem;
             background: linear-gradient(135deg, #2AABEE, #1A8BCF);
             color: white;
             border: none;
@@ -855,22 +906,54 @@
             display: block;
             cursor: pointer;
             transition: transform 0.3s ease;
-            loading: lazy;
+            position: relative;
         }
 
         .article-text img:hover {
             transform: scale(1.02);
         }
 
+        .image-caption {
+            display: block;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            margin-top: -1rem;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .article-text img:hover + .image-caption {
+            opacity: 1;
+        }
+
         .article-text blockquote {
-            background: var(--bg-quaternary);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(30, 58, 138, 0.2));
             border-left: 4px solid var(--accent-color);
-            padding: 0.75rem 1rem;
+            padding: 1rem 1.5rem;
             margin: 1.5rem 0;
-            border-radius: 8px;
+            border-radius: 12px;
             color: var(--text-secondary);
             font-size: 0.95rem;
             line-height: 1.7;
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .article-text blockquote::before {
+            content: '\e8af';
+            font-family: 'remixicon';
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-right: 0.75rem;
+            opacity: 0.7;
+        }
+
+        .article-text blockquote p {
+            margin: 0;
+            font-style: italic;
         }
 
         .embed-container {
@@ -914,16 +997,17 @@
             top: 80px;
         }
 
-        .headings-block.collapsed {
-            max-width: 50px;
-            overflow: hidden;
-        }
-
         .headings-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 0.75rem;
+            position: sticky;
+            top: 0;
+            background: var(--bg-tertiary);
+            z-index: 1;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .headings-block h4 {
@@ -949,7 +1033,10 @@
         }
 
         .headings-container {
-            transition: all 0.3s ease;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            max-height: 300px;
+            opacity: 1;
+            overflow-y: auto;
         }
 
         .headings-container.collapsed {
@@ -1582,19 +1669,12 @@
                 const categoryDiv = document.createElement('div');
                 categoryDiv.className = 'category';
                 const categoryTitle = document.createElement('h3');
-                const categoryDate = categories[category][0].date || '';
                 categoryTitle.innerHTML = `
                     <i class="ri-folder-line"></i>
                     <span>${category}</span>
                     <i class="ri-arrow-right-s-line ml-auto transition-transform duration-300"></i>
                 `;
                 categoryDiv.appendChild(categoryTitle);
-                if (categoryDate) {
-                    const dateDiv = document.createElement('div');
-                    dateDiv.className = 'article-date';
-                    dateDiv.textContent = categoryDate;
-                    categoryDiv.appendChild(dateDiv);
-                }
                 const categoryItems = document.createElement('div');
                 categoryItems.className = 'category-items';
                 const sortedPages = categories[category].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
@@ -1602,9 +1682,13 @@
                     const articleItem = document.createElement('a');
                     articleItem.href = `#${page.slug}`;
                     articleItem.className = `article-item ${page.slug === lastPageSlug ? 'active' : ''}`;
+                    const iconClass = page.category.toLowerCase().includes('программ') ? 'ri-code-line' : 'ri-file-text-line';
                     articleItem.innerHTML = `
-                        <i class="ri-${page.icon || 'file-text-line'}"></i>
-                        <span class="truncate">${page.title || 'Без названия'}</span>
+                        <div class="article-item-title">
+                            <i class="${iconClass}"></i>
+                            <span class="truncate">${page.title || 'Без названия'}</span>
+                        </div>
+                        ${page.date ? `<div class="article-item-date">${page.date}</div>` : ''}
                     `;
                     articleItem.dataset.slug = page.slug;
                     articleItem.title = page.title || 'Без названия';
@@ -1652,46 +1736,26 @@
 
         // Обработка контента
         function processContent(content, title) {
-            const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|v\/)?([A-Za-z0-9_-]{11})(\S*)?$/;
-            const lines = content.split('\n');
-            let inCodeBlock = false;
-            const processedLines = lines.map(line => {
-                if (line.trim().startsWith('```')) {
-                    inCodeBlock = !inCodeBlock;
-                    return line;
-                }
-                if (inCodeBlock) return line;
-                const match = line.trim().match(youtubeRegex);
-                if (match && match[5]) {
-                    return `
-                        <div class="embed-container">
-                            <div class="embed-title">YouTube видео</div>
-                            <iframe src="https://www.youtube.com/embed/${match[5]}" frameborder="0" allowfullscreen></iframe>
-                        </div>
-                    `;
-                }
-                return line;
+            const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?([A-Za-z0-9_-]{11})/g;
+            const processedContent = content.replace(youtubeRegex, (match, videoId) => {
+                return `
+                    <div class="embed-container">
+                        <div class="embed-title">YouTube видео</div>
+                        <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                `;
             });
-            let htmlContent = marked.parse(processedLines.join('\n'), {
+            let htmlContent = marked.parse(processedContent, {
                 renderer: new marked.Renderer({
-                    link(href, title, text) {
-                        const match = href.match(youtubeRegex);
-                        if (match && match[5] && !text.trim()) {
-                            return `
-                                <div class="embed-container">
-                                    <div class="embed-title">${text || 'YouTube видео'}</div>
-                                    <iframe src="https://www.youtube.com/embed/${match[5]}" frameborder="0" allowfullscreen></iframe>
-                                </div>
-                            `;
-                        }
-                        return `<a href="${href}" title="${title || ''}" target="_blank">${text}</a>`;
-                    },
                     image(href, title, text) {
-                        return `<img src="${href}" alt="${text || ''}" title="${title || ''}" class="markdown-image" loading="lazy">`;
+                        return `
+                            <img src="${href}" alt="${text || ''}" title="${title || ''}" class="markdown-image" loading="lazy">
+                            <span class="image-caption">Кликни чтобы увеличить</span>
+                        `;
                     },
                     code(code, language) {
                         const normalizedCode = code.replace(/\r\n/g, '\n').replace(/\t/g, '    ');
-                        return `<pre><code class="language-${language || ''}">${normalizedCode}</code></pre>`;
+                        return `<pre data-language="${language || 'text'}"><code class="language-${language || 'text'}">${normalizedCode}</code></pre>`;
                     }
                 })
             });
@@ -1777,14 +1841,13 @@
         function setupHeadingsToggle() {
             const toggleButton = document.getElementById('toggleHeadings');
             const headingsContainer = document.getElementById('headingsContainer');
-            const headingsBlock = document.querySelector('.headings-block');
             if (!toggleButton || !headingsContainer) return;
             toggleButton.addEventListener('click', () => {
-                const isCollapsed = headingsBlock.classList.toggle('collapsed');
-                headingsContainer.classList.toggle('collapsed', isCollapsed);
+                const isCollapsed = headingsContainer.classList.toggle('collapsed');
                 toggleButton.innerHTML = `<i class="ri-${isCollapsed ? 'eye-off' : 'eye'}-line"></i>`;
             });
             if (window.innerWidth < 1024) {
+                const headingsBlock = document.querySelector('.headings-block');
                 headingsBlock.addEventListener('click', (e) => {
                     if (e.target.closest('.toggle-headings') || e.target.closest('.heading-item')) return;
                     headingsBlock.classList.toggle('active');
@@ -1833,6 +1896,13 @@
                             button.innerHTML = '<i class="ri-file-copy-line"></i> Копировать';
                             button.addEventListener('click', () => copyCode(block, button));
                             block.appendChild(button);
+                        }
+                        if (!block.querySelector('.code-language')) {
+                            const language = block.dataset.language || 'text';
+                            const label = document.createElement('span');
+                            label.className = 'code-language';
+                            label.textContent = language.toUpperCase();
+                            block.appendChild(label);
                         }
                     }
                 });
@@ -1991,21 +2061,26 @@
             viewerImage.addEventListener('touchend', () => {
                 isDragging = false;
                 touchStartDistance = 0;
+                touchStartScale = currentScale;
             });
         }
 
-        // Настройка кнопки "Наверх"
+        // Настройка кнопки прокрутки наверх
         function setupScrollTopButton() {
             const scrollTopButton = document.getElementById('scrollTopButton');
             window.addEventListener('scroll', () => {
-                scrollTopButton.classList.toggle('visible', window.scrollY > 200);
+                if (window.scrollY > 300) {
+                    scrollTopButton.classList.add('visible');
+                } else {
+                    scrollTopButton.classList.remove('visible');
+                }
             });
             scrollTopButton.addEventListener('click', () => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         }
 
-        // Поиск
+        // Настройка поиска
         const searchInput = document.getElementById('searchInput');
         const searchPanel = document.getElementById('searchPanel');
         const searchOverlay = document.getElementById('searchOverlay');
@@ -2013,22 +2088,14 @@
         const searchResults = document.getElementById('searchResults');
         const closeSearch = document.getElementById('closeSearch');
 
-        searchInput.addEventListener('input', () => {
-            if (searchInput.value.trim()) {
-                searchPanel.classList.add('active');
-                searchOverlay.classList.add('active');
-                searchPanelInput.value = searchInput.value;
-                performSearch(searchPanelInput.value);
-            } else {
-                searchPanel.classList.remove('active');
-                searchOverlay.classList.remove('active');
-                searchResults.innerHTML = '';
-            }
+        searchInput.addEventListener('focus', () => {
+            searchPanel.classList.add('active');
+            searchOverlay.classList.add('active');
+            searchPanelInput.focus();
         });
 
-        searchPanelInput.addEventListener('input', () => {
-            searchInput.value = searchPanelInput.value;
-            performSearch(searchPanelInput.value);
+        searchPanelInput.addEventListener('input', (e) => {
+            performSearch(e.target.value);
         });
 
         closeSearch.addEventListener('click', () => {
@@ -2145,37 +2212,8 @@
 
         // Настройка Telegram-меню
         const telegramButton = document.getElementById('telegramButton');
-        const telegramMenu = document.getElementById('telegramMenu');
-        telegramButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            telegramMenu.classList.toggle('active');
-        });
-        document.addEventListener('click', (e) => {
-            if (!telegramButton.contains(e.target) && !telegramMenu.contains(e.target)) {
-                telegramMenu.classList.remove('active');
-            }
-        });
-
-        // Обработка клавиш
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                searchPanel.classList.remove('active');
-                searchOverlay.classList.remove('active');
-                searchInput.value = '';
-                searchPanelInput.value = '';
-                searchResults.innerHTML = '';
-                supportModal.classList.remove('active');
-                supportModalOverlay.classList.remove('active');
-                document.getElementById('imageViewer').classList.remove('active');
-                document.body.style.overflow = '';
-                articlesColumn.classList.remove('active');
-            }
-            if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
-                e.preventDefault();
-                searchInput.focus();
-                searchPanel.classList.add('active');
-                searchOverlay.classList.add('active');
-                searchPanelInput.focus();
+       hadings-block');
+                if (headingsBlock) headingsBlock.classList.remove('active');
             }
         });
 
