@@ -13,7 +13,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0  # Полная история репозитория для получения дат
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -22,10 +21,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install -g @actions/github
-          npm install @octokit/rest@18.12.0
           npm install marked
-          npm install js-yaml  # Для парсинга frontmatter
 
       - name: Generate pages.json
         env:
@@ -34,45 +30,15 @@ jobs:
           node -e "
             const fs = require('fs');
             const path = require('path');
-            const { Octokit } = require('@octokit/rest');
-            const yaml = require('js-yaml');  // Для парсинга frontmatter
-            const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
-            // Функция для получения даты создания файла (первый коммит)
-            async function getFileCreationDate(owner, repo, filePath) {
-              try {
-                let earliestCommit = null;
-                let page = 1;
-                while (true) {
-                  const result = await octokit.repos.listCommits({
-                    owner,
-                    repo,
-                    path: filePath,
-                    per_page: 100,
-                    page: page,
-                  });
-                  if (result.data.length === 0) break;
-                  earliestCommit = result.data[result.data.length - 1]; // Самый ранний коммит на этой странице
-                  page++;
-                }
-                return earliestCommit ? earliestCommit.commit.committer.date : new Date().toISOString();
-              } catch (error) {
-                console.error('Error fetching commit date for', filePath, error.message);
-                return new Date().toISOString();
+            // Функция для извлечения даты из имени файла
+            function extractDateFromFilename(filename) {
+              const dateRegex = /^(\d{2}\.\d{2}\.\d{4})/;
+              const match = filename.match(dateRegex);
+              if (match) {
+                return match[1]; // Например, '15.10.2023'
               }
-            }
-
-            // Функция для извлечения frontmatter
-            function extractFrontmatter(content) {
-              const frontmatterRegex = /^---\n([\s\S]+?)\n---/;
-              const match = content.match(frontmatterRegex);
-              if (!match) return {};
-              try {
-                return yaml.load(match[1]) || {};
-              } catch (error) {
-                console.error('Error parsing frontmatter:', error.message);
-                return {};
-              }
+              return new Date().toISOString().split('T')[0]; // Если дата не найдена, используем текущую
             }
 
             // Функция для поиска Markdown-файлов
@@ -107,24 +73,17 @@ jobs:
                   const content = fs.readFileSync(file.path, 'utf8');
                   const slug = file.name.replace('.md', '').toLowerCase().replace(/\s+/g, '-');
 
-                  // Извлекаем frontmatter и ищем дату
-                  const frontmatter = extractFrontmatter(content);
-                  let date = frontmatter.date;
-
-                  // Если даты в frontmatter нет, получаем дату первого коммита
-                  if (!date) {
-                    date = await getFileCreationDate('Endermanik13', 'obsidian', file.path);
-                  }
+                  // Извлекаем дату из имени файла
+                  const date = extractDateFromFilename(file.name);
 
                   // Определяем категорию по имени папки
                   const relativePath = file.path.replace(/\\\\/g, '/');
                   const dirName = path.dirname(relativePath) === '.' ? 'безкатегории' : path.basename(path.dirname(relativePath));
 
                   // Извлекаем заголовок и описание
-                  const contentWithoutFrontmatter = content.replace(/^---\n([\s\S]+?)\n---\n?/, '');
-                  const titleMatch = contentWithoutFrontmatter.match(/^# (.+)/m);
+                  const titleMatch = content.match(/^# (.+)/m);
                   const title = titleMatch ? titleMatch[1] : file.name.replace('.md', '');
-                  const description = contentWithoutFrontmatter.split('\n').slice(1).join(' ').substring(0, 100) + '...';
+                  const description = content.split('\n').slice(1).join(' ').substring(0, 100) + '...';
 
                   pages.push({
                     title: title,
@@ -132,13 +91,17 @@ jobs:
                     description: description,
                     link: 'https://Endermanik13.github.io/obsidian/page/' + slug,
                     category: dirName,
-                    content: contentWithoutFrontmatter,
+                    content: content,
                     date: date
                   });
                 }
 
                 // Сортируем страницы по дате
-                pages.sort((a, b) => new Date(b.date) - new Date(a.date));
+                pages.sort((a, b) => {
+                  const dateA = new Date(a.date.split('.').reverse().join('-'));
+                  const dateB = new Date(b.date.split('.').reverse().join('-'));
+                  return dateB - dateA;
+                });
                 fs.writeFileSync('pages.json', JSON.stringify(pages, null, 2));
                 console.log('Generated pages.json with', pages.length, 'pages');
               } catch (error) {
