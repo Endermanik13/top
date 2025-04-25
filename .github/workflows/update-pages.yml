@@ -38,17 +38,9 @@ jobs:
             const yaml = require('js-yaml');  // Для парсинга frontmatter
             const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
+            // Функция для получения даты создания файла (первый коммит)
             async function getFileCreationDate(owner, repo, filePath) {
               try {
-                const commits = await octokit.repos.listCommits({
-                  owner,
-                  repo,
-                  path: filePath,
-                  per_page: 1,
-                  page: 1,
-                  // Получаем самый ранний коммит, сортируем по дате (ascending)
-                });
-                // Для получения самого раннего коммита нужно пройти по страницам
                 let earliestCommit = null;
                 let page = 1;
                 while (true) {
@@ -60,7 +52,7 @@ jobs:
                     page: page,
                   });
                   if (result.data.length === 0) break;
-                  earliestCommit = result.data[result.data.length - 1]; // Самый ранний на этой странице
+                  earliestCommit = result.data[result.data.length - 1]; // Самый ранний коммит на этой странице
                   page++;
                 }
                 return earliestCommit ? earliestCommit.commit.committer.date : new Date().toISOString();
@@ -70,6 +62,7 @@ jobs:
               }
             }
 
+            // Функция для извлечения frontmatter
             function extractFrontmatter(content) {
               const frontmatterRegex = /^---\n([\s\S]+?)\n---/;
               const match = content.match(frontmatterRegex);
@@ -82,6 +75,7 @@ jobs:
               }
             }
 
+            // Функция для поиска Markdown-файлов
             function findMarkdownFiles(dir) {
               let results = [];
               const files = fs.readdirSync(dir, { withFileTypes: true });
@@ -113,11 +107,11 @@ jobs:
                   const content = fs.readFileSync(file.path, 'utf8');
                   const slug = file.name.replace('.md', '').toLowerCase().replace(/\s+/g, '-');
 
-                  // Извлекаем frontmatter
+                  // Извлекаем frontmatter и ищем дату
                   const frontmatter = extractFrontmatter(content);
                   let date = frontmatter.date;
 
-                  // Если дата в frontmatter отсутствует, используем дату первого коммита
+                  // Если даты в frontmatter нет, получаем дату первого коммита
                   if (!date) {
                     date = await getFileCreationDate('Endermanik13', 'obsidian', file.path);
                   }
@@ -143,6 +137,7 @@ jobs:
                   });
                 }
 
+                // Сортируем страницы по дате
                 pages.sort((a, b) => new Date(b.date) - new Date(a.date));
                 fs.writeFileSync('pages.json', JSON.stringify(pages, null, 2));
                 console.log('Generated pages.json with', pages.length, 'pages');
