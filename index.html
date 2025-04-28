@@ -28,7 +28,7 @@
             --border-color: rgba(255, 255, 255, 0.1);
             --search-highlight: rgba(75, 107, 159, 0.5);
             --code-bg: rgba(110, 118, 129, 0.3);
-            --inline-code-bg: rgba(59, 130, 246, 0.15);
+            --inline-code-bg: #252A30; /* Обновленный фон для инлайн-кода */
             --quote-bg: rgba(59, 130, 246, 0.05);
         }
 
@@ -793,12 +793,13 @@
         .article-text code {
             font-family: 'JetBrains Mono', monospace;
             background-color: var(--inline-code-bg);
-            color: var(--text-primary);
-            padding: 0.25rem 0.5rem;
-            border-radius: 6px;
-            font-size: 0.9em;
+            color: #85B4FF; /* Обновленный цвет шрифта */
+            padding: 0.1rem 0.3rem; /* Уменьшенные отступы для меньшего разделения */
+            border-radius: 4px; /* Более гладкие углы */
+            font-size: 0.95em; /* Чуть ближе к размеру основного текста */
             white-space: pre-wrap;
             word-break: break-all;
+            transition: background-color 0.2s ease; /* Плавный переход для фона */
         }
 
         .article-text pre {
