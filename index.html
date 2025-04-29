@@ -22,14 +22,17 @@
             --text-primary: #d8dee9;
             --text-secondary: #b8c0cc;
             --text-tertiary: #87909b;
-            --accent-color: #6b7280;
-            --accent-hover: #9ca3af;
-            --accent-active: #4b5563;
+            --accent-grey: #6b7280;
+            --accent-grey-hover: #9ca3af;
+            --accent-blue: #0366d6;
+            --accent-blue-hover: #1a7bff;
+            --accent-red: #e57373;
             --border-color: rgba(255, 255, 255, 0.15);
             --search-highlight: rgba(107, 114, 128, 0.3);
             --code-bg: #24272b;
             --inline-code-bg: #2d3136;
             --quote-bg: rgba(107, 114, 128, 0.1);
+            --highlight-bg: rgba(107, 114, 128, 0.4);
         }
 
         body {
@@ -131,12 +134,12 @@
         }
 
         .menu-item:hover {
-            color: var(--accent-color);
+            color: var(--accent-grey);
             background-color: var(--bg-tertiary);
         }
 
         .menu-item.active {
-            color: var(--accent-color);
+            color: var(--accent-grey);
             background-color: var(--bg-tertiary);
         }
 
@@ -195,7 +198,7 @@
         .category h3:hover .ri-star-line,
         .category h3:hover .ri-calendar-line {
             transform: scale(1.2);
-            color: var(--accent-color);
+            color: var(--accent-grey);
         }
 
         .category h3 .ri-arrow-right-s-line {
@@ -227,6 +230,8 @@
             text-decoration: none;
             position: relative;
             overflow: hidden;
+            background: var(--bg-secondary);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .article-item::before {
@@ -236,17 +241,16 @@
             top: 0;
             height: 100%;
             width: 3px;
-            background: var(--accent-color);
+            background: var(--accent-grey);
             transform: translateX(-100%);
             transition: transform 0.3s ease;
         }
 
-        .article-item
-
-:hover {
+        .article-item:hover {
             background-color: var(--bg-quaternary);
-            color: var(--accent-color);
+            color: var(--accent-grey);
             padding-left: 1.25rem;
+            transform: translateY(-2px);
         }
 
         .article-item:hover::before {
@@ -255,7 +259,7 @@
 
         .article-item.active {
             background-color: rgba(107, 114, 128, 0.2);
-            color: var(--accent-color);
+            color: var(--accent-grey);
             font-weight: 500;
         }
 
@@ -282,7 +286,7 @@
         .article-item-date {
             font-size: 0.75rem;
             color: var(--text-tertiary);
-            opacity: 0.5;
+            opacity: 0.8;
             margin-top: 0.25rem;
         }
 
@@ -292,7 +296,7 @@
 
         .article-item-date:hover i.ri-calendar-line {
             transform: scale(1.2);
-            color: var(--accent-color);
+            color: var(--accent-grey);
         }
 
         .article-header {
@@ -335,7 +339,7 @@
             
             .search-container {
                 width: 100%;
-                margin-top: 0.5rem determinazione;
+                margin-top: 0.5rem;
                 flex-direction: column;
                 align-items: flex-start;
             }
@@ -346,7 +350,7 @@
             }
             
             .telegram-button {
-                display: none;
+                margin-top: 0.5rem;
             }
         }
 
@@ -361,12 +365,12 @@
         }
 
         .blog-title:hover {
-            color: var(--accent-color);
+            color: var(--accent-grey);
         }
 
         .blog-title i {
             margin-right: 0.75rem;
-            color: var(--accent-color);
+            color: var(--accent-grey);
             transition: transform 0.3s ease;
         }
 
@@ -385,8 +389,8 @@
         .search-panel-input {
             padding: 0.6rem 2.5rem 0.6rem 1rem;
             background-color: var(--bg-tertiary);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            grensradius: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             color: var(--text-primary);
             transition: all 0.3s ease;
             min-width: 200px;
@@ -396,14 +400,14 @@
         .search-input:focus,
         .search-panel-input:focus {
             outline: none;
-            border-color: rgba(107, 114, 128, 0.3);
+            border-color: var(--accent-blue);
             background-color: var(--bg-quaternary);
-            box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.1);
+            box-shadow: 0 0 0 3px rgba(3, 102, 214, 0.1);
         }
 
         .search-input {
             cursor: pointer;
-            opacity: 0.7;
+            opacity: 0.9;
         }
 
         .search-panel {
@@ -413,7 +417,7 @@
             transform: translate(-50%, -50%) scale(0.95);
             width: min(90%, 700px);
             max-height: 80vh;
-            background-color: var(--bg-tertiary);
+            background-color: var(--bg-secondary);
             z-index: 100;
             opacity: 0;
             visibility: hidden;
@@ -422,6 +426,7 @@
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
             border: 1px solid var(--border-color);
+            animation: slideIn 0.3s ease-out;
         }
 
         .search-panel.active {
@@ -464,6 +469,7 @@
             cursor: pointer;
             border-radius: 8px;
             transition: all 0.3s ease;
+            background: var(--bg-tertiary);
         }
 
         .search-result-item:hover {
@@ -502,7 +508,7 @@
         .search-result-meta:hover i.ri-star-line,
         .search-result-meta:hover i.ri-calendar-line {
             transform: scale(1.2);
-            color: var(--accent-color);
+            color: var(--accent-grey);
         }
 
         .search-result-description {
@@ -528,7 +534,7 @@
         }
 
         .close-search:hover {
-            color: var(--accent-color);
+            color: var(--accent-blue);
             transform: scale(1.1);
         }
 
@@ -544,14 +550,15 @@
         }
 
         .telegram-button {
-            background: linear-gradient(135deg, #4b5563, #374151);
+            background: var(--accent-blue);
             color: var(--text-primary);
             transition: all 0.3s ease;
         }
 
         .telegram-button:hover {
+            background: var(--accent-blue-hover);
             transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+            box-shadow: 0 4px 12px rgba(3, 102, 214, 0.3);
         }
 
         .telegram-menu {
@@ -568,14 +575,15 @@
             padding: 0.5rem;
             min-width: 200px;
             opacity: 0;
-            transform: scale(0.95) translateY(-10px);
+            transform: translateY(-10px);
             transition: all 0.3s ease;
         }
 
         .telegram-menu.active {
             display: flex;
             opacity: 1;
-            transform: scale(1) translateY(0);
+            transform: translateY(0);
+            animation: slideIn 0.3s ease-out;
         }
 
         .telegram-menu a {
@@ -584,12 +592,12 @@
             text-decoration: none;
             border-radius: 6px;
             transition: all 0.3s ease;
-            background: linear-gradient(135deg, #4b5563, #374151);
+            background: var(--bg-quaternary);
             margin: 0.25rem 0;
         }
 
         .telegram-menu a:hover {
-            background: linear-gradient(135deg, #6b7280, #4b5563);
+            background: var(--accent-blue);
             transform: translateX(4px);
         }
 
@@ -608,7 +616,7 @@
 
         .md-pdf-button:hover {
             background: var(--bg-quaternary);
-            color: var(--accent-color);
+            color: var(--accent-grey);
         }
 
         .mobile-menu-toggle {
@@ -625,7 +633,7 @@
 
         .mobile-menu-toggle:hover {
             background: var(--bg-tertiary);
-            color: var(--accent-color);
+            color: var(--accent-grey);
         }
 
         .article-content {
@@ -693,7 +701,7 @@
             .headings-block {
                 width: 100%;
                 right: 0;
-                top: 68px;
+                top: 68 aguarde;
                 max-height: 450px;
             }
         }
@@ -714,7 +722,7 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: var(--accent-color);
+            background: var(--accent-blue);
             transition: width 0.5s ease-in-out;
         }
 
@@ -737,7 +745,7 @@
             left: 0;
             width: 0;
             height: 1px;
-            background: var(--accent-hover);
+            background: var(--accent-blue);
             transition: width 0.5s ease-in-out;
         }
 
@@ -780,16 +788,16 @@
         }
 
         .article-text a {
-            color: var(--accent-color);
+            color: var(--accent-blue);
             text-decoration: none;
             transition: all 0.3s ease;
             font-weight: 500;
-            border-bottom: 1px dotted rgba(107, 114, 128, 0.3);
+            border-bottom: 1px dotted rgba(3, 102, 214, 0.3);
         }
 
         .article-text a:hover {
-            color: var(--accent-hover);
-            border-bottom-color: var(--accent-color);
+            color: var(--accent-blue-hover);
+            border-bottom-color: var(--accent-blue);
         }
 
         .article-text code {
@@ -824,6 +832,7 @@
             padding: 0;
             white-space: pre;
             word-wrap: normal;
+            display: block;
         }
 
         .code-language {
@@ -930,7 +939,7 @@
 
         .article-text blockquote {
             background: var(--quote-bg);
-            border-left: 4px solid var(--accent-color);
+            border-left: 4px solid var(--accent-blue);
             padding: 1rem 1.5rem;
             margin: 1.5rem 0;
             border-radius: 12px;
@@ -946,7 +955,7 @@
             content: '\e8af';
             font-family: 'remixicon';
             font-size: 1.5rem;
-            color: var(--accent-color);
+            color: var(--accent-blue);
             margin-right: 0.75rem;
             opacity: 0.7;
         }
@@ -1039,13 +1048,13 @@
         }
 
         .heading-item:hover {
-            color: var(--accent-color);
+            color: var(--accent-blue);
             background-color: var(--bg-quaternary);
         }
 
         .heading-item.active {
-            color: var(--accent-color);
-            background-color: rgba(107, 114, 128, 0.2);
+            color: var(--accent-blue);
+            background-color: rgba(3, 102, 214, 0.1);
         }
 
         .heading-item.h3 {
@@ -1072,7 +1081,7 @@
             height: 20px;
             border: 3px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
-            border-top-color: var(--accent-color);
+            border-top-color: var(--accent-blue);
             animation: spin 1s ease-in-out infinite;
             margin-right: 0.75rem;
         }
@@ -1101,7 +1110,7 @@
             width: 50px;
             height: 50px;
             background: var(--bg-tertiary);
-            color: var(--accent-color);
+            color: var(--accent-red);
             border: none;
             border-radius: 50%;
             display: flex;
@@ -1147,7 +1156,7 @@
         }
 
         .scroll-top-button:hover {
-            background: var(--accent-color);
+            background: var(--accent-grey);
             color: var(--text-primary);
             transform: scale(1.1);
         }
@@ -1167,6 +1176,7 @@
             visibility: hidden;
             transition: all 0.3s ease;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            animation: slideIn 0.3s ease-out;
         }
 
         .support-modal.active {
@@ -1225,7 +1235,7 @@
             display: inline-flex;
             align-items: center;
             padding: 0.5rem 1rem;
-            background: var(--accent-color);
+            background: var(--accent-blue);
             color: var(--text-primary);
             border-radius: 8px;
             text-decoration: none;
@@ -1235,7 +1245,7 @@
         }
 
         .support-modal .telegram-support:hover {
-            background: var(--accent-hover);
+            background: var(--accent-blue-hover);
             transform: translateY(-2px);
         }
 
@@ -1252,7 +1262,7 @@
         }
 
         .support-modal .close-support:hover {
-            color: var(--accent-color);
+            color: var(--accent-blue);
             transform: rotate(90deg);
         }
 
@@ -1274,6 +1284,7 @@
         .image-viewer.active {
             display: flex;
             opacity: 1;
+            animation: fadeIn 0.3s ease-out;
         }
 
         .image-viewer-container {
@@ -1308,10 +1319,12 @@
             display: flex;
             align-items: center;
             gap: 1rem;
-            background: rgba(0, 0, 0, 0.7);
+            background: var(--bg-tertiary);
             padding: 0.5rem 1rem;
             border-radius: 8px;
             color: var(--text-primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 210;
         }
 
         .image-viewer .controls button {
@@ -1324,7 +1337,7 @@
         }
 
         .image-viewer .controls button:hover {
-            color: var(--accent-color);
+            color: var(--accent-blue);
             transform: scale(1.1);
         }
 
@@ -1346,7 +1359,7 @@
         }
 
         .image-viewer .close-viewer:hover {
-            color: var(--accent-color);
+            color: var(--accent-blue);
             transform: scale(1.1);
         }
 
@@ -1367,6 +1380,17 @@
             from {
                 opacity: 0;
                 transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
             }
             to {
                 opacity: 1;
@@ -1395,10 +1419,11 @@
         }
 
         mark {
-            background: rgba(107, 114, 128, 0.2);
+            background: var(--highlight-bg);
             color: var(--text-primary);
             padding: 0.1rem 0.2rem;
             border-radius: 4px;
+            font-weight: 500;
         }
     </style>
 </head>
@@ -1426,8 +1451,8 @@
                     Telegram
                 </button>
                 <div class="telegram-menu" id="telegramMenu">
-                    <a href="https://t.me/endermanik13" target="_blank">Личный чат автора</a>
-                    <a href="https://t.me/endermanik12" target="_blank">Канал автора</a>
+                    <a href="https://t.me/endermanik13" target="_blank">Тг автора</a>
+                    <a href="https://t.me/endermanik12" target="_blank">Телеграм канал</a>
                 </div>
             </div>
         </header>
@@ -1514,6 +1539,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
     <script>
         // Инициализация переменных
         let pagesData = [];
@@ -1979,7 +2011,7 @@
         function setupImageViewer() {
             const viewer = document.getElementById('imageViewer');
             const viewerContainer = document.getElementById('imageViewerContainer');
-            const viewerImage = document.getElementById('viewerImage');
+            const viewerKILLImage = document.getElementById('viewerImage');
             const closeViewer = document.getElementById('closeViewer');
             const zoomIn = document.getElementById('zoomIn');
             const zoomOut = document.getElementById('zoomOut');
@@ -2068,237 +2100,199 @@
                 isDragging = false;
                 viewerImage.classList.remove('dragging');
             });
-
-            // Поддержка тач-жестов
-            let touchStartScale = 1;
-            let touchStartDistance = 0;
-            viewerImage.addEventListener('touchstart', (e) => {
-                if (e.touches.length === 2) {
-                    touchStartScale = currentScale;
-                    const dx = e.touches[0].clientX - e.touches[1].clientX;
-                    const dy = e.touches[0].clientY - e.touches[1].clientY;
-                    touchStartDistance = Math.sqrt(dx * dx + dy * dy);
-                } else if (e.touches.length === 1 && currentScale > 1) {
-                    isDragging = true;
-                    startX = e.touches[0].clientX - translateX;
-                    startY = e.touches[0].clientY - translateY;
-                }
-            });
-
-            viewerImage.addEventListener('touchmove', (e) => {
-                if (e.touches.length === 2) {
-                    e.preventDefault();
-                    const dx = e.touches[0].clientX - e.touches[1].clientX;
-                    const dy = e.touches[0].clientY - e.touches[1].clientY;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    currentScale = Math.max(0.2, Math.min(5, touchStartScale * (distance / touchStartDistance)));
-                    updateTransform();
-                } else if (isDragging && e.touches.length === 1) {
-                    e.preventDefault();
-                    translateX = e.touches[0].clientX - startX;
-                    translateY = e.touches[0].clientY - startY;
-                    updateTransform();
-                }
-            });
-
-            viewerImage.addEventListener('touchend', () => {
-                isDragging = false;
-                touchStartDistance = 0;
-                touchStartScale = currentScale;
-            });
         }
 
         // Настройка кнопки прокрутки наверх
-            function setupScrollTopButton() {
-                const scrollTopButton = document.getElementById('scrollTopButton');
-                window.addEventListener('scroll', () => {
-                    if (window.scrollY > 300) {
-                        scrollTopButton.classList.add('visible');
-                    } else {
-                        scrollTopButton.classList.remove('visible');
-                    }
-                });
-                scrollTopButton.addEventListener('click', () => {
-                    window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                    });
-                });
-            }
+        function setupScrollTopButton() {
+            const scrollTopButton = document.getElementById('scrollTopButton');
+            if (!scrollTopButton) return;
 
-            // Настройка поиска
-    const searchInput = document.getElementById('searchInput');
-    const searchPanelInput = document.getElementById('searchPanelInput');
-    const searchPanel = document.getElementById('searchPanel');
-    const searchOverlay = document.getElementById('searchOverlay');
-    const searchResults = document.getElementById('searchResults');
-    const closeSearch = document.getElementById('closeSearch');
-
-    function openSearchPanel() {
-        searchPanel.classList.add('active');
-        searchOverlay.classList.add('active');
-        searchPanelInput.focus();
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeSearchPanel() {
-        searchPanel.classList.remove('active');
-        searchOverlay.classList.remove('active');
-        document.body.style.overflow = '';
-        searchResults.innerHTML = '';
-        searchPanelInput.value = '';
-    }
-
-    searchInput.addEventListener('click', openSearchPanel);
-    searchInput.addEventListener('input', () => {
-        if (searchInput.value.trim()) {
-            openSearchPanel();
-            searchPanelInput.value = searchInput.value;
-            performSearch(searchPanelInput.value);
-        }
-    });
-
-    searchPanelInput.addEventListener('input', () => {
-        performSearch(searchPanelInput.value);
-    });
-
-    closeSearch.addEventListener('click', closeSearchPanel);
-    searchOverlay.addEventListener('click', closeSearchPanel);
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && searchPanel.classList.contains('active')) {
-            closeSearchPanel();
-        } else if ((e.ctrlKey || e.metaKey) && e.key === '/') {
-            e.preventDefault();
-            openSearchPanel();
-        }
-    });
-
-    function performSearch(query) {
-        if (!query.trim()) {
-            searchResults.innerHTML = '<div class="text-center text-gray-400 py-4">Введите запрос для поиска</div>';
-            return;
-        }
-
-        const lowerQuery = query.toLowerCase();
-        const results = pagesData.filter(page => {
-            const titleMatch = page.title?.toLowerCase().includes(lowerQuery);
-            const contentMatch = page.content?.toLowerCase().includes(lowerQuery);
-            const categoryMatch = page.category?.toLowerCase().includes(lowerQuery);
-            return (titleMatch || contentMatch || categoryMatch) && page.path !== 'README.md';
-        });
-
-        if (results.length === 0) {
-            searchResults.innerHTML = '<div class="text-center text-gray-400 py-4">Ничего не найдено</div>';
-            return;
-        }
-
-        searchResults.innerHTML = results.map(page => {
-            const highlightedTitle = page.title ? page.title.replace(new RegExp(`(${query})`, 'gi'), '<mark>$1</mark>') : 'Без названия';
-            const description = page.content ? page.content.slice(0, 150).replace(new RegExp(`(${query})`, 'gi'), '<mark>$1</mark>') + '...' : '';
-            return `
-                <div class="search-result-item" data-slug="${page.slug}">
-                    <div class="search-result-title">${highlightedTitle}</div>
-                    <div class="search-result-meta">
-                        <span><i class="ri-folder-line"></i> ${page.category || 'Без категории'}</span>
-                        ${page.date ? `<span><i class="ri-calendar-line"></i> ${page.date}</span>` : ''}
-                    </div>
-                    <div class="search-result-description">${description}</div>
-                </div>
-            `;
-        }).join('');
-
-        document.querySelectorAll('.search-result-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const slug = item.dataset.slug;
-                const page = pagesData.find(p => p.slug === slug);
-                if (page) {
-                    loadPage(page);
-                    localStorage.setItem('lastPageSlug', slug);
-                    updateActiveStates(slug);
-                    closeSearchPanel();
-                    const articlesColumn = document.getElementById('articlesColumn');
-                    if (articlesColumn.classList.contains('active')) {
-                        articlesColumn.classList.remove('active');
-                    }
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 200) {
+                    scrollTopButton.classList.add('visible');
+                } else {
+                    scrollTopButton.classList.remove('visible');
                 }
             });
+
+            scrollTopButton.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+
+        // Настройка поиска
+        const searchInput = document.getElementById('searchInput');
+        const searchPanelInput = document.getElementById('searchPanelInput');
+        const searchPanel = document.getElementById('searchPanel');
+        const searchOverlay = document.getElementById('searchOverlay');
+        const searchResults = document.getElementById('searchResults');
+        const closeSearch = document.getElementById('closeSearch');
+
+        function openSearchPanel() {
+            searchPanel.classList.add('active');
+            searchOverlay.classList.add('active');
+            searchPanelInput.focus();
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSearchPanel() {
+            searchPanel.classList.remove('active');
+            searchOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+            searchResults.innerHTML = '';
+            searchPanelInput.value = '';
+        }
+
+        searchInput.addEventListener('click', openSearchPanel);
+        searchInput.addEventListener('input', () => {
+            if (searchInput.value.trim()) {
+                openSearchPanel();
+                searchPanelInput.value = searchInput.value;
+                performSearch(searchPanelInput.value);
+            }
         });
-    }
 
-    // Настройка мобильного меню
-    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-    const articlesColumn = document.getElementById('articlesColumn');
-    mobileMenuToggle.addEventListener('click', () => {
-        articlesColumn.classList.toggle('active');
-    });
+        searchPanelInput.addEventListener('input', () => {
+            performSearch(searchPanelInput.value);
+        });
 
-    // Закрытие мобильного меню при клике вне его
-    document.addEventListener('click', (e) => {
-        if (!articlesColumn.contains(e.target) && !mobileMenuToggle.contains(e.target) && articlesColumn.classList.contains('active')) {
-            articlesColumn.classList.remove('active');
+        closeSearch.addEventListener('click', closeSearchPanel);
+        searchOverlay.addEventListener('click', closeSearchPanel);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && searchPanel.classList.contains('active')) {
+                closeSearchPanel();
+            } else if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+                e.preventDefault();
+                openSearchPanel();
+            }
+        });
+
+        function performSearch(query) {
+            if (!query.trim()) {
+                searchResults.innerHTML = '<div class="text-center text-gray-400 py-4">Введите запрос для поиска</div>';
+                return;
+            }
+
+            const lowerQuery = query.toLowerCase();
+            const results = pagesData.filter(page => {
+                const titleMatch = page.title?.toLowerCase().includes(lowerQuery);
+                const contentMatch = page.content?.toLowerCase().includes(lowerQuery);
+                const categoryMatch = page.category?.toLowerCase().includes(lowerQuery);
+                return (titleMatch || contentMatch || categoryMatch) && page.path !== 'README.md';
+            });
+
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="text-center text-gray-400 py-4">Ничего не найдено</div>';
+                return;
+            }
+
+            searchResults.innerHTML = results.map(page => {
+                const highlightedTitle = page.title ? page.title.replace(new RegExp(`(${query})`, 'gi'), '<mark>$1</mark>') : 'Без названия';
+                const description = page.content ? page.content.slice(0, 150).replace(new RegExp(`(${query})`, 'gi'), '<mark>$1</mark>') + '...' : '';
+                return `
+                    <div class="search-result-item" data-slug="${page.slug}">
+                        <div class="search-result-title">${highlightedTitle}</div>
+                        <div class="search-result-meta">
+                            <span><i class="ri-folder-line"></i> ${page.category || 'Без категории'}</span>
+                            ${page.date ? `<span><i class="ri-calendar-line"></i> ${page.date}</span>` : ''}
+                        </div>
+                        <div class="search-result-description">${description}</div>
+                    </div>
+                `;
+            }).join('');
+
+            document.querySelectorAll('.search-result-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const slug = item.dataset.slug;
+                    const page = pagesData.find(p => p.slug === slug);
+                    if (page) {
+                        loadPage(page);
+                        localStorage.setItem('lastPageSlug', slug);
+                        updateActiveStates(slug);
+                        closeSearchPanel();
+                        const articlesColumn = document.getElementById('articlesColumn');
+                        if (articlesColumn.classList.contains('active')) {
+                            articlesColumn.classList.remove('active');
+                        }
+                    }
+                });
+            });
         }
-    });
 
-    // Настройка модального окна поддержки
-    const supportButton = document.getElementById('supportButton');
-    const supportModal = document.getElementById('supportModal');
-    const supportModalOverlay = document.getElementById('supportModalOverlay');
-    const closeSupport = document.getElementById('closeSupport');
+        // Настройка мобильного меню
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const articlesColumn = document.getElementById('articlesColumn');
+        mobileMenuToggle.addEventListener('click', () => {
+            articlesColumn.classList.toggle('active');
+        });
 
-    function openSupportModal() {
-        supportModal.classList.add('active');
-        supportModalOverlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
+        // Закрытие мобильного меню при клике вне его
+        document.addEventListener('click', (e) => {
+            if (!articlesColumn.contains(e.target) && !mobileMenuToggle.contains(e.target) && articlesColumn.classList.contains('active')) {
+                articlesColumn.classList.remove('active');
+            }
+        });
 
-    function closeSupportModal() {
-        supportModal.classList.remove('active');
-        supportModalOverlay.classList.remove('active');
-        document.body.style.overflow = '';
-    }
+        // Настройка модального окна поддержки
+        const supportButton = document.getElementById('supportButton');
+        const supportModal = document.getElementById('supportModal');
+        const supportModalOverlay = document.getElementById('supportModalOverlay');
+        const closeSupport = document.getElementById('closeSupport');
 
-    supportButton.addEventListener('click', openSupportModal);
-    closeSupport.addEventListener('click', closeSupportModal);
-    supportModalOverlay.addEventListener('click', closeSupportModal);
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && supportModal.classList.contains('active')) {
-            closeSupportModal();
+        function openSupportModal() {
+            supportModal.classList.add('active');
+            supportModalOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
-    });
 
-    // Настройка меню Telegram
-    const telegramButton = document.getElementById('telegramButton');
-    const telegramMenu = document.getElementById('telegramMenu');
-
-    telegramButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        telegramMenu.classList.toggle('active');
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!telegramMenu.contains(e.target) && !telegramButton.contains(e.target)) {
-            telegramMenu.classList.remove('active');
+        function closeSupportModal() {
+            supportModal.classList.remove('active');
+            supportModalOverlay.classList.remove('active');
+            document.body.style.overflow = '';
         }
-    });
 
-    // Пасхалка
-    const easterEggIcon = document.getElementById('easterEggIcon');
-    let clickCount = 0;
-    easterEggIcon.addEventListener('click', () => {
-        clickCount++;
-        if (clickCount === 5) {
-            alert('Пасхалка! 🎉 Ты нашёл секрет! Теперь сайт превратится в... шутка, он останется таким же крутым! 😎');
-            clickCount = 0;
-        }
-    });
+        supportButton.addEventListener('click', openSupportModal);
+        closeSupport.addEventListener('click', closeSupportModal);
+        supportModalOverlay.addEventListener('click', closeSupportModal);
 
-    // Инициализация
-    document.addEventListener('DOMContentLoaded', () => {
-        loadPagesData();
-        setupScrollTopButton();
-    });
-</script>
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && supportModal.classList.contains('active')) {
+                closeSupportModal();
+            }
+        });
+
+        // Настройка меню Telegram
+        const telegramButton = document.getElementById('telegramButton');
+        const telegramMenu = document.getElementById('telegramMenu');
+
+        telegramButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            telegramMenu.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!telegramMenu.contains(e.target) && !telegramButton.contains(e.target)) {
+                telegramMenu.classList.remove('active');
+            }
+        });
+
+        // Пасхалка
+        const easterEggIcon = document.getElementById('easterEggIcon');
+        let clickCount = 0;
+        easterEggIcon.addEventListener('click', () => {
+            clickCount++;
+            if (clickCount === 5) {
+                alert('Пасхалка! 🎉 Ты нашёл секрет! Теперь сайт превратится в... шутка, он останется таким же крутым! 😎');
+                clickCount = 0;
+            }
+        });
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPagesData();
+            setupScrollTopButton();
+        });
+    </script>
 </body>
 </html>
