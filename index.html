@@ -12,24 +12,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-one-dark.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0d1117;
-            --bg-secondary: #161b22;
-            --bg-tertiary: #21262d;
-            --bg-quaternary: #30363d;
-            --text-primary: #e6edf3;
-            --text-secondary: #c9d1d9;
-            --text-tertiary: #8b949e;
-            --accent-color: #3b82f6;
-            --accent-hover: #60a5fa;
-            --accent-active: #2563eb;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --search-highlight: rgba(75, 107, 159, 0.5);
-            --code-bg: rgba(110, 118, 129, 0.3);
-            --inline-code-bg: #252A30; /* Обновленный фон для инлайн-кода */
-            --quote-bg: rgba(59, 130, 246, 0.05);
+            --bg-primary: #1a1d21;
+            --bg-secondary: #24272b;
+            --bg-tertiary: #2d3136;
+            --bg-quaternary: #383c43;
+            --text-primary: #d8dee9;
+            --text-secondary: #b8c0cc;
+            --text-tertiary: #87909b;
+            --accent-color: #6b7280;
+            --accent-hover: #9ca3af;
+            --accent-active: #4b5563;
+            --border-color: rgba(255, 255, 255, 0.15);
+            --search-highlight: rgba(107, 114, 128, 0.3);
+            --code-bg: #24272b;
+            --inline-code-bg: #2d3136;
+            --quote-bg: rgba(107, 114, 128, 0.1);
         }
 
         body {
@@ -241,7 +241,9 @@
             transition: transform 0.3s ease;
         }
 
-        .article-item:hover {
+        .article-item
+
+:hover {
             background-color: var(--bg-quaternary);
             color: var(--accent-color);
             padding-left: 1.25rem;
@@ -252,7 +254,7 @@
         }
 
         .article-item.active {
-            background-color: rgba(59, 130, 246, 0.2);
+            background-color: rgba(107, 114, 128, 0.2);
             color: var(--accent-color);
             font-weight: 500;
         }
@@ -305,7 +307,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 1rem 2rem;
-            background: rgba(13, 17, 23, 0.95);
+            background: rgba(26, 29, 33, 0.95);
             border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
@@ -333,7 +335,7 @@
             
             .search-container {
                 width: 100%;
-                margin-top: 0.5rem;
+                margin-top: 0.5rem determinazione;
                 flex-direction: column;
                 align-items: flex-start;
             }
@@ -384,7 +386,7 @@
             padding: 0.6rem 2.5rem 0.6rem 1rem;
             background-color: var(--bg-tertiary);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
+            grensradius: 8px;
             color: var(--text-primary);
             transition: all 0.3s ease;
             min-width: 200px;
@@ -394,9 +396,9 @@
         .search-input:focus,
         .search-panel-input:focus {
             outline: none;
-            border-color: rgba(59, 130, 246, 0.3);
+            border-color: rgba(107, 114, 128, 0.3);
             background-color: var(--bg-quaternary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.1);
         }
 
         .search-input {
@@ -542,14 +544,14 @@
         }
 
         .telegram-button {
-            background: linear-gradient(135deg, #2AABEE, #1A8BCF);
-            color: white;
+            background: linear-gradient(135deg, #4b5563, #374151);
+            color: var(--text-primary);
             transition: all 0.3s ease;
         }
 
         .telegram-button:hover {
             transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
         }
 
         .telegram-menu {
@@ -578,16 +580,16 @@
 
         .telegram-menu a {
             padding: 0.5rem 1rem;
-            color: white;
+            color: var(--text-primary);
             text-decoration: none;
             border-radius: 6px;
             transition: all 0.3s ease;
-            background: linear-gradient(135deg, #2A4365, #2C5282);
+            background: linear-gradient(135deg, #4b5563, #374151);
             margin: 0.25rem 0;
         }
 
         .telegram-menu a:hover {
-            background: linear-gradient(135deg, #3B5998, #4A6EAD);
+            background: linear-gradient(135deg, #6b7280, #4b5563);
             transform: translateX(4px);
         }
 
@@ -782,7 +784,7 @@
             text-decoration: none;
             transition: all 0.3s ease;
             font-weight: 500;
-            border-bottom: 1px dotted rgba(59, 130, 246, 0.3);
+            border-bottom: 1px dotted rgba(107, 114, 128, 0.3);
         }
 
         .article-text a:hover {
@@ -793,13 +795,13 @@
         .article-text code {
             font-family: 'JetBrains Mono', monospace;
             background-color: var(--inline-code-bg);
-            color: #85B4FF; /* Обновленный цвет шрифта */
-            padding: 0.1rem 0.3rem; /* Уменьшенные отступы для меньшего разделения */
-            border-radius: 4px; /* Более гладкие углы */
-            font-size: 0.95em; /* Чуть ближе к размеру основного текста */
+            color: var(--text-secondary);
+            padding: 0.1rem 0.3rem;
+            border-radius: 4px;
+            font-size: 0.95em;
             white-space: pre-wrap;
             word-break: break-all;
-            transition: background-color 0.2s ease; /* Плавный переход для фона */
+            transition: background-color 0.2s ease;
         }
 
         .article-text pre {
@@ -892,7 +894,7 @@
         }
 
         .article-text tr:hover td {
-            background-color: rgba(59, 130, 246, 0.1);
+            background-color: rgba(107, 114, 128, 0.1);
         }
 
         .article-text img {
@@ -1043,7 +1045,7 @@
 
         .heading-item.active {
             color: var(--accent-color);
-            background-color: rgba(59, 130, 246, 0.2);
+            background-color: rgba(107, 114, 128, 0.2);
         }
 
         .heading-item.h3 {
@@ -1146,7 +1148,7 @@
 
         .scroll-top-button:hover {
             background: var(--accent-color);
-            color: white;
+            color: var(--text-primary);
             transform: scale(1.1);
         }
 
@@ -1224,7 +1226,7 @@
             align-items: center;
             padding: 0.5rem 1rem;
             background: var(--accent-color);
-            color: white;
+            color: var(--text-primary);
             border-radius: 8px;
             text-decoration: none;
             font-size: 0.9rem;
@@ -1393,7 +1395,7 @@
         }
 
         mark {
-            background: rgba(59, 130, 246, 0.2);
+            background: rgba(107, 114, 128, 0.2);
             color: var(--text-primary);
             padding: 0.1rem 0.2rem;
             border-radius: 4px;
@@ -1530,11 +1532,11 @@
         particlesJS('particles-js', {
             particles: {
                 number: { value: 60, density: { enable: true, value_area: 800 } },
-                color: { value: '#58a6ff' },
+                color: { value: '#6b7280' },
                 shape: { type: 'circle' },
                 opacity: { value: 0.3, random: false },
                 size: { value: 3, random: true },
-                line_linked: { enable: true, distance: 150, color: '#58a6ff', opacity: 0.2, width: 1 },
+                line_linked: { enable: true, distance: 150, color: '#6b7280', opacity: 0.2, width: 1 },
                 move: { enable: true, speed: 1.5, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
             },
             interactivity: {
@@ -2125,184 +2127,178 @@
             }
 
             // Настройка поиска
-            const searchInput = document.getElementById('searchInput');
-            const searchPanel = document.getElementById('searchPanel');
-            const searchOverlay = document.getElementById('searchOverlay');
-            const searchPanelInput = document.getElementById('searchPanelInput');
-            const searchResults = document.getElementById('searchResults');
-            const closeSearch = document.getElementById('closeSearch');
+    const searchInput = document.getElementById('searchInput');
+    const searchPanelInput = document.getElementById('searchPanelInput');
+    const searchPanel = document.getElementById('searchPanel');
+    const searchOverlay = document.getElementById('searchOverlay');
+    const searchResults = document.getElementById('searchResults');
+    const closeSearch = document.getElementById('closeSearch');
 
-            searchInput.addEventListener('click', () => {
-                searchPanel.classList.add('active');
-                searchOverlay.classList.add('active');
-                searchPanelInput.focus();
-            });
+    function openSearchPanel() {
+        searchPanel.classList.add('active');
+        searchOverlay.classList.add('active');
+        searchPanelInput.focus();
+        document.body.style.overflow = 'hidden';
+    }
 
-            searchPanelInput.addEventListener('input', (e) => {
-                performSearch(e.target.value);
-            });
+    function closeSearchPanel() {
+        searchPanel.classList.remove('active');
+        searchOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+        searchResults.innerHTML = '';
+        searchPanelInput.value = '';
+    }
 
-            closeSearch.addEventListener('click', () => {
-                searchPanel.classList.remove('active');
-                searchOverlay.classList.remove('active');
-                searchInput.value = '';
-                searchPanelInput.value = '';
-                searchResults.innerHTML = '';
-            });
+    searchInput.addEventListener('click', openSearchPanel);
+    searchInput.addEventListener('input', () => {
+        if (searchInput.value.trim()) {
+            openSearchPanel();
+            searchPanelInput.value = searchInput.value;
+            performSearch(searchPanelInput.value);
+        }
+    });
 
-            searchOverlay.addEventListener('click', () => {
-                searchPanel.classList.remove('active');
-                searchOverlay.classList.remove('active');
-                searchInput.value = '';
-                searchPanelInput.value = '';
-                searchResults.innerHTML = '';
-            });
+    searchPanelInput.addEventListener('input', () => {
+        performSearch(searchPanelInput.value);
+    });
 
-            function performSearch(query) {
-                if (!query.trim()) {
-                    searchResults.innerHTML = '';
-                    return;
-                }
-                const filteredPages = pagesData.filter(page => {
-                    const searchText = `${page.title || ''} ${page.content || ''} ${page.category || ''}`.toLowerCase();
-                    return searchText.includes(query.toLowerCase());
-                });
-                if (filteredPages.length === 0) {
-                    searchResults.innerHTML = `
-                        <div class="text-center text-sm text-gray-400 py-4">
-                            <p>Ничего не найдено по запросу "${query}"</p>
-                        </div>
-                    `;
-                    return;
-                }
-                searchResults.innerHTML = filteredPages.map(page => `
-                    <div class="search-result-item" data-slug="${page.slug}">
-                        <div class="search-result-title">${highlightText(page.title || 'Без названия', query)}</div>
-                        <div class="search-result-meta">
-                            <span><i class="${page.category.toLowerCase() === 'безкатегории' ? 'ri-star-line' : 'ri-folder-line'}"></i> ${page.category.toLowerCase() === 'безкатегории' ? 'Игнорируй' : page.category || 'Без категории'}</span>
-                            ${page.date ? `<span><i class="ri-calendar-line"></i> ${page.date}</span>` : ''}
-                        </div>
-                        <div class="search-result-description">
-                            <p>${highlightText(truncateText(page.content || '', 150), query)}</p>
-                        </div>
+    closeSearch.addEventListener('click', closeSearchPanel);
+    searchOverlay.addEventListener('click', closeSearchPanel);
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && searchPanel.classList.contains('active')) {
+            closeSearchPanel();
+        } else if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+            e.preventDefault();
+            openSearchPanel();
+        }
+    });
+
+    function performSearch(query) {
+        if (!query.trim()) {
+            searchResults.innerHTML = '<div class="text-center text-gray-400 py-4">Введите запрос для поиска</div>';
+            return;
+        }
+
+        const lowerQuery = query.toLowerCase();
+        const results = pagesData.filter(page => {
+            const titleMatch = page.title?.toLowerCase().includes(lowerQuery);
+            const contentMatch = page.content?.toLowerCase().includes(lowerQuery);
+            const categoryMatch = page.category?.toLowerCase().includes(lowerQuery);
+            return (titleMatch || contentMatch || categoryMatch) && page.path !== 'README.md';
+        });
+
+        if (results.length === 0) {
+            searchResults.innerHTML = '<div class="text-center text-gray-400 py-4">Ничего не найдено</div>';
+            return;
+        }
+
+        searchResults.innerHTML = results.map(page => {
+            const highlightedTitle = page.title ? page.title.replace(new RegExp(`(${query})`, 'gi'), '<mark>$1</mark>') : 'Без названия';
+            const description = page.content ? page.content.slice(0, 150).replace(new RegExp(`(${query})`, 'gi'), '<mark>$1</mark>') + '...' : '';
+            return `
+                <div class="search-result-item" data-slug="${page.slug}">
+                    <div class="search-result-title">${highlightedTitle}</div>
+                    <div class="search-result-meta">
+                        <span><i class="ri-folder-line"></i> ${page.category || 'Без категории'}</span>
+                        ${page.date ? `<span><i class="ri-calendar-line"></i> ${page.date}</span>` : ''}
                     </div>
-                `).join('');
-                document.querySelectorAll('.search-result-item').forEach(item => {
-                    item.addEventListener('click', () => {
-                        const slug = item.dataset.slug;
-                        const page = pagesData.find(p => p.slug === slug);
-                        if (page) {
-                            loadPage(page);
-                            localStorage.setItem('lastPageSlug', page.slug);
-                            updateActiveStates(page.slug);
-                            searchPanel.classList.remove('active');
-                            searchOverlay.classList.remove('active');
-                            searchInput.value = '';
-                            searchPanelInput.value = '';
-                            searchResults.innerHTML = '';
-                        }
-                    });
-                });
-            }
+                    <div class="search-result-description">${description}</div>
+                </div>
+            `;
+        }).join('');
 
-            // Подсветка текста в поиске
-            function highlightText(text, query) {
-                if (!query) return text;
-                const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-                return text.replace(regex, '<mark style="background: var(--search-highlight); padding: 0.1rem 0.2rem; border-radius: 4px;">$1</mark>');
-            }
-
-            // Обрезка текста
-            function truncateText(text, maxLength) {
-                if (text.length <= maxLength) return text;
-                return text.substring(0, maxLength).trim() + '...';
-            }
-
-            // Настройка кнопки поддержки
-            const supportButton = document.getElementById('supportButton');
-            const supportModal = document.getElementById('supportModal');
-            const supportModalOverlay = document.getElementById('supportModalOverlay');
-            const closeSupport = document.getElementById('closeSupport');
-
-            supportButton.addEventListener('click', () => {
-                supportModal.classList.add('active');
-                supportModalOverlay.classList.add('active');
-            });
-
-            closeSupport.addEventListener('click', () => {
-                supportModal.classList.remove('active');
-                supportModalOverlay.classList.remove('active');
-            });
-
-            supportModalOverlay.addEventListener('click', () => {
-                supportModal.classList.remove('active');
-                supportModalOverlay.classList.remove('active');
-            });
-
-            // Настройка мобильного меню
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const articlesColumn = document.getElementById('articlesColumn');
-            mobileMenuToggle.addEventListener('click', () => {
-                articlesColumn.classList.toggle('active');
-            });
-
-            // Закрытие мобильного меню при клике вне его
-            document.addEventListener('click', (e) => {
-                if (window.innerWidth >= 1024) return;
-                if (!articlesColumn.contains(e.target) && !mobileMenuToggle.contains(e.target) && articlesColumn.classList.contains('active')) {
-                    articlesColumn.classList.remove('active');
-                }
-            });
-
-            // Настройка Telegram-меню
-            const telegramButton = document.getElementById('telegramButton');
-            const telegramMenu = document.getElementById('telegramMenu');
-            telegramButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                telegramMenu.classList.toggle('active');
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!telegramButton.contains(e.target) && !telegramMenu.contains(e.target)) {
-                    telegramMenu.classList.remove('active');
-                }
-            });
-
-            // Закрытие панели заголовков при клике вне её
-            document.addEventListener('click', (e) => {
-                if (window.innerWidth >= 1024) return;
-                const headingsBlock = document.querySelector('.headings-block');
-                if (headingsBlock && !headingsBlock.contains(e.target) && headingsBlock.classList.contains('active')) {
-                    headingsBlock.classList.remove('active');
-                }
-            });
-
-            // Пасхалка
-            const easterEggIcon = document.getElementById('easterEggIcon');
-            let clickCount = 0;
-            easterEggIcon.addEventListener('click', () => {
-                clickCount++;
-                if (clickCount >= 5) {
-                    window.open('https://github.com/Endermanik13/top', '_blank');
-                    clickCount = 0;
-                }
-            });
-
-            // Обработка изменения истории браузера
-            window.addEventListener('popstate', () => {
-                const slug = window.location.hash.substring(1);
+        document.querySelectorAll('.search-result-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const slug = item.dataset.slug;
                 const page = pagesData.find(p => p.slug === slug);
                 if (page) {
                     loadPage(page);
-                    updateActiveStates(page.slug);
+                    localStorage.setItem('lastPageSlug', slug);
+                    updateActiveStates(slug);
+                    closeSearchPanel();
+                    const articlesColumn = document.getElementById('articlesColumn');
+                    if (articlesColumn.classList.contains('active')) {
+                        articlesColumn.classList.remove('active');
+                    }
                 }
             });
+        });
+    }
 
-            // Инициализация
-            document.addEventListener('DOMContentLoaded', () => {
-                loadPagesData();
-                setupScrollTopButton();
-            });
-        </script>
-    </body>
+    // Настройка мобильного меню
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const articlesColumn = document.getElementById('articlesColumn');
+    mobileMenuToggle.addEventListener('click', () => {
+        articlesColumn.classList.toggle('active');
+    });
+
+    // Закрытие мобильного меню при клике вне его
+    document.addEventListener('click', (e) => {
+        if (!articlesColumn.contains(e.target) && !mobileMenuToggle.contains(e.target) && articlesColumn.classList.contains('active')) {
+            articlesColumn.classList.remove('active');
+        }
+    });
+
+    // Настройка модального окна поддержки
+    const supportButton = document.getElementById('supportButton');
+    const supportModal = document.getElementById('supportModal');
+    const supportModalOverlay = document.getElementById('supportModalOverlay');
+    const closeSupport = document.getElementById('closeSupport');
+
+    function openSupportModal() {
+        supportModal.classList.add('active');
+        supportModalOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeSupportModal() {
+        supportModal.classList.remove('active');
+        supportModalOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    supportButton.addEventListener('click', openSupportModal);
+    closeSupport.addEventListener('click', closeSupportModal);
+    supportModalOverlay.addEventListener('click', closeSupportModal);
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && supportModal.classList.contains('active')) {
+            closeSupportModal();
+        }
+    });
+
+    // Настройка меню Telegram
+    const telegramButton = document.getElementById('telegramButton');
+    const telegramMenu = document.getElementById('telegramMenu');
+
+    telegramButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        telegramMenu.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!telegramMenu.contains(e.target) && !telegramButton.contains(e.target)) {
+            telegramMenu.classList.remove('active');
+        }
+    });
+
+    // Пасхалка
+    const easterEggIcon = document.getElementById('easterEggIcon');
+    let clickCount = 0;
+    easterEggIcon.addEventListener('click', () => {
+        clickCount++;
+        if (clickCount === 5) {
+            alert('Пасхалка! 🎉 Ты нашёл секрет! Теперь сайт превратится в... шутка, он останется таким же крутым! 😎');
+            clickCount = 0;
+        }
+    });
+
+    // Инициализация
+    document.addEventListener('DOMContentLoaded', () => {
+        loadPagesData();
+        setupScrollTopButton();
+    });
+</script>
+</body>
 </html>
